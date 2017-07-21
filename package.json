@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
     "test": "mocha --timeout 10000"
   },
   "repository": {
@@ -29,7 +30,10 @@
     "dotenv": "^4.0.0",
     "envvar": "^1.1.0",
     "express": "~4.14.0",
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.30",
     "morgan": "~1.7.0",
+    "plaid": "^2.0.4",
     "pug": "~2.0.0-beta6",
     "serve-favicon": "~2.3.0"
   },

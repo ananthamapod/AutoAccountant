@@ -1,39 +1,117 @@
-const express = require('express')
-const router = express.Router()
-
 'use strict'
 
-var envvar = require('envvar')
-var express = require('express')
-var bodyParser = require('body-parser')
-var moment = require('moment')
-var plaid = require('plaid')
+const assert = require('assert')
+const envvar = require('envvar')
+const express = require('express')
+const moment = require('moment')
+const plaid = require('plaid')
+const router = express.Router()
+const mongo = require('mongodb').MongoClient
+const db_url = 'mongodb://localhost:27017/autoaccountant'
 
-var PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID')
-var PLAID_SECRET = envvar.string('PLAID_SECRET')
-var PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY')
-var PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
+const PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID')
+const PLAID_SECRET = envvar.string('PLAID_SECRET')
+const PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY')
+const PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
-var ACCESS_TOKEN = null
-var PUBLIC_TOKEN = null
-var ITEM_ID = null
+let ACCESS_TOKEN = null
+let PUBLIC_TOKEN = null
+let ITEM_ID = null
 
 // Initialize the Plaid client
-var client = new plaid.Client(
+const client = new plaid.Client(
   PLAID_CLIENT_ID,
   PLAID_SECRET,
   PLAID_PUBLIC_KEY,
   plaid.environments[PLAID_ENV]
 )
 
+function saveItemInfo(access_token, item_id, cb) {
+  mongo.connect(db_url, (err, db) => {
+    assert.equal(err, null)
+    db.collection('items')
+      .insert({access_token: access_token, item_id: item_id}, function(err, result) {
+        if (err) {
+          if (cb) {
+            cb(err)
+          }
+          console.log(err)
+          return
+        }
+        console.log(result)
+        cb(undefined, result)
+      })
+  })
+}
+
+function updateTransactions(item_id, transaction, cb) {
+  mongo.connect(db_url, (err, db) => {
+    assert.equal(err, null)
+    db.collection('item_transactions')
+      .insert({item_id: item_id, transaction: transaction}, function(err, result) {
+        if (err) {
+          if (cb) {
+            cb(err)
+          }
+          console.log(err)
+          return
+        }
+        console.log(result)
+        cb(undefined, result)
+      })
+  })
+}
+
 /* GET api listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource')
 })
 
-app.post('/get_access_token', (req, res, next) => {
+router.get('/test_db', (req, res, next) => {
+  saveItemInfo('test_access_token', 'test_item_id', (err, result) => {
+    if (err) {
+      res.error(err)
+    } else {
+      res.send(result)
+    }
+  })
+})
+
+router.get('/transactions/webhook', (req, res, next) => {
+  console.log(req.body)
+  switch (req.body.webhook_type) {
+    case "TRANSACTIONS":
+      switch (req.body.webhook_code) {
+        case "HISTORICAL_UPDATE":
+          if (req.body.error) {
+            console.log(req.body.error)
+          } else {
+            updateTransactions(req.body.item_id, req.body.new_transactions)
+          }
+          break
+        case "DEFAULT_UPDATE":
+          if (req.body.error) {
+            console.log(req.body.error)
+          } else {
+            updateTransactions(req.body.item_id, req.body.new_transactions)
+          }
+          break
+        default:
+
+      }
+      break
+    case "ERROR":
+
+      break
+    default:
+
+  }
+  res.send("ACK")
+})
+
+router.post('/get_access_token', (req, res, next) => {
   PUBLIC_TOKEN = req.body.public_token
   client.exchangePublicToken(PUBLIC_TOKEN, function(error, tokenResponse) {
     if (error != null) {
@@ -50,10 +128,11 @@ app.post('/get_access_token', (req, res, next) => {
     res.json({
       'error': false
     })
+    saveItemInfo(ACCESS_TOKEN, ITEM_ID)
   })
 })
 
-app.get('/accounts', (req, res, next) => {
+router.get('/accounts', (req, res, next) => {
   // Retrieve high-level account information and account and routing numbers
   // for each account associated with the Item.
   client.getAuth(ACCESS_TOKEN, (error, authResponse) => {
@@ -74,7 +153,7 @@ app.get('/accounts', (req, res, next) => {
   })
 })
 
-app.post('/item', (req, res, next) => {
+router.post('/item', (req, res, next) => {
   // Pull the Item - this includes information about available products,
   // billed products, webhook information, and more.
   client.getItem(ACCESS_TOKEN, function(error, itemResponse) {
@@ -103,7 +182,7 @@ app.post('/item', (req, res, next) => {
   })
 })
 
-app.post('/transactions', (req, res, next) => {
+router.post('/transactions', (req, res, next) => {
   // Pull transactions for the Item for the last 30 days
   let startDate = moment().subtract(30, 'days').format('YYYY-MM-DD')
   let endDate = moment().format('YYYY-MM-DD')
