@@ -47,9 +47,10 @@ const transactionSchema = new Schema({
     type: String,
     required: false
   },
-  transaction_id: {
+  _id: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   transaction_type: {
     type: String,

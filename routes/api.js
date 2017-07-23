@@ -31,17 +31,19 @@ const client = new plaid.Client(
 )
 
 function saveItemInfo(access_token, item_id, cb) {
-  Item.collection.insert({access_token: access_token, item_id: item_id}, (err, docs) => {
+  Item.create({access_token: access_token, item_id: item_id}, (err, doc) => {
     if (cb) {
-      cb(err, docs)
+      cb(err, doc)
     }
   })
 }
 
-function updateTransactions(transaction, cb) {
-  Transaction.collection.insert(transaction, (err, docs) => {
+function updateTransaction(transaction, cb) {
+  transaction._id = transaction.transaction_id
+  delete transaction.transaction_id
+  Transaction.create(transaction, (err, doc) => {
     if (cb) {
-      cb(err, docs)
+      cb(err, doc)
     }
   })
 }
@@ -52,9 +54,9 @@ router.get('/', function(req, res, next) {
 })
 
 router.get('/test_db', (req, res, next) => {
-  saveItemInfo('test_access_token', 'test_item_id', (err, result) => {
+  updateTransaction({}, (err, result) => {
     if (err) {
-      res.error(err)
+      res.send(err)
     } else {
       res.send(result)
     }
@@ -71,7 +73,7 @@ router.get('/transactions/webhook', (req, res, next) => {
             debug(req.body.error)
           } else {
             debug(req.body)
-            // updateTransactions(req.body.item_id, req.body.new_transactions)
+            // updateTransaction(req.body.item_id, req.body.new_transactions)
           }
           break
         case "DEFAULT_UPDATE":
@@ -79,7 +81,7 @@ router.get('/transactions/webhook', (req, res, next) => {
             debug(req.body.error)
           } else {
             debug(req.body)
-            // updateTransactions(req.body.item_id, req.body.new_transactions)
+            // updateTransaction(req.body.item_id, req.body.new_transactions)
           }
           break
         default:
@@ -182,7 +184,13 @@ router.post('/transactions', (req, res, next) => {
     }
     debug('pulled ' + transactionsResponse.transactions.length + ' transactions')
     res.json(transactionsResponse)
-
+    updateTransaction(transactionsResponse.transactions[0], (err, result) => {
+      if (err) {
+        debug(err)
+      } else {
+        debug(result)
+      }
+    })
   })
 })
 
