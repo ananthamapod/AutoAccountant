@@ -32,6 +32,7 @@
     "express": "~4.14.0",
     "moment": "^2.18.1",
     "mongodb": "^2.2.30",
+    "mongoose": "^4.11.3",
     "morgan": "~1.7.0",
     "plaid": "^2.0.4",
     "pug": "~2.0.0-beta6",

@@ -5,9 +5,11 @@ const envvar = require('envvar')
 const express = require('express')
 const moment = require('moment')
 const plaid = require('plaid')
+const debug = require('debug')('autoaccountant:server')
 const router = express.Router()
-const mongo = require('mongodb').MongoClient
-const db_url = 'mongodb://localhost:27017/autoaccountant'
+
+const Item = require('../models/Item')
+const Transaction = require('../models/Transaction')
 
 const PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID')
 const PLAID_SECRET = envvar.string('PLAID_SECRET')
@@ -16,9 +18,9 @@ const PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
-let ACCESS_TOKEN = null
+let ACCESS_TOKEN = envvar.string('ACCESS_TOKEN')
 let PUBLIC_TOKEN = null
-let ITEM_ID = null
+let ITEM_ID = envvar.string('ITEM_ID')
 
 // Initialize the Plaid client
 const client = new plaid.Client(
@@ -29,38 +31,18 @@ const client = new plaid.Client(
 )
 
 function saveItemInfo(access_token, item_id, cb) {
-  mongo.connect(db_url, (err, db) => {
-    assert.equal(err, null)
-    db.collection('items')
-      .insert({access_token: access_token, item_id: item_id}, function(err, result) {
-        if (err) {
-          if (cb) {
-            cb(err)
-          }
-          console.log(err)
-          return
-        }
-        console.log(result)
-        cb(undefined, result)
-      })
+  Item.collection.insert({access_token: access_token, item_id: item_id}, (err, docs) => {
+    if (cb) {
+      cb(err, docs)
+    }
   })
 }
 
-function updateTransactions(item_id, transaction, cb) {
-  mongo.connect(db_url, (err, db) => {
-    assert.equal(err, null)
-    db.collection('item_transactions')
-      .insert({item_id: item_id, transaction: transaction}, function(err, result) {
-        if (err) {
-          if (cb) {
-            cb(err)
-          }
-          console.log(err)
-          return
-        }
-        console.log(result)
-        cb(undefined, result)
-      })
+function updateTransactions(transaction, cb) {
+  Transaction.collection.insert(transaction, (err, docs) => {
+    if (cb) {
+      cb(err, docs)
+    }
   })
 }
 
@@ -80,22 +62,24 @@ router.get('/test_db', (req, res, next) => {
 })
 
 router.get('/transactions/webhook', (req, res, next) => {
-  console.log(req.body)
+  debug(req.body)
   switch (req.body.webhook_type) {
     case "TRANSACTIONS":
       switch (req.body.webhook_code) {
         case "HISTORICAL_UPDATE":
           if (req.body.error) {
-            console.log(req.body.error)
+            debug(req.body.error)
           } else {
-            updateTransactions(req.body.item_id, req.body.new_transactions)
+            debug(req.body)
+            // updateTransactions(req.body.item_id, req.body.new_transactions)
           }
           break
         case "DEFAULT_UPDATE":
           if (req.body.error) {
-            console.log(req.body.error)
+            debug(req.body.error)
           } else {
-            updateTransactions(req.body.item_id, req.body.new_transactions)
+            debug(req.body)
+            // updateTransactions(req.body.item_id, req.body.new_transactions)
           }
           break
         default:
@@ -116,15 +100,15 @@ router.post('/get_access_token', (req, res, next) => {
   client.exchangePublicToken(PUBLIC_TOKEN, function(error, tokenResponse) {
     if (error != null) {
       var msg = 'Could not exchange public_token!'
-      console.log(msg + '\n' + error)
+      debug(msg + '\n' + error)
       return res.json({
         error: msg
       })
     }
     ACCESS_TOKEN = tokenResponse.access_token
     ITEM_ID = tokenResponse.item_id
-    console.log('Access Token: ' + ACCESS_TOKEN)
-    console.log('Item ID: ' + ITEM_ID)
+    debug('Access Token: ' + ACCESS_TOKEN)
+    debug('Item ID: ' + ITEM_ID)
     res.json({
       'error': false
     })
@@ -138,13 +122,13 @@ router.get('/accounts', (req, res, next) => {
   client.getAuth(ACCESS_TOKEN, (error, authResponse) => {
     if (error != null) {
       let msg = 'Unable to pull accounts from the Plaid API.'
-      console.log(msg + '\n' + error)
+      debug(msg + '\n' + error)
       return res.json({
         error: msg
       })
     }
 
-    console.log(authResponse.accounts)
+    debug(authResponse.accounts)
     res.json({
       error: false,
       accounts: authResponse.accounts,
@@ -158,7 +142,7 @@ router.post('/item', (req, res, next) => {
   // billed products, webhook information, and more.
   client.getItem(ACCESS_TOKEN, function(error, itemResponse) {
     if (error != null) {
-      console.log(JSON.stringify(error))
+      debug(JSON.stringify(error))
       return res.json({
         error: error
       })
@@ -168,7 +152,7 @@ router.post('/item', (req, res, next) => {
     client.getInstitutionById(itemResponse.item.institution_id, (err, instRes) => {
       if (err != null) {
         var msg = 'Unable to pull institution information from the Plaid API.'
-        console.log(msg + '\n' + error)
+        debug(msg + '\n' + error)
         return res.json({
           error: msg
         })
@@ -184,20 +168,21 @@ router.post('/item', (req, res, next) => {
 
 router.post('/transactions', (req, res, next) => {
   // Pull transactions for the Item for the last 30 days
-  let startDate = moment().subtract(30, 'days').format('YYYY-MM-DD')
+  let startDate = moment().subtract(2, 'years').format('YYYY-MM-DD')
   let endDate = moment().format('YYYY-MM-DD')
+  debug(startDate)
   client.getTransactions(ACCESS_TOKEN, startDate, endDate, {
-    count: 250,
     offset: 0,
   }, (error, transactionsResponse) => {
     if (error != null) {
-      console.log(JSON.stringify(error))
+      debug(JSON.stringify(error))
       return res.json({
         error: error
       })
     }
-    console.log('pulled ' + transactionsResponse.transactions.length + ' transactions')
+    debug('pulled ' + transactionsResponse.transactions.length + ' transactions')
     res.json(transactionsResponse)
+
   })
 })
 

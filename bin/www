@@ -12,6 +12,12 @@ require('dotenv').config()
 const app = require('../app')
 const debug = require('debug')('autoaccountant:server')
 const http = require('http')
+const mongoose = require("mongoose")
+
+/**
+ * Define database info
+ */
+const db = process.env.MONGODB_URI || 'mongodb://localhost:27017/autoaccountant'
 
 /**
  * Get port from environment and store in Express.
@@ -29,6 +35,17 @@ const server = http.createServer(app)
 /**
  * Listen on provided port, on all network interfaces.
  */
+ // Connect mongoose to our database
+ mongoose.connect(db, {useMongoClient: true}, function(error) {
+   // Log any errors connecting with mongoose
+   if (error) {
+     debug(error)
+   }
+   // Or log a success message
+   else {
+     debug('mongoose connection is successful')
+   }
+ })
 
 server.listen(port)
 server.on('error', onError)
@@ -70,11 +87,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges')
+      debug(bind + ' requires elevated privileges')
       process.exit(1)
       break
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use')
+      debug(bind + ' is already in use')
       process.exit(1)
       break
     default:
