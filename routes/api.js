@@ -10,6 +10,9 @@ const router = express.Router()
 
 const Item = require('../models/Item')
 const Transaction = require('../models/Transaction')
+const Account = require('../models/Account')
+const Goal = require('../models/Goal')
+const Bill = require('../models/Bill')
 
 const PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID')
 const PLAID_SECRET = envvar.string('PLAID_SECRET')
