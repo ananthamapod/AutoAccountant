@@ -1,200 +1,66 @@
 'use strict'
 
 const assert = require('assert')
-const envvar = require('envvar')
 const express = require('express')
-const moment = require('moment')
-const plaid = require('plaid')
 const debug = require('debug')('autoaccountant:server')
 const router = express.Router()
+const plaidEndpoints = require('./plaid_endpoints.js')
 
-const Item = require('../models/Item')
 const Transaction = require('../models/Transaction')
 const Account = require('../models/Account')
 const Goal = require('../models/Goal')
 const Bill = require('../models/Bill')
 
-const PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID')
-const PLAID_SECRET = envvar.string('PLAID_SECRET')
-const PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY')
-const PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
+const jwt = require('jsonwebtoken')
+const passport = require("passport")
+const passportJWT = require("passport-jwt")
 
-// We store the access_token in memory - in production, store it in a secure
-// persistent data store
-let ACCESS_TOKEN = envvar.string('ACCESS_TOKEN')
-let PUBLIC_TOKEN = null
-let ITEM_ID = envvar.string('ITEM_ID')
+const ExtractJwt = passportJWT.ExtractJwt
+const JwtStrategy = passportJWT.Strategy
 
-// Initialize the Plaid client
-const client = new plaid.Client(
-  PLAID_CLIENT_ID,
-  PLAID_SECRET,
-  PLAID_PUBLIC_KEY,
-  plaid.environments[PLAID_ENV]
-)
-
-function saveItemInfo(access_token, item_id, cb) {
-  Item.create({access_token: access_token, item_id: item_id}, (err, doc) => {
-    if (cb) {
-      cb(err, doc)
-    }
-  })
-}
-
-function updateTransaction(transaction, cb) {
-  transaction._id = transaction.transaction_id
-  delete transaction.transaction_id
-  Transaction.create(transaction, (err, doc) => {
-    if (cb) {
-      cb(err, doc)
-    }
-  })
-}
+router.use('/plaid', plaidEndpoints)
 
 /* GET api listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource')
 })
 
-router.get('/test_db', (req, res, next) => {
-  updateTransaction({}, (err, result) => {
-    if (err) {
-      res.send(err)
-    } else {
-      res.send(result)
-    }
-  })
-})
-
-router.get('/transactions/webhook', (req, res, next) => {
-  debug(req.body)
-  switch (req.body.webhook_type) {
-    case "TRANSACTIONS":
-      switch (req.body.webhook_code) {
-        case "HISTORICAL_UPDATE":
-          if (req.body.error) {
-            debug(req.body.error)
-          } else {
-            debug(req.body)
-            // updateTransaction(req.body.item_id, req.body.new_transactions)
-          }
-          break
-        case "DEFAULT_UPDATE":
-          if (req.body.error) {
-            debug(req.body.error)
-          } else {
-            debug(req.body)
-            // updateTransaction(req.body.item_id, req.body.new_transactions)
-          }
-          break
-        default:
-
-      }
-      break
-    case "ERROR":
-
-      break
-    default:
-
-  }
-  res.send("ACK")
-})
-
-router.post('/get_access_token', (req, res, next) => {
-  PUBLIC_TOKEN = req.body.public_token
-  client.exchangePublicToken(PUBLIC_TOKEN, function(error, tokenResponse) {
-    if (error != null) {
-      var msg = 'Could not exchange public_token!'
-      debug(msg + '\n' + error)
-      return res.json({
-        error: msg
+router.get('/transactions', (req, res, next) => {
+  Transaction.find({})
+    .then((transactions) => {
+      res.json({
+        transactions: transactions.map((t) => {
+          t.transaction_id = t._id
+          delete t._id
+          return t
+        })
       })
-    }
-    ACCESS_TOKEN = tokenResponse.access_token
-    ITEM_ID = tokenResponse.item_id
-    debug('Access Token: ' + ACCESS_TOKEN)
-    debug('Item ID: ' + ITEM_ID)
-    res.json({
-      'error': false
+      debug('pulled ' + transactions.length + ' transactions')
     })
-    saveItemInfo(ACCESS_TOKEN, ITEM_ID)
-  })
+    .reject((err) => debug(err))
 })
 
 router.get('/accounts', (req, res, next) => {
-  // Retrieve high-level account information and account and routing numbers
-  // for each account associated with the Item.
-  client.getAuth(ACCESS_TOKEN, (error, authResponse) => {
-    if (error != null) {
-      let msg = 'Unable to pull accounts from the Plaid API.'
-      debug(msg + '\n' + error)
-      return res.json({
-        error: msg
-      })
-    }
-
-    debug(authResponse.accounts)
-    res.json({
-      error: false,
-      accounts: authResponse.accounts,
-      numbers: authResponse.numbers,
-    })
-  })
-})
-
-router.post('/item', (req, res, next) => {
-  // Pull the Item - this includes information about available products,
-  // billed products, webhook information, and more.
-  client.getItem(ACCESS_TOKEN, function(error, itemResponse) {
-    if (error != null) {
-      debug(JSON.stringify(error))
-      return res.json({
-        error: error
-      })
-    }
-
-    // Also pull information about the institution
-    client.getInstitutionById(itemResponse.item.institution_id, (err, instRes) => {
-      if (err != null) {
-        var msg = 'Unable to pull institution information from the Plaid API.'
-        debug(msg + '\n' + error)
-        return res.json({
-          error: msg
+  Account.find({})
+    .then((accounts) => {
+      res.json({
+        accounts: accounts.map((a) => {
+          a.account_id = a._id
+          a.balances = {
+            available: a.available_balance,
+            current: a.current_balance,
+            limit: a.limit
+          }
+          delete a.available_balance
+          delete a.current_balance
+          delete a.limit
+          delete a._id
+          return a
         })
-      } else {
-        res.json({
-          item: itemResponse.item,
-          institution: instRes.institution,
-        })
-      }
-    })
-  })
-})
-
-router.post('/transactions', (req, res, next) => {
-  // Pull transactions for the Item for the last 30 days
-  let startDate = moment().subtract(2, 'years').format('YYYY-MM-DD')
-  let endDate = moment().format('YYYY-MM-DD')
-  debug(startDate)
-  client.getTransactions(ACCESS_TOKEN, startDate, endDate, {
-    offset: 0,
-  }, (error, transactionsResponse) => {
-    if (error != null) {
-      debug(JSON.stringify(error))
-      return res.json({
-        error: error
       })
-    }
-    debug('pulled ' + transactionsResponse.transactions.length + ' transactions')
-    res.json(transactionsResponse)
-    updateTransaction(transactionsResponse.transactions[0], (err, result) => {
-      if (err) {
-        debug(err)
-      } else {
-        debug(result)
-      }
+      debug(accounts)
     })
-  })
+    .reject((err) => debug(err))
 })
 
 module.exports = router
