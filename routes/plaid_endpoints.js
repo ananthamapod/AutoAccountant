@@ -53,14 +53,14 @@ function saveItemInfo(access_token, item_id, cb) {
 }
 
 function addAccount(account, cb) {
-  account._id = account.account_id
+  let account_id = account.account_id
   account.available_balance = account.balances.available
   account.current_balance = account.balances.current
   account.limit = account.balances.limit
   delete account.balances
   delete account.account_id
-  debug(account._id)
-  Account.create(account, (err, doc) => {
+  debug(account_id)
+  Account.update({_id: account_id}, account, {upsert: true}, (err, doc) => {
     if (cb) {
       cb(err, doc)
     }
@@ -68,9 +68,9 @@ function addAccount(account, cb) {
 }
 
 function addTransaction(transaction, cb) {
-  transaction._id = transaction.transaction_id
+  let transaction_id = transaction.transaction_id
   delete transaction.transaction_id
-  Transaction.create(transaction, (err, doc) => {
+  Transaction.update({_id: transaction_id}, transaction, {upsert: true}, (err, doc) => {
     if (cb) {
       cb(err, doc)
     }

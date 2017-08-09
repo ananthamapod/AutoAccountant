@@ -51,6 +51,7 @@ router.get('/accounts', (req, res, next) => {
             current: a.current_balance,
             limit: a.limit
           }
+          debug(a.balances)
           delete a.available_balance
           delete a.current_balance
           delete a.limit
