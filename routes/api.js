@@ -6,17 +6,20 @@ const debug = require('debug')('autoaccountant:server')
 const router = express.Router()
 const plaidEndpoints = require('./plaid_endpoints.js')
 
+/*** DB MODEL IMPORTS ***/
 const Transaction = require('../models/Transaction')
 const Account = require('../models/Account')
 const Goal = require('../models/Goal')
 const Bill = require('../models/Bill')
 
+/*** AUTHENTICATION IMPORTS ***/
 const jwt = require('jsonwebtoken')
 const passport = require("passport")
 const passportJWT = require("passport-jwt")
 
 const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
+
 
 router.use('/plaid', plaidEndpoints)
 
@@ -25,6 +28,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource')
 })
 
+/* GET route for getting transaction data from database for all transactions */
 router.get('/transactions', (req, res, next) => {
   Transaction.find({})
     .then((transactions) => {
@@ -40,6 +44,7 @@ router.get('/transactions', (req, res, next) => {
     .reject((err) => debug(err))
 })
 
+/* GET route for getting account data from database for all accounts */
 router.get('/accounts', (req, res, next) => {
   Account.find({})
     .then((accounts) => {

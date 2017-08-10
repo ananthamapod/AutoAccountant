@@ -7,17 +7,19 @@ const plaid = require('plaid')
 const debug = require('debug')('autoaccountant:server')
 const router = express.Router()
 
+/*** DB MODEL IMPORTS ***/
 const Item = require('../models/Item')
 const Account = require('../models/Account')
 const Transaction = require('../models/Transaction')
 
+/*** PLAID CREDENTIALS ***/
 const PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID')
 const PLAID_SECRET = envvar.string('PLAID_SECRET')
 const PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY')
 const PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
 
-// We store the access_token in memory - in production, store it in a secure
-// persistent data store
+/*** ITEM IDENTIFIERS ***/
+// We store the access_token in memory - in production, store it in a secure persistent data store
 let ACCESS_TOKEN = envvar.string('ACCESS_TOKEN')
 let PUBLIC_TOKEN = null
 let ITEM_ID = envvar.string('ITEM_ID')
@@ -30,6 +32,7 @@ const client = new plaid.Client(
   plaid.environments[PLAID_ENV]
 )
 
+/* Utility function for mapping models */
 function applyForEach(iterable, func) {
   try {
     for (let i = 0; i < iterable.length; i++) {
@@ -44,6 +47,7 @@ function applyForEach(iterable, func) {
   }
 }
 
+/* Save link items */
 function saveItemInfo(access_token, item_id, cb) {
   Item.create({access_token: access_token, item_id: item_id}, (err, doc) => {
     if (cb) {
@@ -52,6 +56,7 @@ function saveItemInfo(access_token, item_id, cb) {
   })
 }
 
+/* Save an account after altering to fit schema */
 function addAccount(account, cb) {
   let account_id = account.account_id
   account.available_balance = account.balances.available
@@ -67,6 +72,7 @@ function addAccount(account, cb) {
   })
 }
 
+/* Save a transaction after altering to fit schema */
 function addTransaction(transaction, cb) {
   let transaction_id = transaction.transaction_id
   delete transaction.transaction_id
@@ -77,6 +83,7 @@ function addTransaction(transaction, cb) {
   })
 }
 
+/* POST route for getting access token and storing new items */
 router.post('/get_access_token', (req, res, next) => {
   PUBLIC_TOKEN = req.body.public_token
   client.exchangePublicToken(PUBLIC_TOKEN, function(error, tokenResponse) {
@@ -98,6 +105,7 @@ router.post('/get_access_token', (req, res, next) => {
   })
 })
 
+/* GET route for getting high level account information */
 router.get('/accounts', (req, res, next) => {
   // Retrieve high-level account information and account and routing numbers
   // for each account associated with the Item.
@@ -122,6 +130,7 @@ router.get('/accounts', (req, res, next) => {
 
 })
 
+/* POST route for getting Plaid item info */
 router.post('/item', (req, res, next) => {
   // Pull the Item - this includes information about available products,
   // billed products, webhook information, and more.
@@ -151,6 +160,7 @@ router.post('/item', (req, res, next) => {
   })
 })
 
+/* POST route for getting transactions */
 router.post('/transactions', (req, res, next) => {
   // Pull transactions for the Item for the last 30 days
   let startDate = moment().subtract(2, 'years').format('YYYY-MM-DD')
@@ -172,6 +182,7 @@ router.post('/transactions', (req, res, next) => {
   })
 })
 
+/* GET route for registering transactions and historical transactions webhook */
 router.get('/transactions/webhook', (req, res, next) => {
   debug(req.body)
   switch (req.body.webhook_type) {
