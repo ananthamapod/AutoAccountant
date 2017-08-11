@@ -37,7 +37,7 @@ router.get('/transactions', (req, res, next) => {
           t.transaction_id = t._id
           delete t._id
           return t
-        })
+        }).sort((a, b) => b.date - a.date)
       })
       debug('pulled ' + transactions.length + ' transactions')
     })
