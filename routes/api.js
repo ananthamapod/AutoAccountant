@@ -97,6 +97,38 @@ router.post('/goals', (req, res, next) => {
   })
 })
 
+/* GET route for retrieving goals objects by id */
+router.get('/goals/:id', (req, res, next) => {
+  let goal_id = req.params.id
+  debug(`Returning goal ${goal_id}`)
+  if (goal_id != "") {
+    Goal.find({_id: goal_id})
+    .then((goal) => {
+      res.json(goal)
+      debug(goal)
+    })
+    .reject((err) => debug(err))
+  } else {
+    res.send("Goal not specified")
+  }
+})
+
+/* PATCH route for updating goals objects by id */
+router.patch('/goals/:id', (req, res, next) => {
+  let goal_id = req.params.id
+  debug(`Returning goal ${goal_id}`)
+  if (goal_id != "") {
+    Goal.update({_id: goal_id}, req.body)
+    .then((goal) => {
+      res.json(goal)
+      debug(goal)
+    })
+    .reject((err) => debug(err))
+  } else {
+    res.send("Goal not specified")
+  }
+})
+
 /* DELETE route for deleting goals by id */
 router.delete('/goals/:id', (req, res, next) => {
   let goal_id = req.params.id
@@ -109,6 +141,8 @@ router.delete('/goals/:id', (req, res, next) => {
         res.send(`Goal ${goal_id} deleted successfully!`)
       }
     })
+  } else {
+    res.send("Bill not specified")
   }
 })
 
@@ -139,6 +173,38 @@ router.post('/bills', (req, res, next) => {
   })
 })
 
+/* GET route for retrieving bills objects by id */
+router.get('/bills/:id', (req, res, next) => {
+  let bill_id = req.params.id
+  debug(`Returning bill ${bill_id}`)
+  if (bill_id != "") {
+    Bill.find({_id: bill_id})
+    .then((bill) => {
+      res.json(bill)
+      debug(bill)
+    })
+    .reject((err) => debug(err))
+  } else {
+    res.send("Bill not specified")
+  }
+})
+
+/* PATCH route for updating goals objects by id */
+router.patch('/bills/:id', (req, res, next) => {
+  let bill_id = req.params.id
+  debug(`Returning bill ${bill_id}`)
+  if (bill_id != "") {
+    Bill.update({_id: bill_id}, req.body)
+    .then((bill) => {
+      res.json(bill)
+      debug(bill)
+    })
+    .reject((err) => debug(err))
+  } else {
+    res.send("Bill not specified")
+  }
+})
+
 /* DELETE route for deleting bills by id */
 router.delete('/bills/:id', (req, res, next) => {
   let bill_id = req.params.id
@@ -151,6 +217,8 @@ router.delete('/bills/:id', (req, res, next) => {
         res.send(`Bill ${bill_id} deleted successfully!`)
       }
     })
+  } else {
+    res.send("Bill not specified")
   }
 })
 
