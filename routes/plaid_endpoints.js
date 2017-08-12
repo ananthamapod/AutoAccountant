@@ -58,14 +58,12 @@ function saveItemInfo(access_token, item_id, cb) {
 
 /* Save an account after altering to fit schema */
 function addAccount(account, cb) {
-  let account_id = account.account_id
   account.available_balance = account.balances.available
   account.current_balance = account.balances.current
   account.limit = account.balances.limit
   delete account.balances
-  delete account.account_id
-  debug(account_id)
-  Account.update({_id: account_id}, account, {upsert: true}, (err, doc) => {
+  debug(account.account_id)
+  Account.update({account_id: account.account_id}, account, {upsert: true}, (err, doc) => {
     if (cb) {
       cb(err, doc)
     }
@@ -74,9 +72,7 @@ function addAccount(account, cb) {
 
 /* Save a transaction after altering to fit schema */
 function addTransaction(transaction, cb) {
-  let transaction_id = transaction.transaction_id
-  delete transaction.transaction_id
-  Transaction.update({_id: transaction_id}, transaction, {upsert: true}, (err, doc) => {
+  Transaction.update({transaction_id: transaction.transaction_id}, transaction, {upsert: true}, (err, doc) => {
     if (cb) {
       cb(err, doc)
     }

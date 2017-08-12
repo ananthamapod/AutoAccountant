@@ -34,7 +34,6 @@ router.get('/transactions', (req, res, next) => {
     .then((transactions) => {
       res.json({
         transactions: transactions.map((t) => {
-          t.transaction_id = t._id
           delete t._id
           return t
         }).sort((a, b) => b.date - a.date)
@@ -49,7 +48,6 @@ router.get('/accounts', (req, res, next) => {
   Account.find({})
     .then((accounts) => {
       let newAccounts = accounts.map((a) => {
-        a.account_id = a._id
         a.balances = {
           available: a.available_balance,
           current: a.current_balance,
@@ -98,11 +96,11 @@ router.post('/goals', (req, res, next) => {
 })
 
 /* GET route for retrieving goals objects by id */
-router.get('/goals/:id', (req, res, next) => {
-  let goal_id = req.params.id
-  debug(`Returning goal ${goal_id}`)
-  if (goal_id != "") {
-    Goal.find({_id: goal_id})
+router.get('/goals/:name', (req, res, next) => {
+  let goal_name = req.params.name
+  debug(`Returning goal ${goal_name}`)
+  if (goal_name != "") {
+    Goal.find({name: goal_name})
     .then((goal) => {
       res.json(goal)
       debug(goal)
@@ -114,11 +112,11 @@ router.get('/goals/:id', (req, res, next) => {
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/goals/:id', (req, res, next) => {
-  let goal_id = req.params.id
-  debug(`Returning goal ${goal_id}`)
-  if (goal_id != "") {
-    Goal.update({_id: goal_id}, req.body)
+router.patch('/goals/:name', (req, res, next) => {
+  let goal_name = req.params.name
+  debug(`Returning goal ${goal_name}`)
+  if (goal_name != "") {
+    Goal.update({name: goal_name}, req.body)
     .then((goal) => {
       res.json(goal)
       debug(goal)
@@ -130,15 +128,15 @@ router.patch('/goals/:id', (req, res, next) => {
 })
 
 /* DELETE route for deleting goals by id */
-router.delete('/goals/:id', (req, res, next) => {
-  let goal_id = req.params.id
-  debug(`Deleting goal ${goal_id}`)
-  if (goal_id != "") {
-    Goal.remove({_id: goal_id}, (err) => {
+router.delete('/goals/:name', (req, res, next) => {
+  let goal_name = req.params.name
+  debug(`Deleting goal ${goal_name}`)
+  if (goal_name != "") {
+    Goal.remove({name: goal_name}, (err) => {
       if (err) {
         res.json(err)
       } else {
-        res.send(`Goal ${goal_id} deleted successfully!`)
+        res.send(`Goal ${goal_name} deleted successfully!`)
       }
     })
   } else {
@@ -174,11 +172,11 @@ router.post('/bills', (req, res, next) => {
 })
 
 /* GET route for retrieving bills objects by id */
-router.get('/bills/:id', (req, res, next) => {
-  let bill_id = req.params.id
-  debug(`Returning bill ${bill_id}`)
+router.get('/bills/:name', (req, res, next) => {
+  let bill_name = req.params.name
+  debug(`Returning bill ${bill_name}`)
   if (bill_id != "") {
-    Bill.find({_id: bill_id})
+    Bill.find({name: bill_name})
     .then((bill) => {
       res.json(bill)
       debug(bill)
@@ -190,11 +188,11 @@ router.get('/bills/:id', (req, res, next) => {
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/bills/:id', (req, res, next) => {
-  let bill_id = req.params.id
-  debug(`Returning bill ${bill_id}`)
-  if (bill_id != "") {
-    Bill.update({_id: bill_id}, req.body)
+router.patch('/bills/:name', (req, res, next) => {
+  let bill_name = req.params.name
+  debug(`Returning bill ${bill_name}`)
+  if (bill_name != "") {
+    Bill.update({name: bill_name}, req.body)
     .then((bill) => {
       res.json(bill)
       debug(bill)
@@ -206,15 +204,15 @@ router.patch('/bills/:id', (req, res, next) => {
 })
 
 /* DELETE route for deleting bills by id */
-router.delete('/bills/:id', (req, res, next) => {
-  let bill_id = req.params.id
-  debug(`Deleting bill ${bill_id}`)
-  if (bill_id != "") {
-    Bill.remove({_id: bill_id}, (err) => {
+router.delete('/bills/:name', (req, res, next) => {
+  let bill_name = req.params.name
+  debug(`Deleting bill ${bill_name}`)
+  if (bill_name != "") {
+    Bill.remove({name: bill_name}, (err) => {
       if (err) {
         res.json(err)
       } else {
-        res.send(`Bill ${bill_id} deleted successfully!`)
+        res.send(`Bill ${bill_name} deleted successfully!`)
       }
     })
   } else {
