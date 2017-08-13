@@ -4,6 +4,7 @@ const favicon = require('serve-favicon')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const minifyHTML = require('express-minify-html')
 const debug = require('debug')('autoaccountant:server')
 
 
@@ -16,6 +17,18 @@ const app = express()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
+app.use(minifyHTML({
+  override:      false,
+  exception_url: false,
+  htmlMinifier: {
+    removeComments:            true,
+    collapseWhitespace:        true,
+    collapseBooleanAttributes: true,
+    removeAttributeQuotes:     true,
+    removeEmptyAttributes:     true,
+    minifyJS:                  true
+  }
+}))
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

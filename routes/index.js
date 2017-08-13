@@ -9,7 +9,7 @@ const PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { PLAID_ENV: PLAID_ENV, PLAID_PUBLIC_KEY: PLAID_PUBLIC_KEY })
+  res.renderMin('index', { PLAID_ENV: PLAID_ENV, PLAID_PUBLIC_KEY: PLAID_PUBLIC_KEY })
 })
 
 module.exports = router
