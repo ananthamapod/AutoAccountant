@@ -1,3 +1,3 @@
 {
-    "ignore": ["public/", "src/", "testing/", ".gitignore", "webpack.*", "README"]
+    "ignore": ["public/", "src/", "testing/", ".gitignore", "webpack*", "README"]
 }

@@ -59,3 +59,4 @@ typings/
 
 # webpack build files
 public
+webpack-assets.json

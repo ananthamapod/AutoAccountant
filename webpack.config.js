@@ -1,6 +1,7 @@
 var webpack = require('webpack')
 var path = require('path')
 var htmlWebpackPlugin = require('html-webpack-plugin')
+var assetsPlugin = require('assets-webpack-plugin')
 
 var BUILD_DIR = path.resolve(__dirname, 'public')
 var APP_DIR = path.resolve(__dirname, 'src')
@@ -54,10 +55,14 @@ var config = {
     //   title: 'AutoAccountant',
     //   inject: 'body'
     // }),
-    /*,
-    new webpack.optimize.UglifyJsPlugin({
-      beautify : false
-    })*/
+    // new webpack.optimize.UglifyJsPlugin({
+    //   beautify : false
+    // })
+    new webpack.ProvidePlugin({
+      '$': 'jquery',
+      'jQuery': 'jquery'
+    }),
+    new assetsPlugin({prettyPrint: true})
   ]
 }
 
