@@ -1,7 +1,7 @@
 var webpack = require('webpack')
 var path = require('path')
 var htmlWebpackPlugin = require('html-webpack-plugin')
-var assetsPlugin = require('assets-webpack-plugin')
+var AssetsPlugin = require('assets-webpack-plugin')
 
 var BUILD_DIR = path.resolve(__dirname, 'public')
 var APP_DIR = path.resolve(__dirname, 'src')
@@ -62,7 +62,7 @@ var config = {
       '$': 'jquery',
       'jQuery': 'jquery'
     }),
-    new assetsPlugin({prettyPrint: true})
+    new AssetsPlugin({prettyPrint: true})
   ]
 }
 
