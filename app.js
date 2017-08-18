@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const minifyHTML = require('express-minify-html')
 const debug = require('debug')('autoaccountant:server')
-
+const webpackAssets = require('./express-webpack-asset')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -28,6 +28,9 @@ app.use(minifyHTML({
     removeEmptyAttributes:     true,
     minifyJS:                  true
   }
+}))
+app.use(webpackAssets('./config/webpack-assets.json', {
+    devMode: true
 }))
 
 // uncomment after placing your favicon in /public

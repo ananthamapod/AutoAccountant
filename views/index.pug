@@ -38,4 +38,4 @@ block content
   input(id="plaid_env" type="hidden" value=PLAID_ENV)
   input(id="plaid_public_key" type="hidden" value=PLAID_PUBLIC_KEY)
   script(src="https://cdn.plaid.com/link/v2/stable/link-initialize.js")
-  script(src="javascripts/bundle.js")
+  script(src=webpack_asset("main", "js"))

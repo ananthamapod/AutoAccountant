@@ -13,7 +13,7 @@ var config = {
   ],
   output: {
     path: BUILD_DIR,
-    filename: 'javascripts/bundle.js'
+    filename: 'javascripts/bundle-[name]-[hash].js'
   },
   module: {
     rules: [
@@ -62,7 +62,10 @@ var config = {
       '$': 'jquery',
       'jQuery': 'jquery'
     }),
-    new AssetsPlugin({prettyPrint: true})
+    new AssetsPlugin({
+      path: path.join(__dirname, 'config'),
+      prettyPrint: false
+    })
   ]
 }
 
