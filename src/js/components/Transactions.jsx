@@ -1,0 +1,47 @@
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getTransactions } from '../actions/actionCreators'
+
+class Transactions extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    const transactions = []
+    console.log(this)
+    for (let i = 0; i < this.props.transactions.items.length; i++) {
+      const transaction = this.props.transactions.items[i]
+      transactions.push(<p key={i}>{transaction.transaction_id}</p>)
+    }
+    return (
+      <div>
+        <button id="get-accounts-btn">Get Transactions</button>
+        <button id="refresh-accounts-btn"><i>&#10227;</i></button>
+        <div>{transactions}</div>
+      </div>
+    )
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    transactions: state.transactions
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getTransactions: () => {
+      dispatch(getTransactions())
+    }
+  }
+}
+
+const TransactionsContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Transactions)
+
+export default TransactionsContainer

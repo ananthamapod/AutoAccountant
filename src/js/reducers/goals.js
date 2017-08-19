@@ -1,22 +1,47 @@
-import { CREATE_GOAL, GET_GOALS, CHANGE_GOAL, DELETE_GOAL } from '../actions/actionTypes'
+import { CREATE_GOAL, GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, CHANGE_GOAL, DELETE_GOAL } from '../actions/actionTypes'
 
-function goals(state = [], action) {
+function goals(state = {
+    isFetching: false,
+    wasRequested: true,
+    items: []
+  },
+  action
+) {
   switch (action.type) {
     case CREATE_GOAL:
-      return [...state, action.goal].sort()
+      return Object.assign({}, state, {
+        items: [...state.items, action.goals].sort()
+      })
     case GET_GOALS:
-      return []
+      return Object.assign({}, state, {
+        wasRequested: true
+      })
+    case REQUEST_GOALS:
+      return Object.assign({}, state, {
+        isFetching: true,
+        wasRequested: false
+      })
+    case RECEIVE_GOALS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        wasRequested: false,
+        items: action.goals
+      })
     case CHANGE_GOAL:
-      return state.map(
-        (goal, index) => index == action.index?
-          action.goal
-          : goal
-      )
+      return Object.assign({}, state, {
+        items: state.items.map(
+          (goal, index) => index == action.index?
+            action.goal
+            : goal
+        )
+      })
     case DELETE_GOAL:
-      return [
-        ...state.slice(0, action.index),
-        ...state.slice(action.index + 1)
-      ]
+      return Object.assign({}, state, {
+        items: [
+          ...state.items.slice(0, action.index),
+          ...state.items.slice(action.index + 1)
+        ]
+      })
     default:
       return state
   }

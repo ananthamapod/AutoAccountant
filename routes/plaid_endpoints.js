@@ -172,7 +172,7 @@ router.post('/transactions', (req, res, next) => {
       })
     }
     debug('pulled ' + transactionsResponse.transactions.length + ' transactions')
-    res.json(transactionsResponse)
+    res.json({ transactions: transactionsResponse.transactions })
 
     applyForEach(transactionsResponse.transactions, addTransaction)
   })

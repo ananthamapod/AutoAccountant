@@ -1,12 +1,26 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react'
 import { render } from 'react-dom'
-import aaApp from './reducers'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import { createLogger } from 'redux-logger'
+
+import aaApp from './reducers'
+import { loadInitialData } from './actions/actionCreators'
 import App from './components/App.jsx'
 
-let store = createStore(aaApp)
+const store = createStore(
+  aaApp,
+  applyMiddleware(
+    thunk,
+    createLogger()
+  )
+)
+
+store
+  .dispatch(loadInitialData())
+  .then(() => console.log(store.getState()))
 
 function start() {
   render(
