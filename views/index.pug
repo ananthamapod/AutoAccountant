@@ -19,7 +19,7 @@ block content
 
     button#link-btn Link Account
 
-  #app
+  #main
     .box
       button#get-accounts-btn Get Accounts
       button#refresh-accounts-btn
@@ -37,5 +37,6 @@ block content
       #get-transactions-data
   input(id="plaid_env" type="hidden" value=PLAID_ENV)
   input(id="plaid_public_key" type="hidden" value=PLAID_PUBLIC_KEY)
+  #app
   script(src="https://cdn.plaid.com/link/v2/stable/link-initialize.js")
   script(src=webpack_asset("main", "js"))

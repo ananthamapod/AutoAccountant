@@ -9,7 +9,11 @@
 		"browser": true,
 		"node": true
 	},
+	"plugins": [
+			"react"
+	],
 	"rules": {
+		"react/jsx-uses-vars": 1,
 		"no-console": 1,
 		"no-unused-vars": 1
 	},
