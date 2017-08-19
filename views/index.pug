@@ -1,40 +1,6 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  #banner
-    h1 Plaid Example Walkthrough
-    p#intro This is an example application that walks through integrating Plaid Link using the API to retrieve Auth and Transaction data.
-    p#steps
-      | Great - you just created an Item! The server was successfully able to exchange the public_token for an access_token.
-      | Below are a few options - you can get account data, retrieve information about the Item itself, or pull transaction data.
-
-  #container
-    p
-      | Click the button below to open a list of Institutions - after you select one,
-      | you'll be guided through an authentication process. The public_token will be passed
-      | back to the example server, which will then exchange it for an access token and log it
-      | to your console.
-
-    button#link-btn Link Account
-
-  #main
-    .box
-      button#get-accounts-btn Get Accounts
-      button#refresh-accounts-btn
-        i &#10227;
-      #get-accounts-data
-
-    .box
-      button#get-item-btn Get Item
-      #get-item-data
-
-    .box
-      button#get-transactions-btn Get Transactions
-      button#refresh-transactions-btn
-        i &#10227;
-      #get-transactions-data
   input(id="plaid_env" type="hidden" value=PLAID_ENV)
   input(id="plaid_public_key" type="hidden" value=PLAID_PUBLIC_KEY)
   #app
