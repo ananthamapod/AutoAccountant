@@ -10,7 +10,6 @@ class Accounts extends Component {
 
   render() {
     const accounts = []
-    console.log(this)
     for (let i = 0; i < this.props.accounts.items.length; i++) {
       const account = this.props.accounts.items[i]
       accounts.push(<p key={i}>{account.account_id}</p>)

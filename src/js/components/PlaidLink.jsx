@@ -3,11 +3,24 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAccounts, getTransactions } from '../actions/actionCreators'
 
-let handler = undefined
-
 class PlaidLink extends Component {
   constructor(props) {
     super(props)
+
+    // eslint-disable-next-line no-unused-vars
+    const customFuncs = ['onClick', 'instantiateLink'].forEach((elem) => {
+      this[elem] = this[elem].bind(this)
+    })
+
+    this.instantiateLink()
+  }
+
+  onClick() {
+    console.log(this)
+    this.handler.open()
+  }
+
+  instantiateLink() {
     let plaid_env_node = document.getElementById('plaid_env')
     let plaid_public_key_node = document.getElementById('plaid_public_key')
     let plaid_env = plaid_env_node.value
@@ -15,7 +28,7 @@ class PlaidLink extends Component {
     plaid_env_node.remove()
     plaid_public_key_node.remove()
 
-    handler = self.Plaid.create({
+    this.handler = self.Plaid.create({
       apiVersion: 'v2',
       clientName: 'Plaid Walkthrough Demo',
       env: plaid_env,
@@ -35,11 +48,8 @@ class PlaidLink extends Component {
     })
   }
 
-  onClick() {
-    handler.open()
-  }
-
   render() {
+    console.log(this)
     return (
       <div>
         <button id='link-btn' onClick={this.onClick}>Link Account</button>
