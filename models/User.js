@@ -18,7 +18,7 @@ const userSchema = new Schema({
   }
 })
 
-userSchema.pre('save', (next) => {
+userSchema.pre('save', function(next) {
     var user = this
 
     // only hash the password if it has been modified (or is new)
