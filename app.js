@@ -1,3 +1,4 @@
+const envvar = require('envvar')
 const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
@@ -8,9 +9,35 @@ const minifyHTML = require('express-minify-html')
 const debug = require('debug')('autoaccountant:server')
 const webpackAssets = require('./express-webpack-asset')
 
+/*** ROUTES IMPORTS ***/
 const index = require('./routes/index')
 const users = require('./routes/users')
 const api = require('./routes/api')
+
+/*** AUTHENTICATION HANDLER ***/
+const jwt = require('jsonwebtoken')
+const passport = require("passport")
+const passportJWT = require("passport-jwt")
+const User = require('./models/User')
+
+const ExtractJwt = passportJWT.ExtractJwt
+const JwtStrategy = passportJWT.Strategy
+
+const jwtOptions = {}
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader()
+jwtOptions.secretOrKey = envvar.string('APPLICATION_SECRET')
+
+const strategy = new JwtStrategy(jwtOptions, function(jwtData, next) {
+  console.log('payload received', jwtData)
+  var user = User.find({_id: jwtData.id})
+  if (user) {
+    next(null, user)
+  } else {
+    next(null, false)
+  }
+})
+
+passport.use(strategy)
 
 const app = express()
 
@@ -40,6 +67,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(passport.initialize())
 
 app.use('/', index)
 app.use('/users', users)

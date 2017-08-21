@@ -3,6 +3,7 @@
 const assert = require('assert')
 const express = require('express')
 const debug = require('debug')('autoaccountant:server')
+const passport = require('passport')
 const router = express.Router()
 const plaidEndpoints = require('./plaid_endpoints.js')
 
@@ -12,24 +13,11 @@ const Account = require('../models/Account')
 const Goal = require('../models/Goal')
 const Bill = require('../models/Bill')
 
-/*** AUTHENTICATION IMPORTS ***/
-const jwt = require('jsonwebtoken')
-const passport = require("passport")
-const passportJWT = require("passport-jwt")
-
-const ExtractJwt = passportJWT.ExtractJwt
-const JwtStrategy = passportJWT.Strategy
-
-
 router.use('/plaid', plaidEndpoints)
 
-/* GET api listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource')
-})
-
 /* GET route for getting transaction data from database for all transactions */
-router.get('/transactions', (req, res, next) => {
+router.get('/transactions', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   Transaction.find({})
     .then((transactions) => {
       res.json({
@@ -40,11 +28,15 @@ router.get('/transactions', (req, res, next) => {
       })
       debug('pulled ' + transactions.length + ' transactions')
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
 })
 
 /* GET route for getting account data from database for all accounts */
-router.get('/accounts', (req, res, next) => {
+router.get('/accounts', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   Account.find({})
     .then((accounts) => {
       let newAccounts = accounts.map((a) => {
@@ -65,11 +57,15 @@ router.get('/accounts', (req, res, next) => {
       })
       debug(accounts)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
 })
 
 /* GET route for getting goals from database */
-router.get('/goals', (req, res, next) => {
+router.get('/goals', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   Goal.find({})
     .then((goals) => {
       res.json({
@@ -78,11 +74,15 @@ router.get('/goals', (req, res, next) => {
       debug(goals.length + ' goals retrieved')
       debug(goals)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
 })
 
 /* POST route for creating new goals */
-router.post('/goals', (req, res, next) => {
+router.post('/goals', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   debug(req.body)
   Goal.create(req.body, (err, doc) => {
     if (err) {
@@ -96,7 +96,8 @@ router.post('/goals', (req, res, next) => {
 })
 
 /* GET route for retrieving goals objects by id */
-router.get('/goals/:name', (req, res, next) => {
+router.get('/goals/:name', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   let goal_name = req.params.name
   debug(`Returning goal ${goal_name}`)
   if (goal_name != "") {
@@ -105,14 +106,18 @@ router.get('/goals/:name', (req, res, next) => {
       res.json(goal)
       debug(goal)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
   } else {
     res.send("Goal not specified")
   }
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/goals/:name', (req, res, next) => {
+router.patch('/goals/:name', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   let goal_name = req.params.name
   debug(`Returning goal ${goal_name}`)
   if (goal_name != "") {
@@ -121,14 +126,18 @@ router.patch('/goals/:name', (req, res, next) => {
       res.json(goal)
       debug(goal)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
   } else {
     res.send("Goal not specified")
   }
 })
 
 /* DELETE route for deleting goals by id */
-router.delete('/goals/:name', (req, res, next) => {
+router.delete('/goals/:name', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   let goal_name = req.params.name
   debug(`Deleting goal ${goal_name}`)
   if (goal_name != "") {
@@ -145,7 +154,8 @@ router.delete('/goals/:name', (req, res, next) => {
 })
 
 /* GET route for getting bills from database */
-router.get('/bills', (req, res, next) => {
+router.get('/bills', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   Bill.find({})
     .then((bills) => {
       res.json({
@@ -154,11 +164,15 @@ router.get('/bills', (req, res, next) => {
       debug(bills.length + ' bills retrieved')
       debug(bills)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
 })
 
 /* POST route for creating new bills */
-router.post('/bills', (req, res, next) => {
+router.post('/bills', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   debug(req.body)
   Bill.create(req.body, (err, doc) => {
     if (err) {
@@ -172,7 +186,8 @@ router.post('/bills', (req, res, next) => {
 })
 
 /* GET route for retrieving bills objects by id */
-router.get('/bills/:name', (req, res, next) => {
+router.get('/bills/:name', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   let bill_name = req.params.name
   debug(`Returning bill ${bill_name}`)
   if (bill_id != "") {
@@ -181,14 +196,18 @@ router.get('/bills/:name', (req, res, next) => {
       res.json(bill)
       debug(bill)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
   } else {
     res.send("Bill not specified")
   }
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/bills/:name', (req, res, next) => {
+router.patch('/bills/:name', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   let bill_name = req.params.name
   debug(`Returning bill ${bill_name}`)
   if (bill_name != "") {
@@ -197,14 +216,18 @@ router.patch('/bills/:name', (req, res, next) => {
       res.json(bill)
       debug(bill)
     })
-    .reject((err) => debug(err))
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
   } else {
     res.send("Bill not specified")
   }
 })
 
 /* DELETE route for deleting bills by id */
-router.delete('/bills/:name', (req, res, next) => {
+router.delete('/bills/:name', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
   let bill_name = req.params.name
   debug(`Deleting bill ${bill_name}`)
   if (bill_name != "") {
