@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1
+    | Login
+  form(method="post", action="/users/login")
+    label(for='name') Name:
+    input#name(type='text', name='name')
+    label(for='password') Password:
+    input#password(type='password', name='password')
+    input(type='submit', value='Save')
+
+  h1
+    | Register
+  form(method="post", action="/users/register")
+    label(for='name') Name:
+    input#name(type='text', name='name')
+    label(for='password') Password:
+    input#password(type='password', name='password')
+    input(type='submit', value='Save')
+
+  script(src="https://cdn.plaid.com/link/v2/stable/link-initialize.js")
+  script(src=webpack_asset("login", "js"))
