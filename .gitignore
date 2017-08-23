@@ -60,3 +60,7 @@ typings/
 # webpack build files
 public
 webpack-assets.json
+
+# SSL/TLS certificates and keys
+*.crt
+*.key
