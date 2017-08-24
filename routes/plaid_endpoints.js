@@ -4,6 +4,7 @@ const envvar = require('envvar')
 const express = require('express')
 const moment = require('moment')
 const plaid = require('plaid')
+const passport = require('passport')
 const debug = require('debug')('autoaccountant:server')
 const router = express.Router()
 
@@ -78,6 +79,12 @@ function addTransaction(transaction, cb) {
     }
   })
 }
+
+/* GET PLAID public credentials */
+router.get('/plaid/', passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
+  res.json({ PLAID_ENV: PLAID_ENV, PLAID_PUBLIC_KEY: PLAID_PUBLIC_KEY })
+})
 
 /* POST route for getting access token and storing new items */
 router.post('/get_access_token', (req, res, next) => {

@@ -3,20 +3,20 @@ extends layout
 block content
   h1
     | Login
-  form(method="post", action="/users/login")
+  form#login(method="post", action="/users/login")
     label(for='name') Name:
-    input#name(type='text', name='name')
+    input#login_name(type='text', name='name')
     label(for='password') Password:
-    input#password(type='password', name='password')
+    input#login_password(type='password', name='password')
     input(type='submit', value='Save')
 
   h1
     | Register
-  form(method="post", action="/users/register")
+  form#register(method="post", action="/users/register")
     label(for='name') Name:
-    input#name(type='text', name='name')
+    input#register_name(type='text', name='name')
     label(for='password') Password:
-    input#password(type='password', name='password')
+    input#register_password(type='password', name='password')
     input(type='submit', value='Save')
 
   script(src="https://cdn.plaid.com/link/v2/stable/link-initialize.js")

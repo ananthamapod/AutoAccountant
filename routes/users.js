@@ -28,7 +28,7 @@ router.post("/login", (req, res) => {
       } else if (match) {
         // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
         const payload = { id: user.id }
-        const token = jwt.sign(payload, envvar.string('APPLICATION_SECRET'))
+        const token = jwt.sign(payload, envvar.string('APPLICATION_SECRET'), { expiresIn: '30m' })
         debug(`${user.id} logged in`)
         res.json({ message: "ok", token: token })
       } else {

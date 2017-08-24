@@ -8,10 +8,10 @@ var APP_DIR = path.resolve(__dirname, 'src')
 var TEMPLATE_DIR = path.resolve(__dirname, 'src/templates')
 
 var config = {
-  entry: [
-    APP_DIR + '/index.js',
-    APP_DIR + '/login.js',
-  ],
+  entry: {
+    main: APP_DIR + '/index.js',
+    login: APP_DIR + '/login.js',
+  },
   output: {
     path: BUILD_DIR,
     filename: 'javascripts/bundle-[name]-[hash].js'
@@ -51,14 +51,10 @@ var config = {
     ]
   },
   plugins : [
-    // new htmlWebpackPlugin({
-    //   template: TEMPLATE_DIR + '/index.pug',
-    //   title: 'AutoAccountant',
-    //   inject: 'body'
-    // }),
     // new webpack.optimize.UglifyJsPlugin({
     //   beautify : false
     // })
+    new webpack.optimize.OccurrenceOrderPlugin(true),
     new webpack.ProvidePlugin({
       '$': 'jquery',
       'jQuery': 'jquery'
