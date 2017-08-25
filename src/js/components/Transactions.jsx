@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getTransactions } from '../actions/actionCreators'
+import Transaction from './Transaction.jsx'
 
 class Transactions extends Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class Transactions extends Component {
     console.log(this)
     for (let i = 0; i < this.props.transactions.items.length; i++) {
       const transaction = this.props.transactions.items[i]
-      transactions.push(<p key={i}>{transaction.transaction_id}</p>)
+      transactions.push(<Transaction key={i} transaction={transaction} />)
     }
     return (
       <div>

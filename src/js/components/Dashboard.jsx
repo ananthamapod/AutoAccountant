@@ -14,7 +14,7 @@ class Dashboard extends Component {
       <div>
         <PlaidLink />
         <Accounts />
-        // <Transactions />
+        <Transactions />
       </div>
     )
   }

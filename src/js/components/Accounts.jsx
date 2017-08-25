@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAccounts } from '../actions/actionCreators'
+import Account from './Account.jsx'
 
 class Accounts extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class Accounts extends Component {
     const accounts = []
     for (let i = 0; i < this.props.accounts.items.length; i++) {
       const account = this.props.accounts.items[i]
-      accounts.push(<p key={i}>{account.account_id}</p>)
+      accounts.push(<Account key={i} account={account} />)
     }
     return (
       <div>
