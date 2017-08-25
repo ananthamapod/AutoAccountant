@@ -3,7 +3,8 @@ import { CREATE_GOAL, GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, CHANGE_GOAL, DELE
 function goals(state = {
     isFetching: false,
     wasRequested: true,
-    items: []
+    items: [],
+    editingIndex: -1
   },
   action
 ) {

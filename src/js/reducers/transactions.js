@@ -3,7 +3,8 @@ import { ADD_TRANSACTION, GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSA
 function transactions(state = {
     isFetching: false,
     wasRequested: true,
-    items: []
+    items: [],
+    editingIndex: -1
   },
   action
 ) {

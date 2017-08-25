@@ -3,7 +3,8 @@ import { CREATE_BILL, GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, CHANGE_BILL, DELE
 function bills(state = {
     isFetching: false,
     wasRequested: true,
-    items: []
+    items: [],
+    editingIndex: -1
   },
   action
 ) {

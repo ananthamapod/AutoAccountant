@@ -14,12 +14,12 @@ class Transactions extends Component {
     console.log(this)
     for (let i = 0; i < this.props.transactions.items.length; i++) {
       const transaction = this.props.transactions.items[i]
-      transactions.push(<Transaction key={i} transaction={transaction} />)
+      transactions.push(<Transaction key={i} editing={i == this.props.transactions.editingIndex} transaction={transaction} />)
     }
     return (
       <div>
-        <button id="get-accounts-btn">Get Transactions</button>
-        <button id="refresh-accounts-btn"><i>&#10227;</i></button>
+        <button id="get-transactions-btn" onClick={this.props.getTransactions}>Get Transactions</button>
+        <button id="refresh-transactions-btn"><i>&#10227;</i></button>
         <div>{transactions}</div>
       </div>
     )
