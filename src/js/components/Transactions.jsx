@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getTransactions } from '../actions/actionCreators'
+import { getTransactions, fetchTransactionsIfNeeded } from '../actions/actionCreators'
 import Transaction from './Transaction.jsx'
 
 class Transactions extends Component {
@@ -18,8 +18,7 @@ class Transactions extends Component {
     }
     return (
       <div>
-        <button id="get-transactions-btn" onClick={this.props.getTransactions}>Get Transactions</button>
-        <button id="refresh-transactions-btn"><i>&#10227;</i></button>
+        <button id="get-transactions-btn" onClick={this.props.refreshTransactions}>Get Transactions</button>
         <div>{transactions}</div>
       </div>
     )
@@ -34,8 +33,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getTransactions: () => {
+    refreshTransactions: () => {
       dispatch(getTransactions())
+      dispatch(fetchTransactionsIfNeeded())
     }
   }
 }

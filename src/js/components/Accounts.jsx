@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getAccounts } from '../actions/actionCreators'
+import { getAccounts, fetchAccountsIfNeeded } from '../actions/actionCreators'
 import Account from './Account.jsx'
 
 class Accounts extends Component {
@@ -17,7 +17,7 @@ class Accounts extends Component {
     }
     return (
       <div>
-        <button onClick={this.props.getAccounts}>Get Accounts</button>
+        <button onClick={this.props.refreshAccounts}>Get Accounts</button>
         {accounts}
       </div>
     )
@@ -32,8 +32,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAccounts: () => {
+    refreshAccounts: () => {
       dispatch(getAccounts())
+      dispatch(fetchAccountsIfNeeded())
     }
   }
 }

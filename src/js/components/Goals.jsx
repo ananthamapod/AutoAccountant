@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getGoals } from '../actions/actionCreators'
+import { getGoals, fetchGoalsIfNeeded } from '../actions/actionCreators'
 import Goal from './Goal.jsx'
 
 class Goals extends Component {
@@ -18,8 +18,7 @@ class Goals extends Component {
     }
     return (
       <div>
-        <button id="get-goals-btn" onClick={this.props.getGoals}>Get Goals</button>
-        <button id="refresh-goals-btn"><i>&#10227;</i></button>
+        <button id="get-goals-btn" onClick={this.props.refreshGoals}>Get Goals</button>
         <div>{goals}</div>
       </div>
     )
@@ -34,8 +33,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getGoals: () => {
+    refreshGoals: () => {
       dispatch(getGoals())
+      dispatch(fetchGoalsIfNeeded())
     }
   }
 }
