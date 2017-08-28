@@ -1,5 +1,19 @@
 import fetch from 'isomorphic-fetch'
-import { ADD_TRANSACTION, GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, UPDATE_TRANSACTION, GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, CREATE_GOAL, GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, CHANGE_GOAL, DELETE_GOAL, CREATE_BILL, GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, CHANGE_BILL, DELETE_BILL } from './actionTypes'
+import {
+  ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
+  GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, FAILED_RECEIVED_TRANSACTIONS,
+  UPDATE_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
+  DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION,
+  GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS,
+  CREATE_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
+  GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
+  CHANGE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
+  DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL,
+  CREATE_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
+  GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, FAILED_RECEIVED_BILLS,
+  CHANGE_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
+  DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
+} from './actionTypes'
 
 function addTransaction(transaction) {
   return {
@@ -175,7 +189,7 @@ function shouldFetchTransactions(state) {
   } else if (transactions.isFetching) {
     return false
   } else {
-    return transactions.wasRequested
+    return transactions.fetchRequested
   }
 }
 
@@ -235,7 +249,7 @@ function shouldFetchAccounts(state) {
   } else if (accounts.isFetching) {
     return false
   } else {
-    return accounts.wasRequested
+    return accounts.fetchRequested
   }
 }
 
@@ -295,7 +309,7 @@ function shouldFetchGoals(state) {
   } else if (goals.isFetching) {
     return false
   } else {
-    return goals.wasRequested
+    return goals.fetchRequested
   }
 }
 
@@ -355,7 +369,7 @@ function shouldFetchBills(state) {
   } else if (bills.isFetching) {
     return false
   } else {
-    return bills.wasRequested
+    return bills.fetchRequested
   }
 }
 

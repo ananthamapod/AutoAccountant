@@ -1,8 +1,9 @@
-import { GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS } from '../actions/actionTypes'
+import {  GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS } from '../actions/actionTypes'
+import { ACCOUNTS_FETCH_ERROR } from '../errors'
 
 function accounts(state = {
     isFetching: false,
-    wasRequested: true,
+    fetchRequested: true,
     items: []
   },
   action
@@ -10,18 +11,22 @@ function accounts(state = {
   switch (action.type) {
     case GET_ACCOUNTS:
       return Object.assign({}, state, {
-        wasRequested: true
+        fetchRequested: true
       })
     case REQUEST_ACCOUNTS:
       return Object.assign({}, state, {
         isFetching: true,
-        wasRequested: false
+        fetchRequested: false
       })
     case RECEIVE_ACCOUNTS:
       return Object.assign({}, state, {
         isFetching: false,
-        wasRequested: false,
         items: action.accounts
+      })
+    case FAILED_RECEIVED_ACCOUNTS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: ""
       })
     default:
       return state
