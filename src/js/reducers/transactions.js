@@ -1,7 +1,7 @@
 import {
-  ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
+  CREATE_TRANSACTION, ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
   GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, FAILED_RECEIVED_TRANSACTIONS,
-  UPDATE_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
+  EDIT_TRANSACTION, UPDATE_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
   DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION
 } from '../actions/actionTypes'
 import {
@@ -17,33 +17,43 @@ function transactions(state = {
     isUpdating: false,
     isDeleting: false,
     fetchRequested: true,
+    creating: false,
+    editing: false,
     updatingTransaction: undefined,
-    deletingTransaction: undefined,
     newTransaction: undefined,
     items: [],
+    deletingIndex: -1,
     editingIndex: -1
   },
   action
 ) {
   switch (action.type) {
+    case CREATE_TRANSACTION:
+      return Object.assign({}, state, {
+        creating: true
+      })
     case ADD_TRANSACTION:
       return Object.assign({}, state, {
-        newTransaction: action.transaction,
-        items: [...state.items, action.transaction].sort()
+        creating: false,
+        newTransaction: action.transaction
       })
     case SEND_NEW_TRANSACTION:
       return Object.assign({}, state, {
-        isAdding: true,
-        newTransaction: undefined
+        isAdding: true
       })
     case SUCCESSFUL_NEW_TRANSACTION:
       return Object.assign({}, state, {
-        items: [...state.items, action.transaction].sort()
+        isAdding: false,
+        newTransaction: undefined,
+        fetchRequested: true
       })
     case FAILED_NEW_TRANSACTION:
       return Object.assign({}, state, {
-        items: [...state.items, action.transaction].sort()
+        isAdding: false,
+        creating: true,
+        error: TRANSACTION_ADD_ERROR
       })
+
     case GET_TRANSACTIONS:
       return Object.assign({}, state, {
         fetchRequested: true
@@ -58,13 +68,59 @@ function transactions(state = {
         isFetching: false,
         items: action.transactions
       })
+    case FAILED_RECEIVED_TRANSACTIONS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: TRANSACTIONS_FETCH_ERROR
+      })
+
+    case EDIT_TRANSACTION:
+      return Object.assign({}, state, {
+        editing: true,
+        editingIndex: action.index
+      })
     case UPDATE_TRANSACTION:
       return Object.assign({}, state, {
-        items: state.items.map(
-          (transaction, index) => index == action.index?
-            action.transaction
-            : transaction
-        )
+        editing: false,
+        updatingTransaction: action.transaction
+      })
+    case SEND_UPDATED_TRANSACTION:
+      return Object.assign({}, state, {
+        isUpdating: true
+      })
+    case SUCCESSFUL_UPDATED_TRANSACTION:
+      return Object.assign({}, state, {
+        isUpdating: false,
+        updatingTransaction: undefined,
+        fetchRequested: true,
+        editingIndex: -1
+      })
+    case FAILED_UPDATED_TRANSACTION:
+      return Object.assign({}, state, {
+        isUpdating: false,
+        editing: true,
+        error: TRANSACTION_UPDATE_ERROR
+      })
+
+    case DELETE_TRANSACTION:
+      return Object.assign({}, state, {
+        deletingIndex: action.index
+      })
+    case SEND_DELETED_TRANSACTION:
+      return Object.assign({}, state, {
+        isDeleting: true
+      })
+    case SUCCESSFUL_DELETED_TRANSACTION:
+      return Object.assign({}, state, {
+        isDeleting: false,
+        deletingIndex: -1,
+        fetchRequested: true
+      })
+    case FAILED_DELETED_TRANSACTION:
+      return Object.assign({}, state, {
+        isDeleting: false,
+        deletingIndex: -1,
+        error: TRANSACTION_DELETE_ERROR
       })
     default:
       return state

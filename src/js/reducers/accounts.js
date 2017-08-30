@@ -26,7 +26,7 @@ function accounts(state = {
     case FAILED_RECEIVED_ACCOUNTS:
       return Object.assign({}, state, {
         isFetching: false,
-        error: ""
+        error: ACCOUNTS_FETCH_ERROR
       })
     default:
       return state

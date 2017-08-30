@@ -1,7 +1,7 @@
 import {
-  CREATE_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
+  CREATE_GOAL, ADD_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
   GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
-  CHANGE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
+  EDIT_GOAL, UPDATE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
   DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
 } from '../actions/actionTypes'
 import {
@@ -17,10 +17,12 @@ function goals(state = {
     isUpdating: false,
     isDeleting: false,
     fetchRequested: true,
+    creating: false,
+    editing: false,
     updatingGoal: undefined,
-    deletingGoal: undefined,
     newGoal: undefined,
     items: [],
+    deletingIndex: -1,
     editingIndex: -1
   },
   action
@@ -28,8 +30,30 @@ function goals(state = {
   switch (action.type) {
     case CREATE_GOAL:
       return Object.assign({}, state, {
-        items: [...state.items, action.goals].sort()
+        creating: true
       })
+    case ADD_GOAL:
+      return Object.assign({}, state, {
+        creating: false,
+        newGoal: action.goal
+      })
+    case SEND_NEW_GOAL:
+      return Object.assign({}, state, {
+        isAdding: true
+      })
+    case SUCCESSFUL_NEW_GOAL:
+      return Object.assign({}, state, {
+        isAdding: false,
+        newGoal: undefined,
+        fetchRequested: true
+      })
+    case FAILED_NEW_GOAL:
+      return Object.assign({}, state, {
+        isAdding: false,
+        creating: true,
+        error: GOAL_ADD_ERROR
+      })
+
     case GET_GOALS:
       return Object.assign({}, state, {
         fetchRequested: true
@@ -44,20 +68,59 @@ function goals(state = {
         isFetching: false,
         items: action.goals
       })
-    case CHANGE_GOAL:
+    case FAILED_RECEIVED_GOALS:
       return Object.assign({}, state, {
-        items: state.items.map(
-          (goal, index) => index == action.index?
-            action.goal
-            : goal
-        )
+        isFetching: false,
+        error: GOALS_FETCH_ERROR
       })
+
+    case EDIT_GOAL:
+      return Object.assign({}, state, {
+        editing: true,
+        editingIndex: action.index
+      })
+    case UPDATE_GOAL:
+      return Object.assign({}, state, {
+        editing: false,
+        updatingGoal: action.goal
+      })
+    case SEND_UPDATED_GOAL:
+      return Object.assign({}, state, {
+        isUpdating: true
+      })
+    case SUCCESSFUL_UPDATED_GOAL:
+      return Object.assign({}, state, {
+        isUpdating: false,
+        updatingGoal: undefined,
+        fetchRequested: true,
+        editingIndex: -1
+      })
+    case FAILED_UPDATED_GOAL:
+      return Object.assign({}, state, {
+        isUpdating: false,
+        editing: true,
+        error: GOAL_UPDATE_ERROR
+      })
+
     case DELETE_GOAL:
       return Object.assign({}, state, {
-        items: [
-          ...state.items.slice(0, action.index),
-          ...state.items.slice(action.index + 1)
-        ]
+        deletingIndex: action.index
+      })
+    case SEND_DELETED_GOAL:
+      return Object.assign({}, state, {
+        isDeleting: true
+      })
+    case SUCCESSFUL_DELETED_GOAL:
+      return Object.assign({}, state, {
+        isDeleting: false,
+        deletingIndex: -1,
+        fetchRequested: true
+      })
+    case FAILED_DELETED_GOAL:
+      return Object.assign({}, state, {
+        isDeleting: false,
+        deletingIndex: -1,
+        error: GOAL_DELETE_ERROR
       })
     default:
       return state
