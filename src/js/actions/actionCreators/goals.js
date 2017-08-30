@@ -1,81 +1,105 @@
 import fetch from 'isomorphic-fetch'
 import {
-  ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
-  GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, FAILED_RECEIVED_TRANSACTIONS,
-  UPDATE_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
-  DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION,
-  GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS,
-  CREATE_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
+  CREATE_GOAL, ADD_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
   GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
-  CHANGE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
-  DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL,
-  CREATE_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
-  GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, FAILED_RECEIVED_BILLS,
-  CHANGE_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
-  DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
-} from './actionTypes'
+  EDIT_GOAL, UPDATE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
+  DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
+} from '../actionTypes'
 
-function addTransaction(transaction) {
+function createGoal() {
   return {
-    type: ADD_TRANSACTION,
-    transaction
+    type: CREATE_GOAL
   }
 }
 
-function getTransactions() {
+function addGoal(goal) {
   return {
-    type: GET_TRANSACTIONS
-  }
-}
-
-function requestTransactions() {
-  return {
-    type: REQUEST_TRANSACTIONS
-  }
-}
-
-function receiveTransactions(data) {
-  return {
-    type: RECEIVE_TRANSACTIONS,
-    transactions: data.transactions
-  }
-}
-
-function updateTransaction(index, transaction) {
-  return {
-    type: UPDATE_TRANSACTION,
-    transaction,
-    index
-  }
-}
-
-function getAccounts() {
-  return {
-    type: GET_ACCOUNTS
-  }
-}
-
-function requestAccounts() {
-  return {
-    type: REQUEST_ACCOUNTS
-  }
-}
-
-function receiveAccounts(data) {
-  return {
-    type: RECEIVE_ACCOUNTS,
-    accounts: data.accounts
-  }
-}
-
-function createGoal(goal) {
-  return {
-    type: CREATE_GOAL,
+    type: ADD_GOAL,
     goal
   }
 }
 
-function getGoals(data) {
+function sendNewGoal() {
+  return {
+    type: SEND_NEW_GOAL
+  }
+}
+
+function successfulNewGoal(data) {
+  return {
+    type: SUCCESSFUL_NEW_GOAL
+  }
+}
+
+function failedNewGoal(error) {
+  return {
+    type: FAILED_NEW_GOAL
+  }
+}
+
+function handleNewGoal(state) {
+  return function (dispatch) {
+    // First dispatch: the app state is updated to inform
+    // that the API call is starting.
+
+    dispatch(sendNewGoal())
+
+    // The function called by the thunk middleware can return a value,
+    // that is passed on as the return value of the dispatch method.
+
+    // In this case, we return a promise to wait for.
+    // This is not required by thunk middleware, but it is convenient for us.
+
+    return fetch('/api/goals', { method: "POST", body: {goal: state.newGoal} })
+      .then(
+        response => response.json(),
+        // Do not use catch, because that will also catch
+        // any errors in the dispatch and resulting render,
+        // causing an loop of 'Unexpected batch number' errors.
+        // https://github.com/facebook/react/issues/6895
+        error => {
+          console.log('An error occured.', error)
+          dispatch(failedNewGoal(error))
+        }
+      )
+      .then(json =>
+        // We can dispatch many times!
+        // Here, we update the app state with the results of the API call.
+
+        dispatch(successfulNewGoal(json))
+      )
+  }
+}
+
+function shouldAddNewGoal(state) {
+  const goals = state.goals
+  if (goals.isAdding) {
+    return false
+  } else {
+    return goals.newGoal
+  }
+}
+
+function handleNewGoalIfNeeded() {
+  // Note that the function also receives getState()
+  // which lets you choose what to dispatch next.
+
+  // This is useful for avoiding a network request if
+  // a cached value is already available.
+
+  return (dispatch, getState) => {
+    if (shouldAddNewGoal(getState())) {
+      // Dispatch a thunk from thunk!
+      return dispatch(handleNewGoal(getState()))
+    } else {
+      // Let the calling code know there's nothing to wait for.
+      return Promise.resolve()
+    }
+  }
+}
+
+
+function getGoals() {
   return {
     type: GET_GOALS
   }
@@ -94,180 +118,9 @@ function receiveGoals(data) {
   }
 }
 
-function changeGoal(index, goal) {
+function failedReceivedGoals(data) {
   return {
-    type: CHANGE_GOAL,
-    goal,
-    index
-  }
-}
-
-function deleteGoal(index) {
-  return {
-    type: DELETE_GOAL,
-    index
-  }
-}
-
-function createBill(bill) {
-  return {
-    type: CREATE_BILL,
-    bill
-  }
-}
-
-function getBills() {
-  return {
-    type: GET_BILLS
-  }
-}
-
-function requestBills() {
-  return {
-    type: REQUEST_BILLS
-  }
-}
-
-function receiveBills(data) {
-  return {
-    type: RECEIVE_BILLS,
-    bills: data.bills
-  }
-}
-
-function changeBill(index, bill) {
-  return {
-    type: CHANGE_BILL,
-    bill,
-    index
-  }
-}
-
-function deleteBill(index) {
-  return {
-    type: DELETE_BILL,
-    index
-  }
-}
-
-
-function fetchTransactions() {
-  return function (dispatch) {
-    // First dispatch: the app state is updated to inform
-    // that the API call is starting.
-
-    dispatch(requestTransactions())
-
-    // The function called by the thunk middleware can return a value,
-    // that is passed on as the return value of the dispatch method.
-
-    // In this case, we return a promise to wait for.
-    // This is not required by thunk middleware, but it is convenient for us.
-
-    return fetch('/api/transactions')
-      .then(
-        response => response.json(),
-        // Do not use catch, because that will also catch
-        // any errors in the dispatch and resulting render,
-        // causing an loop of 'Unexpected batch number' errors.
-        // https://github.com/facebook/react/issues/6895
-        error => console.log('An error occured.', error)
-      )
-      .then(json =>
-        // We can dispatch many times!
-        // Here, we update the app state with the results of the API call.
-
-        dispatch(receiveTransactions(json))
-      )
-  }
-}
-
-function shouldFetchTransactions(state) {
-  const transactions = state.transactions
-  if (!transactions) {
-    return true
-  } else if (transactions.isFetching) {
-    return false
-  } else {
-    return transactions.fetchRequested
-  }
-}
-
-function fetchTransactionsIfNeeded() {
-  // Note that the function also receives getState()
-  // which lets you choose what to dispatch next.
-
-  // This is useful for avoiding a network request if
-  // a cached value is already available.
-
-  return (dispatch, getState) => {
-    if (shouldFetchTransactions(getState())) {
-      // Dispatch a thunk from thunk!
-      return dispatch(fetchTransactions())
-    } else {
-      // Let the calling code know there's nothing to wait for.
-      return Promise.resolve()
-    }
-  }
-}
-
-function fetchAccounts() {
-  return function (dispatch) {
-    // First dispatch: the app state is updated to inform
-    // that the API call is starting.
-
-    dispatch(requestAccounts())
-
-    // The function called by the thunk middleware can return a value,
-    // that is passed on as the return value of the dispatch method.
-
-    // In this case, we return a promise to wait for.
-    // This is not required by thunk middleware, but it is convenient for us.
-
-    return fetch('/api/accounts')
-      .then(
-        response => response.json(),
-        // Do not use catch, because that will also catch
-        // any errors in the dispatch and resulting render,
-        // causing an loop of 'Unexpected batch number' errors.
-        // https://github.com/facebook/react/issues/6895
-        error => console.log('An error occured.', error)
-      )
-      .then(json =>
-        // We can dispatch many times!
-        // Here, we update the app state with the results of the API call.
-
-        dispatch(receiveAccounts(json))
-      )
-  }
-}
-
-function shouldFetchAccounts(state) {
-  const accounts = state.accounts
-  if (!accounts) {
-    return true
-  } else if (accounts.isFetching) {
-    return false
-  } else {
-    return accounts.fetchRequested
-  }
-}
-
-function fetchAccountsIfNeeded() {
-  // Note that the function also receives getState()
-  // which lets you choose what to dispatch next.
-
-  // This is useful for avoiding a network request if
-  // a cached value is already available.
-
-  return (dispatch, getState) => {
-    if (shouldFetchAccounts(getState())) {
-      // Dispatch a thunk from thunk!
-      return dispatch(fetchAccounts())
-    } else {
-      // Let the calling code know there's nothing to wait for.
-      return Promise.resolve()
-    }
+    type: FAILED_RECEIVED_GOALS
   }
 }
 
@@ -291,7 +144,10 @@ function fetchGoals() {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
-        error => console.log('An error occured.', error)
+        error => {
+          console.log('An error occured.', error)
+          dispatch(failedReceivedGoals())
+        }
       )
       .then(json =>
         // We can dispatch many times!
@@ -331,12 +187,45 @@ function fetchGoalsIfNeeded() {
   }
 }
 
-function fetchBills() {
+
+function editGoal(index) {
+  return {
+    type: EDIT_GOAL,
+    index
+  }
+}
+
+function updateGoal(goal) {
+  return {
+    type: UPDATE_GOAL,
+    goal
+  }
+}
+
+function saveUpdatedGoal() {
+  return {
+    type: SEND_UPDATED_GOAL
+  }
+}
+
+function successfulUpdatedGoal(status) {
+  return {
+    type: SUCCESSFUL_UPDATED_GOAL
+  }
+}
+
+function failedUpdatedGoal(error) {
+  return {
+    type: FAILED_UPDATED_GOAL
+  }
+}
+
+function handleUpdateGoal(state) {
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
 
-    dispatch(requestBills())
+    dispatch(saveUpdatedGoal())
 
     // The function called by the thunk middleware can return a value,
     // that is passed on as the return value of the dispatch method.
@@ -344,36 +233,37 @@ function fetchBills() {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/bills')
+    return fetch('/api/goals', { method: "PATCH", body: {goal: state.updatingGoal} })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
-        error => console.log('An error occured.', error)
+        error => {
+          console.log('An error occured.', error)
+          dispatch(failedUpdatedGoal(error))
+        }
       )
       .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(receiveBills(json))
+        dispatch(successfulUpdatedGoal(json))
       )
   }
 }
 
-function shouldFetchBills(state) {
-  const bills = state.bills
-  if (!bills) {
-    return true
-  } else if (bills.isFetching) {
+function shouldUpdateGoal(state) {
+  const goals = state.goals
+  if (goals.isUpdating) {
     return false
   } else {
-    return bills.fetchRequested
+    return goals.updatingGoal
   }
 }
 
-function fetchBillsIfNeeded() {
+function handleUpdateGoalIfNeeded() {
   // Note that the function also receives getState()
   // which lets you choose what to dispatch next.
 
@@ -381,9 +271,9 @@ function fetchBillsIfNeeded() {
   // a cached value is already available.
 
   return (dispatch, getState) => {
-    if (shouldFetchBills(getState())) {
+    if (shouldUpdateGoal(getState())) {
       // Dispatch a thunk from thunk!
-      return dispatch(fetchBills())
+      return dispatch(handleUpdateGoal(getState()))
     } else {
       // Let the calling code know there's nothing to wait for.
       return Promise.resolve()
@@ -391,31 +281,101 @@ function fetchBillsIfNeeded() {
   }
 }
 
-function loadInitialData() {
-  return (dispatch) => Promise.all([
-    dispatch(fetchAccountsIfNeeded()),
-    dispatch(fetchTransactionsIfNeeded()),
-    dispatch(fetchGoalsIfNeeded()),
-    dispatch(fetchBillsIfNeeded())
-  ])
+function deleteGoal() {
+  return {
+    type: DELETE_GOAL
+  }
 }
 
+function requestDeleteGoal() {
+  return {
+    type: SEND_DELETED_GOAL
+  }
+}
+
+function successfulDeletedGoal(data) {
+  return {
+    type: SUCCESSFUL_DELETED_GOAL
+  }
+}
+
+function failedDeletedGoal(data) {
+  return {
+    type: FAILED_DELETED_GOAL
+  }
+}
+
+function handleDeleteGoal() {
+  return function (dispatch) {
+    // First dispatch: the app state is updated to inform
+    // that the API call is starting.
+
+    dispatch(requestDeleteGoal())
+
+    // The function called by the thunk middleware can return a value,
+    // that is passed on as the return value of the dispatch method.
+
+    // In this case, we return a promise to wait for.
+    // This is not required by thunk middleware, but it is convenient for us.
+
+    return fetch('/api/goals')
+      .then(
+        response => response.json(),
+        // Do not use catch, because that will also catch
+        // any errors in the dispatch and resulting render,
+        // causing an loop of 'Unexpected batch number' errors.
+        // https://github.com/facebook/react/issues/6895
+        error => {
+          console.log('An error occured.', error)
+          dispatch(failedDeletedGoal())
+        }
+      )
+      .then(json =>
+        // We can dispatch many times!
+        // Here, we update the app state with the results of the API call.
+
+        dispatch(successfulDeletedGoal(json))
+      )
+  }
+}
+
+function shouldDeleteGoal(state) {
+  const goals = state.goals
+  if (goals.isDeleting) {
+    return false
+  } else {
+    return goals.deletingIndex !== -1
+  }
+}
+
+function handleDeleteGoalIfNeeded() {
+  // Note that the function also receives getState()
+  // which lets you choose what to dispatch next.
+
+  // This is useful for avoiding a network request if
+  // a cached value is already available.
+
+  return (dispatch, getState) => {
+    if (shouldDeleteGoal(getState())) {
+      // Dispatch a thunk from thunk!
+      return dispatch(handleDeleteGoal(getState()))
+    } else {
+      // Let the calling code know there's nothing to wait for.
+      return Promise.resolve()
+    }
+  }
+}
+
+
 export {
-  addTransaction,
-  getTransactions,
-  fetchTransactionsIfNeeded,
-  updateTransaction,
-  getAccounts,
-  fetchAccountsIfNeeded,
   createGoal,
+  addGoal,
+  handleNewGoalIfNeeded,
   getGoals,
   fetchGoalsIfNeeded,
-  changeGoal,
+  editGoal,
+  updateGoal,
+  handleUpdateGoalIfNeeded,
   deleteGoal,
-  createBill,
-  getBills,
-  fetchBillsIfNeeded,
-  changeBill,
-  deleteBill,
-  loadInitialData
+  handleDeleteGoalIfNeeded
 }
