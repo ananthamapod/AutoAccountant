@@ -2,8 +2,8 @@ import fetch from 'isomorphic-fetch'
 import {
   CREATE_TRANSACTION, ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
   GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, FAILED_RECEIVED_TRANSACTIONS,
-  EDIT_TRANSACTION, UPDATE_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
-  DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION
+  EDIT_TRANSACTION, UPDATE_TRANSACTION, CANCEL_EDIT_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
+  DELETE_TRANSACTION, CONFIRM_DELETE_TRANSACTION, CANCEL_DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION
 } from '../actionTypes'
 
 function createTransaction() {
@@ -202,6 +202,12 @@ function updateTransaction(transaction) {
   }
 }
 
+function cancelEditTransaction() {
+  return {
+    type: CANCEL_EDIT_TRANSACTION
+  }
+}
+
 function saveUpdatedTransaction() {
   return {
     type: SEND_UPDATED_TRANSACTION
@@ -281,9 +287,22 @@ function handleUpdateTransactionIfNeeded() {
   }
 }
 
-function deleteTransaction() {
+function deleteTransaction(index) {
   return {
-    type: DELETE_TRANSACTION
+    type: DELETE_TRANSACTION,
+    index
+  }
+}
+
+function confirmDeleteTransaction() {
+  return {
+    type: CONFIRM_DELETE_TRANSACTION
+  }
+}
+
+function cancelDeleteTransaction() {
+  return {
+    type: CANCEL_DELETE_TRANSACTION
   }
 }
 
@@ -341,6 +360,9 @@ function handleDeleteTransaction() {
 
 function shouldDeleteTransaction(state) {
   const transactions = state.transactions
+  if (!transactions.confirmDelete) {
+    return false
+  }
   if (transactions.isDeleting) {
     return false
   } else {
@@ -375,7 +397,10 @@ export {
   fetchTransactionsIfNeeded,
   editTransaction,
   updateTransaction,
+  cancelEditTransaction,
   handleUpdateTransactionIfNeeded,
   deleteTransaction,
+  confirmDeleteTransaction,
+  cancelDeleteTransaction,
   handleDeleteTransactionIfNeeded
 }

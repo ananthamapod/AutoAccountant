@@ -1,8 +1,8 @@
 import {
   CREATE_TRANSACTION, ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
   GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, FAILED_RECEIVED_TRANSACTIONS,
-  EDIT_TRANSACTION, UPDATE_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
-  DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION
+  EDIT_TRANSACTION, UPDATE_TRANSACTION, CANCEL_EDIT_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
+  DELETE_TRANSACTION, CONFIRM_DELETE_TRANSACTION, CANCEL_DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION
 } from '../actions/actionTypes'
 import {
   TRANSACTION_ADD_ERROR,
@@ -19,8 +19,9 @@ function transactions(state = {
     fetchRequested: true,
     creating: false,
     editing: false,
-    updatingTransaction: undefined,
+    confirmDelete: false,
     newTransaction: undefined,
+    updatingTransaction: undefined,
     items: [],
     deletingIndex: -1,
     editingIndex: -1
@@ -84,6 +85,11 @@ function transactions(state = {
         editing: false,
         updatingTransaction: action.transaction
       })
+    case CANCEL_EDIT_TRANSACTION:
+      return Object.assign({}, state, {
+        editing: false,
+        editingIndex: -1
+      })
     case SEND_UPDATED_TRANSACTION:
       return Object.assign({}, state, {
         isUpdating: true
@@ -106,6 +112,14 @@ function transactions(state = {
       return Object.assign({}, state, {
         deletingIndex: action.index
       })
+    case CONFIRM_DELETE_TRANSACTION:
+      return Object.assign({}, state, {
+        confirmDelete: true
+      })
+    case CANCEL_DELETE_TRANSACTION:
+      return Object.assign({}, state, {
+        deletingIndex: -1
+      })
     case SEND_DELETED_TRANSACTION:
       return Object.assign({}, state, {
         isDeleting: true
@@ -114,12 +128,14 @@ function transactions(state = {
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        confirmDelete: false,
         fetchRequested: true
       })
     case FAILED_DELETED_TRANSACTION:
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        confirmDelete: false,
         error: TRANSACTION_DELETE_ERROR
       })
     default:
