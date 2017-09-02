@@ -82,7 +82,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     cancelDeleteTransaction: () => {
       dispatch(cancelDeleteTransaction())
-    },
+    }
   }
 }
 

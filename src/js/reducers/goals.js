@@ -1,8 +1,8 @@
 import {
   CREATE_GOAL, ADD_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
   GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
-  EDIT_GOAL, UPDATE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
-  DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
+  EDIT_GOAL, UPDATE_GOAL, CANCEL_EDIT_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
+  DELETE_GOAL, CONFIRM_DELETE_GOAL, CANCEL_DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
 } from '../actions/actionTypes'
 import {
   GOAL_ADD_ERROR,
@@ -19,10 +19,12 @@ function goals(state = {
     fetchRequested: true,
     creating: false,
     editing: false,
-    updatingGoal: undefined,
+    confirmDelete: false,
     newGoal: undefined,
+    updatingGoal: undefined,
     items: [],
     deletingIndex: -1,
+    deletingId: undefined,
     editingIndex: -1
   },
   action
@@ -84,6 +86,11 @@ function goals(state = {
         editing: false,
         updatingGoal: action.goal
       })
+    case CANCEL_EDIT_GOAL:
+      return Object.assign({}, state, {
+        editing: false,
+        editingIndex: -1
+      })
     case SEND_UPDATED_GOAL:
       return Object.assign({}, state, {
         isUpdating: true
@@ -104,7 +111,17 @@ function goals(state = {
 
     case DELETE_GOAL:
       return Object.assign({}, state, {
-        deletingIndex: action.index
+        deletingIndex: action.index,
+        deletingId: action.id
+      })
+    case CONFIRM_DELETE_GOAL:
+      return Object.assign({}, state, {
+        confirmDelete: true
+      })
+    case CANCEL_DELETE_GOAL:
+      return Object.assign({}, state, {
+        deletingIndex: -1,
+        deletingId: undefined
       })
     case SEND_DELETED_GOAL:
       return Object.assign({}, state, {
@@ -114,12 +131,16 @@ function goals(state = {
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        deletingId: undefined,
+        confirmDelete: false,
         fetchRequested: true
       })
     case FAILED_DELETED_GOAL:
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        deletingId: undefined,
+        confirmDelete: false,
         error: GOAL_DELETE_ERROR
       })
     default:

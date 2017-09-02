@@ -1,7 +1,18 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getGoals, fetchGoalsIfNeeded } from '../actions/actionCreators'
+import {
+  getGoals,
+  fetchGoalsIfNeeded,
+  editGoal,
+  updateGoal,
+  cancelEditGoal,
+  handleUpdateGoalIfNeeded,
+  deleteGoal,
+  confirmDeleteGoal,
+  cancelDeleteGoal,
+  handleDeleteGoalIfNeeded
+} from '../actions/actionCreators'
 import Goal from './Goal.jsx'
 
 class Goals extends Component {
@@ -14,7 +25,19 @@ class Goals extends Component {
     console.log(this)
     for (let i = 0; i < this.props.goals.items.length; i++) {
       const goal = this.props.goals.items[i]
-      goals.push(<Goal key={i} editing={i == this.props.goals.editingIndex} goal={goal} />)
+      goals.push(
+        <Goal
+          key={i}
+          index={i}
+          editing={i == this.props.goals.editingIndex}
+          goal={goal}
+          onEditGoal={this.props.editGoal(i)}
+          onSaveGoal={this.props.updateGoal}
+          onCancelEditGoal={this.props.cancelEditGoal}
+          onDeleteGoal={this.props.deleteGoal(i)}
+          onConfirmDeleteGoal={this.props.confirmDeleteGoal}
+        />
+      )
     }
     return (
       <div>
@@ -36,6 +59,30 @@ const mapDispatchToProps = (dispatch) => {
     refreshGoals: () => {
       dispatch(getGoals())
       dispatch(fetchGoalsIfNeeded())
+    },
+    editGoal: (index) => {
+      return () => {
+        dispatch(editGoal(index))
+      }
+    },
+    updateGoal: (goal) => {
+      dispatch(updateGoal(goal))
+      dispatch(handleUpdateGoalIfNeeded())
+    },
+    cancelEditGoal: () => {
+      dispatch(cancelEditGoal())
+    },
+    deleteGoal: (index) => {
+      return () => {
+        dispatch(deleteGoal(index))
+      }
+    },
+    confirmDeleteGoal: () => {
+      dispatch(confirmDeleteGoal())
+      dispatch(handleDeleteGoalIfNeeded())
+    },
+    cancelDeleteGoal: () => {
+      dispatch(cancelDeleteGoal())
     }
   }
 }

@@ -2,8 +2,8 @@ import fetch from 'isomorphic-fetch'
 import {
   CREATE_GOAL, ADD_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
   GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
-  EDIT_GOAL, UPDATE_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
-  DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
+  EDIT_GOAL, UPDATE_GOAL, CANCEL_EDIT_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
+  DELETE_GOAL, CONFIRM_DELETE_GOAL, CANCEL_DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
 } from '../actionTypes'
 
 function createGoal() {
@@ -38,6 +38,7 @@ function failedNewGoal(error) {
 }
 
 function handleNewGoal(state) {
+  const goals = state.goals
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -50,7 +51,14 @@ function handleNewGoal(state) {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/goals', { method: "POST", body: {goal: state.newGoal} })
+    return fetch('/api/goals', {
+      method: "POST",
+      body: JSON.stringify({goal: goals.newGoal}),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      })
+    })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -58,7 +66,7 @@ function handleNewGoal(state) {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedNewGoal(error))
         }
       )
@@ -145,7 +153,7 @@ function fetchGoals() {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedReceivedGoals())
         }
       )
@@ -202,6 +210,12 @@ function updateGoal(goal) {
   }
 }
 
+function cancelEditGoal() {
+  return {
+    type: CANCEL_EDIT_GOAL
+  }
+}
+
 function saveUpdatedGoal() {
   return {
     type: SEND_UPDATED_GOAL
@@ -221,6 +235,7 @@ function failedUpdatedGoal(error) {
 }
 
 function handleUpdateGoal(state) {
+  const goals = state.goals
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -233,7 +248,14 @@ function handleUpdateGoal(state) {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/goals', { method: "PATCH", body: {goal: state.updatingGoal} })
+    return fetch(`/api/goals/${goals.updatingGoal._id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(goals.updatingGoal),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      })
+    })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -241,7 +263,7 @@ function handleUpdateGoal(state) {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedUpdatedGoal(error))
         }
       )
@@ -281,9 +303,23 @@ function handleUpdateGoalIfNeeded() {
   }
 }
 
-function deleteGoal() {
+function deleteGoal(index, id) {
   return {
-    type: DELETE_GOAL
+    type: DELETE_GOAL,
+    index,
+    id
+  }
+}
+
+function confirmDeleteGoal() {
+  return {
+    type: CONFIRM_DELETE_GOAL
+  }
+}
+
+function cancelDeleteGoal() {
+  return {
+    type: CANCEL_DELETE_GOAL
   }
 }
 
@@ -305,7 +341,8 @@ function failedDeletedGoal(data) {
   }
 }
 
-function handleDeleteGoal() {
+function handleDeleteGoal(state) {
+  const goals = state.goals
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -318,7 +355,7 @@ function handleDeleteGoal() {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/goals')
+    return fetch(`/api/goals/${goals.deletingId}`, { method: 'DELETE' })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -326,7 +363,7 @@ function handleDeleteGoal() {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedDeletedGoal())
         }
       )
@@ -341,6 +378,9 @@ function handleDeleteGoal() {
 
 function shouldDeleteGoal(state) {
   const goals = state.goals
+  if (!goals.confirmDelete) {
+    return false
+  }
   if (goals.isDeleting) {
     return false
   } else {
@@ -375,7 +415,10 @@ export {
   fetchGoalsIfNeeded,
   editGoal,
   updateGoal,
+  cancelEditGoal,
   handleUpdateGoalIfNeeded,
   deleteGoal,
+  confirmDeleteGoal,
+  cancelDeleteGoal,
   handleDeleteGoalIfNeeded
 }

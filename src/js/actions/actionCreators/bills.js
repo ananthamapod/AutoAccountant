@@ -2,8 +2,8 @@ import fetch from 'isomorphic-fetch'
 import {
   CREATE_BILL, ADD_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
   GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, FAILED_RECEIVED_BILLS,
-  EDIT_BILL, UPDATE_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
-  DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
+  EDIT_BILL, UPDATE_BILL, CANCEL_EDIT_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
+  DELETE_BILL, CONFIRM_DELETE_BILL, CANCEL_DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
 } from '../actionTypes'
 
 function createBill() {
@@ -38,6 +38,7 @@ function failedNewBill(error) {
 }
 
 function handleNewBill(state) {
+  const bills = state.bills
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -50,7 +51,13 @@ function handleNewBill(state) {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/bills', { method: "POST", body: {bill: state.newBill} })
+    return fetch('/api/bills', {
+      method: 'POST', body: {bill: bills.newBill},
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      })
+    })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -58,7 +65,7 @@ function handleNewBill(state) {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedNewBill(error))
         }
       )
@@ -145,7 +152,7 @@ function fetchBills() {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedReceivedBills())
         }
       )
@@ -202,6 +209,12 @@ function updateBill(bill) {
   }
 }
 
+function cancelEditBill() {
+  return {
+    type: CANCEL_EDIT_BILL
+  }
+}
+
 function saveUpdatedBill() {
   return {
     type: SEND_UPDATED_BILL
@@ -221,6 +234,7 @@ function failedUpdatedBill(error) {
 }
 
 function handleUpdateBill(state) {
+  const bills = state.bills
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -233,7 +247,14 @@ function handleUpdateBill(state) {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/bills', { method: "PATCH", body: {bill: state.updatingBill} })
+    return fetch(`/api/bills/${bills.updatingBill._id}`, {
+      method: 'PATCH',
+      body: {bill: bills.updatingBill},
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      })
+    })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -241,7 +262,7 @@ function handleUpdateBill(state) {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedUpdatedBill(error))
         }
       )
@@ -281,9 +302,23 @@ function handleUpdateBillIfNeeded() {
   }
 }
 
-function deleteBill() {
+function deleteBill(index, id) {
   return {
-    type: DELETE_BILL
+    type: DELETE_BILL,
+    index,
+    id
+  }
+}
+
+function confirmDeleteBill() {
+  return {
+    type: CONFIRM_DELETE_BILL
+  }
+}
+
+function cancelDeleteBill() {
+  return {
+    type: CANCEL_DELETE_BILL
   }
 }
 
@@ -305,7 +340,8 @@ function failedDeletedBill(data) {
   }
 }
 
-function handleDeleteBill() {
+function handleDeleteBill(state) {
+  const bills = state.bills
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -318,7 +354,7 @@ function handleDeleteBill() {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/bills')
+    return fetch(`/api/bills/${bills.deletingId}`, { method: 'DELETE' })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -326,7 +362,7 @@ function handleDeleteBill() {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedDeletedBill())
         }
       )
@@ -341,6 +377,9 @@ function handleDeleteBill() {
 
 function shouldDeleteBill(state) {
   const bills = state.bills
+  if (!bills.confirmDelete) {
+    return false
+  }
   if (bills.isDeleting) {
     return false
   } else {
@@ -375,7 +414,10 @@ export {
   fetchBillsIfNeeded,
   editBill,
   updateBill,
+  cancelEditBill,
   handleUpdateBillIfNeeded,
   deleteBill,
+  confirmDeleteBill,
+  cancelDeleteBill,
   handleDeleteBillIfNeeded
 }

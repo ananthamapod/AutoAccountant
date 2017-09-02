@@ -110,7 +110,8 @@ function transactions(state = {
 
     case DELETE_TRANSACTION:
       return Object.assign({}, state, {
-        deletingIndex: action.index
+        deletingIndex: action.index,
+        deletingId: action.id
       })
     case CONFIRM_DELETE_TRANSACTION:
       return Object.assign({}, state, {
@@ -118,7 +119,8 @@ function transactions(state = {
       })
     case CANCEL_DELETE_TRANSACTION:
       return Object.assign({}, state, {
-        deletingIndex: -1
+        deletingIndex: -1,
+        deletingId: undefined
       })
     case SEND_DELETED_TRANSACTION:
       return Object.assign({}, state, {
@@ -128,6 +130,7 @@ function transactions(state = {
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        deletingId: undefined,
         confirmDelete: false,
         fetchRequested: true
       })
@@ -135,6 +138,7 @@ function transactions(state = {
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        deletingId: undefined,
         confirmDelete: false,
         error: TRANSACTION_DELETE_ERROR
       })

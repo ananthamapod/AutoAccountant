@@ -38,6 +38,7 @@ function failedNewTransaction(error) {
 }
 
 function handleNewTransaction(state) {
+  const transactions = state.transactions
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -50,7 +51,14 @@ function handleNewTransaction(state) {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/transactions', { method: "POST", body: {transaction: state.newTransaction} })
+    return fetch('/api/transactions', {
+      method: 'POST',
+      body: {transaction: state.newTransaction},
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      })
+    })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -58,7 +66,7 @@ function handleNewTransaction(state) {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedNewTransaction(error))
         }
       )
@@ -145,7 +153,7 @@ function fetchTransactions() {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedReceivedTransactions())
         }
       )
@@ -227,6 +235,7 @@ function failedUpdatedTransaction(error) {
 }
 
 function handleUpdateTransaction(state) {
+  const transactions = state.transactions
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -239,7 +248,14 @@ function handleUpdateTransaction(state) {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/transactions', { method: "PATCH", body: {transaction: state.updatingTransaction} })
+    return fetch(`/api/transactions/${transactions.updatingTransaction._id}`, {
+      method: 'PATCH',
+      body: {transaction: transactions.updatingTransaction},
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      })
+    })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -247,7 +263,7 @@ function handleUpdateTransaction(state) {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedUpdatedTransaction(error))
         }
       )
@@ -287,10 +303,11 @@ function handleUpdateTransactionIfNeeded() {
   }
 }
 
-function deleteTransaction(index) {
+function deleteTransaction(index, id) {
   return {
     type: DELETE_TRANSACTION,
-    index
+    index,
+    id
   }
 }
 
@@ -324,7 +341,8 @@ function failedDeletedTransaction(data) {
   }
 }
 
-function handleDeleteTransaction() {
+function handleDeleteTransaction(state) {
+  const transactions = state.transactions
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -337,7 +355,7 @@ function handleDeleteTransaction() {
     // In this case, we return a promise to wait for.
     // This is not required by thunk middleware, but it is convenient for us.
 
-    return fetch('/api/transactions')
+    return fetch(`/api/transactions/${transactions.deletingId}`, { method: 'DELETE' })
       .then(
         response => response.json(),
         // Do not use catch, because that will also catch
@@ -345,7 +363,7 @@ function handleDeleteTransaction() {
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
         error => {
-          console.log('An error occured.', error)
+          console.log('An error occurred.', error)
           dispatch(failedDeletedTransaction())
         }
       )

@@ -5,20 +5,31 @@ import moment from 'moment'
 class Goal extends Component {
   constructor(props) {
     super(props)
+    this.onSave = this.onSave.bind(this)
+  }
+
+  onSave(event) {
+    let goal = Object.assign({}, this.props.goal)
+    let parentElem = document.getElementById(`goal${this.props.index}`)
+    let amountElem = parentElem.querySelector('input[name="amount"]')
+    let nameElem = parentElem.querySelector('input[name="name"]')
+    goal.amount = amountElem.value
+    goal.name = nameElem.value
+    this.props.onSaveGoal(goal)
   }
 
   render() {
     let goal = this.props.goal
     if (this.props.editing) {
       return (
-        <div>
-          <span><strong><input type="text" value="{goal.amount}" /></strong></span>
+        <div id={"goal" + this.props.index}>
+          <span><strong><input name="amount" type="text" defaultValue={goal.amount} /></strong></span>
           <small>{moment(goal.deadline).format('MMMM Do YYYY, h:mm:ss a')}</small>
-          <span><strong><input type="text" value="{goal.name}" /></strong></span>
+          <span><strong><input name="name" type="text" defaultValue={goal.name} /></strong></span>
           <div>
             <span>{goal._id}</span>
-            <button id="saveEditGoal{this.props.key}">Save</button>
-            <button id="cancelEditGoal{this.props.key}">Cancel</button>
+              <button id={"saveEditGoal" + this.props.index} onClick={this.onSave}>Save</button>
+              <button id={"cancelEditGoal" + this.props.index} onClick={this.props.onCancelEditGoal}>Cancel</button>
           </div>
           <hr/>
         </div>
@@ -31,8 +42,8 @@ class Goal extends Component {
           <span><strong>{goal.name}</strong></span>
           <div>
             <span>{goal._id}</span>
-            <button id="editGoal{this.props.key}">Edit</button>
-            <button id="deleteGoal{this.props.key}">Delete</button>
+              <button id={"editGoal" + this.props.index} onClick={this.props.onEditGoal}>Edit</button>
+            <button id={"deleteGoal" + this.props.index}>Delete</button>
           </div>
           <hr/>
         </div>

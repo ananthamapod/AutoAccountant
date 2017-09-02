@@ -1,8 +1,8 @@
 import {
   CREATE_BILL, ADD_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
   GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, FAILED_RECEIVED_BILLS,
-  EDIT_BILL, UPDATE_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
-  DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
+  EDIT_BILL, UPDATE_BILL, CANCEL_EDIT_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
+  DELETE_BILL, CONFIRM_DELETE_BILL, CANCEL_DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
 } from '../actions/actionTypes'
 import {
   BILL_ADD_ERROR,
@@ -19,10 +19,12 @@ function bills(state = {
     fetchRequested: true,
     creating: false,
     editing: false,
-    updatingBill: undefined,
+    confirmDelete: false,
     newBill: undefined,
+    updatingBill: undefined,
     items: [],
     deletingIndex: -1,
+    deletingId: undefined,
     editingIndex: -1
   },
   action
@@ -84,6 +86,11 @@ function bills(state = {
         editing: false,
         updatingBill: action.bill
       })
+    case CANCEL_EDIT_BILL:
+      return Object.assign({}, state, {
+        editing: false,
+        editingIndex: -1
+      })
     case SEND_UPDATED_BILL:
       return Object.assign({}, state, {
         isUpdating: true
@@ -104,7 +111,17 @@ function bills(state = {
 
     case DELETE_BILL:
       return Object.assign({}, state, {
-        deletingIndex: action.index
+        deletingIndex: action.index,
+        deletingId: action.id
+      })
+    case CONFIRM_DELETE_BILL:
+      return Object.assign({}, state, {
+        confirmDelete: true
+      })
+    case CANCEL_DELETE_BILL:
+      return Object.assign({}, state, {
+        deletingIndex: -1,
+        deletingId: undefined
       })
     case SEND_DELETED_BILL:
       return Object.assign({}, state, {
@@ -114,12 +131,16 @@ function bills(state = {
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        deletingId: undefined,
+        confirmDelete: false,
         fetchRequested: true
       })
     case FAILED_DELETED_BILL:
       return Object.assign({}, state, {
         isDeleting: false,
         deletingIndex: -1,
+        deletingId: undefined,
+        confirmDelete: false,
         error: BILL_DELETE_ERROR
       })
     default:

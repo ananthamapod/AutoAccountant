@@ -5,20 +5,31 @@ import moment from 'moment'
 class Bill extends Component {
   constructor(props) {
     super(props)
+    this.onSave = this.onSave.bind(this)
+  }
+
+  onSave(event) {
+    let bill = Object.assign({}, this.props.bill)
+    let parentElem = document.getElementById(`bill${this.props.index}`)
+    let amountElem = parentElem.querySelector('input[name="amount"]')
+    let nameElem = parentElem.querySelector('input[name="name"]')
+    bill.amount = amountElem.value
+    bill.name = nameElem.value
+    this.props.onSaveBill(bill)
   }
 
   render() {
     let bill = this.props.bill
     if (this.props.editing) {
       return (
-        <div>
-          <span><strong><input type="text" value="{bill.amount}" /></strong></span>
+        <div id={"bill" + this.props.index}>
+          <span><strong><input name="amount" type="text" defaultValue={bill.amount} /></strong></span>
           <small>{moment(bill.deadline).format('MMMM Do YYYY, h:mm:ss a')}</small>
-          <span><strong><input type="text" value="{bill.name}" /></strong></span>
+          <span><strong><input name="name" type="text" defaultValue={bill.name} /></strong></span>
           <div>
             <span>{bill._id}</span>
-            <button id="saveEditBill{this.props.key}">Save</button>
-            <button id="cancelEditBill{this.props.key}">Cancel</button>
+            <button id={"saveEditBill" + this.props.index} onClick={this.props.onSaveBill}>Save</button>
+            <button id={"cancelEditBill" + this.props.index} onClick={this.props.onCancelEditBill}>Cancel</button>
           </div>
           <hr/>
         </div>
@@ -31,8 +42,8 @@ class Bill extends Component {
           <span><strong>{bill.name}</strong></span>
           <div>
             <span>{bill._id}</span>
-            <button id="editBill{this.props.key}">Edit</button>
-            <button id="deleteBill{this.props.key}">Delete</button>
+            <button id={"editBill" + this.props.index} onClick={this.props.onEditBill}>Edit</button>
+            <button id={"deleteBill" + this.props.index}>Delete</button>
           </div>
           <hr/>
         </div>

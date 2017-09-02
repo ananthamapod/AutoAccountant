@@ -34,6 +34,79 @@ router.get('/transactions', //passport.authenticate('jwt', { session: false }),
     })
 })
 
+/* POST route for creating new transactions */
+router.post('/transactions', //passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
+  debug(req.body)
+  Transaction.create(req.body, (err, doc) => {
+    if (err) {
+      debug(err)
+      res.json(err)
+    } else {
+      debug(doc)
+      res.send("Transaction added successfully!")
+    }
+  })
+})
+
+/* GET route for retrieving transactions objects by id */
+router.get('/transactions/:id', //passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
+  let transaction_id = req.params.id
+  debug(`Returning transaction ${transaction_id}`)
+  if (transaction_id != "") {
+    Transaction.find({_id: transaction_id})
+    .then((transaction) => {
+      res.json(transaction)
+      debug(transaction)
+    })
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
+  } else {
+    res.send("Transaction not specified")
+  }
+})
+
+/* PATCH route for updating transactions objects by id */
+router.patch('/transactions/:id', //passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
+  let transaction_id = req.params.id
+  debug(`Returning transaction ${transaction_id}`)
+  if (transaction_id != "") {
+    Transaction.update({_id: transaction_id}, req.body)
+    .then((transaction) => {
+      res.json(transaction)
+      debug(transaction)
+    })
+    .reject((err) => {
+      debug(err)
+      res.status(500).json({message:"Server error"})
+    })
+  } else {
+    res.send("Transaction not specified")
+  }
+})
+
+/* DELETE route for deleting transactions by id */
+router.delete('/transactions/:id', //passport.authenticate('jwt', { session: false }),
+(req, res, next) => {
+  let transaction_id = req.params.id
+  debug(`Deleting transaction ${transaction_id}`)
+  if (transaction_id != "") {
+    Transaction.remove({_id: transaction_id}, (err) => {
+      if (err) {
+        res.json(err)
+      } else {
+        res.send(`Transaction ${transaction_id} deleted successfully!`)
+      }
+    })
+  } else {
+    res.send("Transaction not specified")
+  }
+})
+
 /* GET route for getting account data from database for all accounts */
 router.get('/accounts', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
@@ -96,12 +169,12 @@ router.post('/goals', //passport.authenticate('jwt', { session: false }),
 })
 
 /* GET route for retrieving goals objects by id */
-router.get('/goals/:name', //passport.authenticate('jwt', { session: false }),
+router.get('/goals/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  let goal_name = req.params.name
-  debug(`Returning goal ${goal_name}`)
-  if (goal_name != "") {
-    Goal.find({name: goal_name})
+  let goal_id = req.params.id
+  debug(`Returning goal ${goal_id}`)
+  if (goal_id != "") {
+    Goal.find({_id: goal_id})
     .then((goal) => {
       res.json(goal)
       debug(goal)
@@ -116,12 +189,12 @@ router.get('/goals/:name', //passport.authenticate('jwt', { session: false }),
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/goals/:name', //passport.authenticate('jwt', { session: false }),
+router.patch('/goals/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  let goal_name = req.params.name
-  debug(`Returning goal ${goal_name}`)
-  if (goal_name != "") {
-    Goal.update({name: goal_name}, req.body)
+  let goal_id = req.params.id
+  debug(`Returning goal ${goal_id}`)
+  if (goal_id != "") {
+    Goal.update({_id: goal_id}, req.body)
     .then((goal) => {
       res.json(goal)
       debug(goal)
@@ -136,20 +209,20 @@ router.patch('/goals/:name', //passport.authenticate('jwt', { session: false }),
 })
 
 /* DELETE route for deleting goals by id */
-router.delete('/goals/:name', //passport.authenticate('jwt', { session: false }),
+router.delete('/goals/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  let goal_name = req.params.name
-  debug(`Deleting goal ${goal_name}`)
-  if (goal_name != "") {
-    Goal.remove({name: goal_name}, (err) => {
+  let goal_id = req.params.id
+  debug(`Deleting goal ${goal_id}`)
+  if (goal_id != "") {
+    Goal.remove({_id: goal_id}, (err) => {
       if (err) {
         res.json(err)
       } else {
-        res.send(`Goal ${goal_name} deleted successfully!`)
+        res.send(`Goal ${goal_id} deleted successfully!`)
       }
     })
   } else {
-    res.send("Bill not specified")
+    res.send("Goal not specified")
   }
 })
 
@@ -186,12 +259,12 @@ router.post('/bills', //passport.authenticate('jwt', { session: false }),
 })
 
 /* GET route for retrieving bills objects by id */
-router.get('/bills/:name', //passport.authenticate('jwt', { session: false }),
+router.get('/bills/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  let bill_name = req.params.name
-  debug(`Returning bill ${bill_name}`)
+  let bill_id = req.params.id
+  debug(`Returning bill ${bill_id}`)
   if (bill_id != "") {
-    Bill.find({name: bill_name})
+    Bill.find({_id: bill_id})
     .then((bill) => {
       res.json(bill)
       debug(bill)
@@ -206,12 +279,12 @@ router.get('/bills/:name', //passport.authenticate('jwt', { session: false }),
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/bills/:name', //passport.authenticate('jwt', { session: false }),
+router.patch('/bills/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  let bill_name = req.params.name
-  debug(`Returning bill ${bill_name}`)
-  if (bill_name != "") {
-    Bill.update({name: bill_name}, req.body)
+  let bill_id = req.params.id
+  debug(`Returning bill ${bill_id}`)
+  if (bill_id != "") {
+    Bill.update({_id: bill_id}, req.body)
     .then((bill) => {
       res.json(bill)
       debug(bill)
@@ -226,16 +299,16 @@ router.patch('/bills/:name', //passport.authenticate('jwt', { session: false }),
 })
 
 /* DELETE route for deleting bills by id */
-router.delete('/bills/:name', //passport.authenticate('jwt', { session: false }),
+router.delete('/bills/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  let bill_name = req.params.name
-  debug(`Deleting bill ${bill_name}`)
-  if (bill_name != "") {
-    Bill.remove({name: bill_name}, (err) => {
+  let bill_id = req.params.id
+  debug(`Deleting bill ${bill_id}`)
+  if (bill_id != "") {
+    Bill.remove({name: bill_id}, (err) => {
       if (err) {
         res.json(err)
       } else {
-        res.send(`Bill ${bill_name} deleted successfully!`)
+        res.send(`Bill ${bill_id} deleted successfully!`)
       }
     })
   } else {
