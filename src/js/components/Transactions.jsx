@@ -23,6 +23,19 @@ import Transaction from './Transaction.jsx'
 class Transactions extends Component {
   constructor(props) {
     super(props)
+    this.addTransaction = this.addTransaction.bind(this)
+  }
+
+  addTransaction(event) {
+    let transaction = {}
+    let parentElem = document.getElementById('newTransaction')
+    let amountElem = parentElem.querySelector('input[name="amount"]')
+    let deadlineElem = parentElem.querySelector('[name="timestamp"]')
+    let nameElem = parentElem.querySelector('input[name="name"]')
+    transaction.amount = amountElem.value
+    transaction.name = nameElem.value
+    transaction.deadline = deadlineElem.value
+    this.props.addTransaction(transaction)
   }
 
   render() {
@@ -33,7 +46,9 @@ class Transactions extends Component {
       transactions.push(
         <Transaction
           key={i}
+          index={i}
           editing={i == this.props.transactions.editingIndex}
+          deleting={i == this.props.transactions.deletingIndex}
           transaction={transaction}
           onEditTransaction={this.props.editTransaction(i)}
           onSaveTransaction={this.props.updateTransaction}
@@ -46,7 +61,7 @@ class Transactions extends Component {
     let addTransactionElement = this.props.transactions.creating?
       <div id="newTransaction">
         <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
-        <small>{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
+        <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
         <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
         <div>
             <button id="addTransaction" onClick={this.addTransaction}>Add</button>

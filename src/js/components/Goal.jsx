@@ -34,6 +34,20 @@ class Goal extends Component {
           <hr/>
         </div>
       )
+    } else if (this.props.deleting) {
+      return (
+        <div>
+          <span><strong>{goal.amount}</strong></span>
+          <small>{moment(goal.deadline).format('MMMM Do YYYY, h:mm:ss a')}</small>
+          <span><strong>{goal.name}</strong></span>
+          <div>
+            <span>Are you sure you want to delete this Goal?</span>
+              <button id={"confirmDeleteGoal" + this.props.index} onClick={this.props.onConfirmDeleteGoal}>Yes</button>
+            <button id={"cancelDeleteGoal" + this.props.index} onClick={this.props.onCancelDeleteGoal}>No</button>
+          </div>
+          <hr/>
+        </div>
+      )
     } else {
       return (
         <div>
@@ -43,7 +57,7 @@ class Goal extends Component {
           <div>
             <span>{goal._id}</span>
               <button id={"editGoal" + this.props.index} onClick={this.props.onEditGoal}>Edit</button>
-            <button id={"deleteGoal" + this.props.index}>Delete</button>
+            <button id={"deleteGoal" + this.props.index} onClick={this.props.onDeleteGoal}>Delete</button>
           </div>
           <hr/>
         </div>

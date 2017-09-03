@@ -34,6 +34,20 @@ class Bill extends Component {
           <hr/>
         </div>
       )
+    } else if (this.props.deleting) {
+      return (
+        <div>
+          <span><strong>{bill.amount}</strong></span>
+          <small>{moment(bill.deadline).format('MMMM Do YYYY, h:mm:ss a')}</small>
+          <span><strong>{bill.name}</strong></span>
+          <div>
+            <span>Are you sure you want to delete this Bill?</span>
+              <button id={"confirmDeleteBill" + this.props.index} onClick={this.props.onConfirmDeleteBill}>Yes</button>
+            <button id={"cancelDeleteBill" + this.props.index} onClick={this.props.onCancelDeleteBill}>No</button>
+          </div>
+          <hr/>
+        </div>
+      )
     } else {
       return (
         <div>

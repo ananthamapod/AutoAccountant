@@ -50,7 +50,13 @@ function bills(state = {
     case SUCCESSFUL_NEW_BILL:
       return Object.assign({}, state, {
         isAdding: false,
-        items: state.items.slice(0).push(state.newBill).sort(),
+        items: (
+          () => {
+            let items = state.items.slice(0)
+            items.push(state.newBill)
+            items.sort()
+            return items
+          })(),
         newBill: undefined
       })
     case FAILED_NEW_BILL:

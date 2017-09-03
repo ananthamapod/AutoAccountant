@@ -49,7 +49,13 @@ function transactions(state = {
     case SUCCESSFUL_NEW_TRANSACTION:
       return Object.assign({}, state, {
         isAdding: false,
-        items: state.items.slice(0).push(state.newTransaction).sort(),
+        items: (
+          () => {
+            let items = state.items.slice(0)
+            items.push(state.newTransaction)
+            items.sort()
+            return items
+          })(),
         newTransaction: undefined
       })
     case FAILED_NEW_TRANSACTION:

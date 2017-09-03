@@ -50,7 +50,13 @@ function goals(state = {
     case SUCCESSFUL_NEW_GOAL:
       return Object.assign({}, state, {
         isAdding: false,
-        items: state.items.slice(0).push(state.newGoal).sort(),
+        items: (
+          () => {
+            let items = state.items.slice(0)
+            items.push(state.newGoal)
+            items.sort()
+            return items
+          })(),
         newGoal: undefined
       })
     case FAILED_NEW_GOAL:

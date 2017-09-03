@@ -23,6 +23,20 @@ import Bill from './Bill.jsx'
 class Bills extends Component {
   constructor(props) {
     super(props)
+    this.addBill = this.addBill.bind(this)
+  }
+
+  addBill(event) {
+    let bill = {}
+    let parentElem = document.getElementById('newBill')
+    let amountElem = parentElem.querySelector('input[name="amount"]')
+    let deadlineElem = parentElem.querySelector('[name="timestamp"]')
+    let nameElem = parentElem.querySelector('input[name="name"]')
+    bill.amount = amountElem.value
+    bill.name = nameElem.value
+    bill.deadline = moment()
+    console.log(deadlineElem.innerHTML)
+    this.props.addBill(bill)
   }
 
   render() {
@@ -34,6 +48,7 @@ class Bills extends Component {
         <Bill
           key={i}
           editing={i == this.props.bills.editingIndex}
+          deleting={i == this.props.bills.deletingIndex}
           bill={bill}
           onEditBill={this.props.editBill(i)}
           onSaveBill={this.props.updateBill}
@@ -44,12 +59,12 @@ class Bills extends Component {
       )
     }
     let addBillElement = this.props.bills.creating?
-      <div id="newbill">
+      <div id="newBill">
         <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
-        <small>{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
+        <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
         <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
         <div>
-            <button id="addbill" onClick={this.addbill}>Add</button>
+            <button id="addBill" onClick={this.addbill}>Add</button>
             <button id="cancelAddbill" onClick={this.props.cancelCreatebill}>Cancel</button>
         </div>
       </div>:
