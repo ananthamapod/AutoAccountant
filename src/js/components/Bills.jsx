@@ -1,7 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import {
+  createBill,
+  addBill,
+  cancelCreateBill,
+  handleNewBillIfNeeded,
   getBills,
   fetchBillsIfNeeded,
   editBill,
@@ -38,9 +43,21 @@ class Bills extends Component {
         />
       )
     }
+    let addBillElement = this.props.bills.creating?
+      <div id="newbill">
+        <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
+        <small>{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
+        <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
+        <div>
+            <button id="addbill" onClick={this.addbill}>Add</button>
+            <button id="cancelAddbill" onClick={this.props.cancelCreatebill}>Cancel</button>
+        </div>
+      </div>:
+      <button id="add-bills-btn" onClick={this.props.createbill}>+</button>
     return (
       <div>
         <button id="get-bills-btn" onClick={this.props.refreshBills}>Get Bills</button>
+          {addBillElement}
         <div>{bills}</div>
       </div>
     )
@@ -55,6 +72,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    createBill: () => {
+      dispatch(createBill())
+    },
+    addBill: (bill) => {
+      dispatch(addBill(bill))
+      dispatch(handleNewBillIfNeeded())
+    },
+    cancelCreateBill: () => {
+      dispatch(cancelCreateBill())
+    },
     refreshBills: () => {
       dispatch(getBills())
       dispatch(fetchBillsIfNeeded())

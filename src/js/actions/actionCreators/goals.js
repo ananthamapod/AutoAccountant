@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import {
-  CREATE_GOAL, ADD_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
+  CREATE_GOAL, ADD_GOAL, CANCEL_CREATE_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
   GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
   EDIT_GOAL, UPDATE_GOAL, CANCEL_EDIT_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
   DELETE_GOAL, CONFIRM_DELETE_GOAL, CANCEL_DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
@@ -16,6 +16,12 @@ function addGoal(goal) {
   return {
     type: ADD_GOAL,
     goal
+  }
+}
+
+function cancelCreateGoal() {
+  return {
+    type: CANCEL_CREATE_GOAL
   }
 }
 
@@ -410,6 +416,7 @@ function handleDeleteGoalIfNeeded() {
 export {
   createGoal,
   addGoal,
+  cancelCreateGoal,
   handleNewGoalIfNeeded,
   getGoals,
   fetchGoalsIfNeeded,

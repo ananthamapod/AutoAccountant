@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import {
-  CREATE_BILL, ADD_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
+  CREATE_BILL, ADD_BILL, CANCEL_CREATE_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
   GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, FAILED_RECEIVED_BILLS,
   EDIT_BILL, UPDATE_BILL, CANCEL_EDIT_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
   DELETE_BILL, CONFIRM_DELETE_BILL, CANCEL_DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
@@ -16,6 +16,12 @@ function addBill(bill) {
   return {
     type: ADD_BILL,
     bill
+  }
+}
+
+function cancelCreateBill() {
+  return {
+    type: CANCEL_CREATE_BILL
   }
 }
 
@@ -409,6 +415,7 @@ function handleDeleteBillIfNeeded() {
 export {
   createBill,
   addBill,
+  cancelCreateBill,
   handleNewBillIfNeeded,
   getBills,
   fetchBillsIfNeeded,

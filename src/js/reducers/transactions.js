@@ -1,5 +1,5 @@
 import {
-  CREATE_TRANSACTION, ADD_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
+  CREATE_TRANSACTION, ADD_TRANSACTION, CANCEL_CREATE_TRANSACTION, SEND_NEW_TRANSACTION, SUCCESSFUL_NEW_TRANSACTION, FAILED_NEW_TRANSACTION,
   GET_TRANSACTIONS, REQUEST_TRANSACTIONS, RECEIVE_TRANSACTIONS, FAILED_RECEIVED_TRANSACTIONS,
   EDIT_TRANSACTION, UPDATE_TRANSACTION, CANCEL_EDIT_TRANSACTION, SEND_UPDATED_TRANSACTION, SUCCESSFUL_UPDATED_TRANSACTION, FAILED_UPDATED_TRANSACTION,
   DELETE_TRANSACTION, CONFIRM_DELETE_TRANSACTION, CANCEL_DELETE_TRANSACTION, SEND_DELETED_TRANSACTION, SUCCESSFUL_DELETED_TRANSACTION, FAILED_DELETED_TRANSACTION
@@ -38,6 +38,10 @@ function transactions(state = {
         creating: false,
         newTransaction: action.transaction
       })
+    case CANCEL_CREATE_TRANSACTION:
+      return Object.assign({}, state, {
+        creating: false
+      })
     case SEND_NEW_TRANSACTION:
       return Object.assign({}, state, {
         isAdding: true
@@ -45,8 +49,8 @@ function transactions(state = {
     case SUCCESSFUL_NEW_TRANSACTION:
       return Object.assign({}, state, {
         isAdding: false,
-        newTransaction: undefined,
-        fetchRequested: true
+        items: state.items.slice(0).push(state.newTransaction).sort(),
+        newTransaction: undefined
       })
     case FAILED_NEW_TRANSACTION:
       return Object.assign({}, state, {
@@ -97,8 +101,8 @@ function transactions(state = {
     case SUCCESSFUL_UPDATED_TRANSACTION:
       return Object.assign({}, state, {
         isUpdating: false,
+        items: state.items.map((elem, index) => state.editingIndex === index? state.updatingTransaction : elem),
         updatingTransaction: undefined,
-        fetchRequested: true,
         editingIndex: -1
       })
     case FAILED_UPDATED_TRANSACTION:
@@ -128,11 +132,11 @@ function transactions(state = {
       })
     case SUCCESSFUL_DELETED_TRANSACTION:
       return Object.assign({}, state, {
+        items: state.items.filter((elem, index) => state.deletingIndex),
         isDeleting: false,
         deletingIndex: -1,
         deletingId: undefined,
-        confirmDelete: false,
-        fetchRequested: true
+        confirmDelete: false
       })
     case FAILED_DELETED_TRANSACTION:
       return Object.assign({}, state, {

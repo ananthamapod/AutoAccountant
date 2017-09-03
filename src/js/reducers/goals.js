@@ -1,5 +1,5 @@
 import {
-  CREATE_GOAL, ADD_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
+  CREATE_GOAL, ADD_GOAL, CANCEL_CREATE_GOAL, SEND_NEW_GOAL, SUCCESSFUL_NEW_GOAL, FAILED_NEW_GOAL,
   GET_GOALS, REQUEST_GOALS, RECEIVE_GOALS, FAILED_RECEIVED_GOALS,
   EDIT_GOAL, UPDATE_GOAL, CANCEL_EDIT_GOAL, SEND_UPDATED_GOAL, SUCCESSFUL_UPDATED_GOAL, FAILED_UPDATED_GOAL,
   DELETE_GOAL, CONFIRM_DELETE_GOAL, CANCEL_DELETE_GOAL, SEND_DELETED_GOAL, SUCCESSFUL_DELETED_GOAL, FAILED_DELETED_GOAL
@@ -39,6 +39,10 @@ function goals(state = {
         creating: false,
         newGoal: action.goal
       })
+    case CANCEL_CREATE_GOAL:
+      return Object.assign({}, state, {
+        creating: false
+      })
     case SEND_NEW_GOAL:
       return Object.assign({}, state, {
         isAdding: true
@@ -46,8 +50,8 @@ function goals(state = {
     case SUCCESSFUL_NEW_GOAL:
       return Object.assign({}, state, {
         isAdding: false,
-        newGoal: undefined,
-        fetchRequested: true
+        items: state.items.slice(0).push(state.newGoal).sort(),
+        newGoal: undefined
       })
     case FAILED_NEW_GOAL:
       return Object.assign({}, state, {
@@ -98,8 +102,8 @@ function goals(state = {
     case SUCCESSFUL_UPDATED_GOAL:
       return Object.assign({}, state, {
         isUpdating: false,
+        items: state.items.map((elem, index) => state.editingIndex === index? state.updatingGoal : elem),
         updatingGoal: undefined,
-        fetchRequested: true,
         editingIndex: -1
       })
     case FAILED_UPDATED_GOAL:
@@ -129,11 +133,11 @@ function goals(state = {
       })
     case SUCCESSFUL_DELETED_GOAL:
       return Object.assign({}, state, {
+        items: state.items.filter((elem, index) => state.deletingIndex),
         isDeleting: false,
         deletingIndex: -1,
         deletingId: undefined,
-        confirmDelete: false,
-        fetchRequested: true
+        confirmDelete: false
       })
     case FAILED_DELETED_GOAL:
       return Object.assign({}, state, {

@@ -1,7 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import {
+  createGoal,
+  addGoal,
+  cancelCreateGoal,
+  handleNewGoalIfNeeded,
   getGoals,
   fetchGoalsIfNeeded,
   editGoal,
@@ -39,9 +44,21 @@ class Goals extends Component {
         />
       )
     }
+    let addGoalElement = this.props.goals.creating?
+      <div id="newGoal">
+        <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
+        <small>{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
+        <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
+        <div>
+            <button id="addGoal" onClick={this.addGoal}>Add</button>
+            <button id="cancelAddGoal" onClick={this.props.cancelCreateGoal}>Cancel</button>
+        </div>
+      </div>:
+      <button id="add-goals-btn" onClick={this.props.createGoal}>+</button>
     return (
       <div>
         <button id="get-goals-btn" onClick={this.props.refreshGoals}>Get Goals</button>
+        {addGoalElement}
         <div>{goals}</div>
       </div>
     )
@@ -56,6 +73,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    createGoal: () => {
+      dispatch(createGoal())
+    },
+    addGoal: (goal) => {
+      dispatch(addGoal(goal))
+      dispatch(handleNewGoalIfNeeded())
+    },
+    cancelCreateGoal: () => {
+      dispatch(cancelCreateGoal())
+    },
     refreshGoals: () => {
       dispatch(getGoals())
       dispatch(fetchGoalsIfNeeded())

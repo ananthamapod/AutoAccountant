@@ -1,7 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import {
+  createTransaction,
+  addTransaction,
+  cancelCreateTransaction,
+  handleNewTransactionIfNeeded,
   getTransactions,
   fetchTransactionsIfNeeded,
   editTransaction,
@@ -38,9 +43,21 @@ class Transactions extends Component {
         />
       )
     }
+    let addTransactionElement = this.props.transactions.creating?
+      <div id="newTransaction">
+        <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
+        <small>{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
+        <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
+        <div>
+            <button id="addTransaction" onClick={this.addTransaction}>Add</button>
+            <button id="cancelAddTransaction" onClick={this.props.cancelCreateTransaction}>Cancel</button>
+        </div>
+      </div>:
+      <button id="add-transactions-btn" onClick={this.props.createTransaction}>+</button>
     return (
       <div>
         <button id="get-transactions-btn" onClick={this.props.refreshTransactions}>Get Transactions</button>
+          {addTransactionElement}
         <div>{transactions}</div>
       </div>
     )
@@ -55,6 +72,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    createTransaction: () => {
+      dispatch(createTransaction())
+    },
+    addTransaction: (transaction) => {
+      dispatch(addTransaction(transaction))
+      dispatch(handleNewTransactionIfNeeded())
+    },
+    cancelCreateTransaction: () => {
+      dispatch(cancelCreateTransaction())
+    },
     refreshTransactions: () => {
       dispatch(getTransactions())
       dispatch(fetchTransactionsIfNeeded())

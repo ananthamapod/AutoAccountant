@@ -1,5 +1,5 @@
 import {
-  CREATE_BILL, ADD_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
+  CREATE_BILL, ADD_BILL, CANCEL_CREATE_BILL, SEND_NEW_BILL, SUCCESSFUL_NEW_BILL, FAILED_NEW_BILL,
   GET_BILLS, REQUEST_BILLS, RECEIVE_BILLS, FAILED_RECEIVED_BILLS,
   EDIT_BILL, UPDATE_BILL, CANCEL_EDIT_BILL, SEND_UPDATED_BILL, SUCCESSFUL_UPDATED_BILL, FAILED_UPDATED_BILL,
   DELETE_BILL, CONFIRM_DELETE_BILL, CANCEL_DELETE_BILL, SEND_DELETED_BILL, SUCCESSFUL_DELETED_BILL, FAILED_DELETED_BILL
@@ -39,6 +39,10 @@ function bills(state = {
         creating: false,
         newBill: action.bill
       })
+    case CANCEL_CREATE_BILL:
+      return Object.assign({}, state, {
+        creating: false
+      })
     case SEND_NEW_BILL:
       return Object.assign({}, state, {
         isAdding: true
@@ -46,8 +50,8 @@ function bills(state = {
     case SUCCESSFUL_NEW_BILL:
       return Object.assign({}, state, {
         isAdding: false,
-        newBill: undefined,
-        fetchRequested: true
+        items: state.items.slice(0).push(state.newBill).sort(),
+        newBill: undefined
       })
     case FAILED_NEW_BILL:
       return Object.assign({}, state, {
@@ -98,8 +102,8 @@ function bills(state = {
     case SUCCESSFUL_UPDATED_BILL:
       return Object.assign({}, state, {
         isUpdating: false,
+        items: state.items.map((elem, index) => state.editingIndex === index? state.updatingBill : elem),
         updatingBill: undefined,
-        fetchRequested: true,
         editingIndex: -1
       })
     case FAILED_UPDATED_BILL:
@@ -129,11 +133,11 @@ function bills(state = {
       })
     case SUCCESSFUL_DELETED_BILL:
       return Object.assign({}, state, {
+        items: state.items.filter((elem, index) => state.deletingIndex),
         isDeleting: false,
         deletingIndex: -1,
         deletingId: undefined,
-        confirmDelete: false,
-        fetchRequested: true
+        confirmDelete: false
       })
     case FAILED_DELETED_BILL:
       return Object.assign({}, state, {
