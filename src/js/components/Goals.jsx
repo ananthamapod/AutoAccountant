@@ -41,7 +41,6 @@ class Goals extends Component {
 
   render() {
     const goals = []
-    console.log(this)
     for (let i = 0; i < this.props.goals.items.length; i++) {
       const goal = this.props.goals.items[i]
       goals.push(

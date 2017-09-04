@@ -40,7 +40,6 @@ class Transactions extends Component {
 
   render() {
     const transactions = []
-    console.log(this)
     for (let i = 0; i < this.props.transactions.items.length; i++) {
       const transaction = this.props.transactions.items[i]
       transactions.push(

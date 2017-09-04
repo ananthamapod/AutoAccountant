@@ -18,6 +18,13 @@ const goalSchema = new Schema({
   }
 })
 
+goalSchema.pre('save', function(next) {
+  if (typeof this.deadline === 'string') {
+    this.deadline = moment(this.deadline)
+  }
+  next()
+})
+
 const Goal = mongoose.model('Goal', goalSchema)
 
 module.exports = Goal

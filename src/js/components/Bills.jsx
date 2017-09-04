@@ -41,7 +41,6 @@ class Bills extends Component {
 
   render() {
     const bills = []
-    console.log(this)
     for (let i = 0; i < this.props.bills.items.length; i++) {
       const bill = this.props.bills.items[i]
       bills.push(

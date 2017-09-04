@@ -58,7 +58,8 @@ function handleNewBill(state) {
     // This is not required by thunk middleware, but it is convenient for us.
 
     return fetch('/api/bills', {
-      method: 'POST', body: {bill: bills.newBill},
+      method: 'POST',
+      body: JSON.stringify({bill: bills.newBill}),
       headers: new Headers({
         'Content-Type': 'application/json',
         Accept: 'application/json'
@@ -255,7 +256,7 @@ function handleUpdateBill(state) {
 
     return fetch(`/api/bills/${bills.updatingBill._id}`, {
       method: 'PATCH',
-      body: {bill: bills.updatingBill},
+      body: JSON.stringify({bill: bills.updatingBill}),
       headers: new Headers({
         'Content-Type': 'application/json',
         Accept: 'application/json'

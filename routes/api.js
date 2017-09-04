@@ -38,13 +38,13 @@ router.get('/transactions', //passport.authenticate('jwt', { session: false }),
 router.post('/transactions', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   debug(req.body)
-  Transaction.create(req.body, (err, doc) => {
+  Transaction.create(req.body.transaction, (err, doc) => {
     if (err) {
       debug(err)
-      res.json(err)
+      res.status(500).json(err)
     } else {
       debug(doc)
-      res.send("Transaction added successfully!")
+      res.json({message: "Transaction added successfully!"})
     }
   })
 })
@@ -65,7 +65,7 @@ router.get('/transactions/:id', //passport.authenticate('jwt', { session: false 
       res.status(500).json({message:"Server error"})
     })
   } else {
-    res.send("Transaction not specified")
+    res.status(400).json({message: "Transaction not specified"})
   }
 })
 
@@ -75,7 +75,7 @@ router.patch('/transactions/:id', //passport.authenticate('jwt', { session: fals
   let transaction_id = req.params.id
   debug(`Returning transaction ${transaction_id}`)
   if (transaction_id != "") {
-    Transaction.update({_id: transaction_id}, req.body)
+    Transaction.update({_id: transaction_id}, req.body.transaction)
     .then((transaction) => {
       res.json(transaction)
       debug(transaction)
@@ -85,7 +85,7 @@ router.patch('/transactions/:id', //passport.authenticate('jwt', { session: fals
       res.status(500).json({message:"Server error"})
     })
   } else {
-    res.send("Transaction not specified")
+    res.status(400).json({message: "Transaction not specified"})
   }
 })
 
@@ -97,13 +97,13 @@ router.delete('/transactions/:id', //passport.authenticate('jwt', { session: fal
   if (transaction_id != "") {
     Transaction.remove({_id: transaction_id}, (err) => {
       if (err) {
-        res.json(err)
+        res.status(500).json(err)
       } else {
-        res.send(`Transaction ${transaction_id} deleted successfully!`)
+        res.json({message: `Transaction ${transaction_id} deleted successfully!`})
       }
     })
   } else {
-    res.send("Transaction not specified")
+    res.status(400).json({message: "Transaction not specified"})
   }
 })
 
@@ -157,13 +157,13 @@ router.get('/goals', //passport.authenticate('jwt', { session: false }),
 router.post('/goals', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   debug(req.body)
-  Goal.create(req.body, (err, doc) => {
+  Goal.create(req.body.goal, (err, doc) => {
     if (err) {
       debug(err)
-      res.json(err)
+      res.status(500).json(err)
     } else {
       debug(doc)
-      res.send("Goal added successfully!")
+      res.json({message: "Goal added successfully!"})
     }
   })
 })
@@ -184,7 +184,7 @@ router.get('/goals/:id', //passport.authenticate('jwt', { session: false }),
       res.status(500).json({message:"Server error"})
     })
   } else {
-    res.send("Goal not specified")
+    res.status(400).json({message: "Goal not specified"})
   }
 })
 
@@ -194,7 +194,7 @@ router.patch('/goals/:id', //passport.authenticate('jwt', { session: false }),
   let goal_id = req.params.id
   debug(`Returning goal ${goal_id}`)
   if (goal_id != "") {
-    Goal.update({_id: goal_id}, req.body)
+    Goal.update({_id: goal_id}, req.body.goal)
     .then((goal) => {
       res.json(goal)
       debug(goal)
@@ -204,7 +204,7 @@ router.patch('/goals/:id', //passport.authenticate('jwt', { session: false }),
       res.status(500).json({message:"Server error"})
     })
   } else {
-    res.send("Goal not specified")
+    res.status(400).json({message: "Goal not specified"})
   }
 })
 
@@ -218,11 +218,11 @@ router.delete('/goals/:id', //passport.authenticate('jwt', { session: false }),
       if (err) {
         res.json(err)
       } else {
-        res.send(`Goal ${goal_id} deleted successfully!`)
+        res.json({message: `Goal ${goal_id} deleted successfully!`})
       }
     })
   } else {
-    res.send("Goal not specified")
+    res.status(400).json({message: "Goal not specified"})
   }
 })
 
@@ -247,13 +247,13 @@ router.get('/bills', //passport.authenticate('jwt', { session: false }),
 router.post('/bills', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   debug(req.body)
-  Bill.create(req.body, (err, doc) => {
+  Bill.create(req.body.bill, (err, doc) => {
     if (err) {
       debug(err)
-      res.json(err)
+      res.status(500).json(err)
     } else {
       debug(doc)
-      res.send("Bill added successfully!")
+      res.json({message: "Bill added successfully!"})
     }
   })
 })
@@ -274,7 +274,7 @@ router.get('/bills/:id', //passport.authenticate('jwt', { session: false }),
       res.status(500).json({message:"Server error"})
     })
   } else {
-    res.send("Bill not specified")
+    res.status(400).json({message: "Bill not specified"})
   }
 })
 
@@ -284,7 +284,7 @@ router.patch('/bills/:id', //passport.authenticate('jwt', { session: false }),
   let bill_id = req.params.id
   debug(`Returning bill ${bill_id}`)
   if (bill_id != "") {
-    Bill.update({_id: bill_id}, req.body)
+    Bill.update({_id: bill_id}, req.body.bill)
     .then((bill) => {
       res.json(bill)
       debug(bill)
@@ -294,7 +294,7 @@ router.patch('/bills/:id', //passport.authenticate('jwt', { session: false }),
       res.status(500).json({message:"Server error"})
     })
   } else {
-    res.send("Bill not specified")
+    res.status(400).json({message: "Bill not specified"})
   }
 })
 
@@ -306,13 +306,13 @@ router.delete('/bills/:id', //passport.authenticate('jwt', { session: false }),
   if (bill_id != "") {
     Bill.remove({name: bill_id}, (err) => {
       if (err) {
-        res.json(err)
+        res.status(500).json(err)
       } else {
-        res.send(`Bill ${bill_id} deleted successfully!`)
+        res.json({message: `Bill ${bill_id} deleted successfully!`})
       }
     })
   } else {
-    res.send("Bill not specified")
+    res.status(400).json({message: "Bill not specified"})
   }
 })
 

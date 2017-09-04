@@ -256,7 +256,7 @@ function handleUpdateGoal(state) {
 
     return fetch(`/api/goals/${goals.updatingGoal._id}`, {
       method: 'PATCH',
-      body: JSON.stringify(goals.updatingGoal),
+      body: JSON.stringify({goal: goals.updatingGoal}),
       headers: new Headers({
         'Content-Type': 'application/json',
         Accept: 'application/json'

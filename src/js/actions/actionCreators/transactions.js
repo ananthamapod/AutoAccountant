@@ -59,7 +59,7 @@ function handleNewTransaction(state) {
 
     return fetch('/api/transactions', {
       method: 'POST',
-      body: {transaction: state.newTransaction},
+      body: JSON.stringify({transaction: state.newTransaction}),
       headers: new Headers({
         'Content-Type': 'application/json',
         Accept: 'application/json'
@@ -256,7 +256,7 @@ function handleUpdateTransaction(state) {
 
     return fetch(`/api/transactions/${transactions.updatingTransaction._id}`, {
       method: 'PATCH',
-      body: {transaction: transactions.updatingTransaction},
+      body: JSON.stringify({transaction: transactions.updatingTransaction}),
       headers: new Headers({
         'Content-Type': 'application/json',
         Accept: 'application/json'

@@ -59,6 +59,13 @@ const transactionSchema = new Schema({
   }
 })
 
+transactionSchema.pre('save', function(next) {
+  if (typeof this.date === 'string') {
+    this.deadline = moment(this.deadline)
+  }
+  next()
+})
+
 const Transaction = mongoose.model('Transaction', transactionSchema)
 
 module.exports = Transaction

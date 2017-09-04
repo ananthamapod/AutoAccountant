@@ -49,7 +49,6 @@ class PlaidLink extends Component {
   }
 
   render() {
-    console.log(this)
     return (
       <div>
         <button id='link-btn' onClick={this.onClick}>Link Account</button>
