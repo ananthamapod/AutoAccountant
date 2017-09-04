@@ -44,7 +44,7 @@ router.post('/transactions', //passport.authenticate('jwt', { session: false }),
       res.status(500).json(err)
     } else {
       debug(doc)
-      res.json({message: "Transaction added successfully!"})
+      res.json(doc)
     }
   })
 })
@@ -163,7 +163,7 @@ router.post('/goals', //passport.authenticate('jwt', { session: false }),
       res.status(500).json(err)
     } else {
       debug(doc)
-      res.json({message: "Goal added successfully!"})
+      res.json(doc)
     }
   })
 })
@@ -253,7 +253,7 @@ router.post('/bills', //passport.authenticate('jwt', { session: false }),
       res.status(500).json(err)
     } else {
       debug(doc)
-      res.json({message: "Bill added successfully!"})
+      res.json(doc)
     }
   })
 })

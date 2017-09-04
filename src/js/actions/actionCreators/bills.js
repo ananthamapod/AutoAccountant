@@ -33,7 +33,8 @@ function sendNewBill() {
 
 function successfulNewBill(data) {
   return {
-    type: SUCCESSFUL_NEW_BILL
+    type: SUCCESSFUL_NEW_BILL,
+    newGoal: data
   }
 }
 

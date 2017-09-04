@@ -53,7 +53,7 @@ function goals(state = {
         items: (
           () => {
             let items = state.items.slice(0)
-            items.push(state.newGoal)
+            items.push(action.newGoal)
             items.sort()
             return items
           })(),
@@ -139,7 +139,7 @@ function goals(state = {
       })
     case SUCCESSFUL_DELETED_GOAL:
       return Object.assign({}, state, {
-        items: state.items.filter((elem, index) => state.deletingIndex),
+        items: state.items.filter((elem, index) => index !== state.deletingIndex),
         isDeleting: false,
         deletingIndex: -1,
         deletingId: undefined,

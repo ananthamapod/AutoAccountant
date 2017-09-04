@@ -52,8 +52,9 @@ class Bills extends Component {
           onEditBill={this.props.editBill(i)}
           onSaveBill={this.props.updateBill}
           onCancelEditBill={this.props.cancelEditBill}
-          onDeleteBill={this.props.deleteBill(i)}
+          onDeleteBill={this.props.deleteBill(i, bill._id)}
           onConfirmDeleteBill={this.props.confirmDeleteBill}
+          onCancelDeleteBill={this.props.cancelDeleteBill}
         />
       )
     }
@@ -112,9 +113,9 @@ const mapDispatchToProps = (dispatch) => {
     cancelEditBill: () => {
       dispatch(cancelEditBill())
     },
-    deleteBill: (index) => {
+    deleteBill: (index, id) => {
       return () => {
-        dispatch(deleteBill(index))
+        dispatch(deleteBill(index, id))
       }
     },
     confirmDeleteBill: () => {

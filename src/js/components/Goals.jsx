@@ -53,8 +53,9 @@ class Goals extends Component {
           onEditGoal={this.props.editGoal(i)}
           onSaveGoal={this.props.updateGoal}
           onCancelEditGoal={this.props.cancelEditGoal}
-          onDeleteGoal={this.props.deleteGoal(i)}
+          onDeleteGoal={this.props.deleteGoal(i, goal._id)}
           onConfirmDeleteGoal={this.props.confirmDeleteGoal}
+          onCancelDeleteGoal={this.props.cancelDeleteGoal}
         />
       )
     }
@@ -113,9 +114,9 @@ const mapDispatchToProps = (dispatch) => {
     cancelEditGoal: () => {
       dispatch(cancelEditGoal())
     },
-    deleteGoal: (index) => {
+    deleteGoal: (index, id) => {
       return () => {
-        dispatch(deleteGoal(index))
+        dispatch(deleteGoal(index, id))
       }
     },
     confirmDeleteGoal: () => {

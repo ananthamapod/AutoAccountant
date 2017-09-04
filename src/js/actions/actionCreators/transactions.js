@@ -33,7 +33,8 @@ function sendNewTransaction() {
 
 function successfulNewTransaction(data) {
   return {
-    type: SUCCESSFUL_NEW_TRANSACTION
+    type: SUCCESSFUL_NEW_TRANSACTION,
+    newGoal: data
   }
 }
 

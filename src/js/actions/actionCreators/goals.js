@@ -33,7 +33,8 @@ function sendNewGoal() {
 
 function successfulNewGoal(data) {
   return {
-    type: SUCCESSFUL_NEW_GOAL
+    type: SUCCESSFUL_NEW_GOAL,
+    newGoal: data
   }
 }
 

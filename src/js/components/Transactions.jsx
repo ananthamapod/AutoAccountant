@@ -52,8 +52,9 @@ class Transactions extends Component {
           onEditTransaction={this.props.editTransaction(i)}
           onSaveTransaction={this.props.updateTransaction}
           onCancelEditTransaction={this.props.cancelEditTransaction}
-          onDeleteTransaction={this.props.deleteTransaction(i)}
+          onDeleteTransaction={this.props.deleteTransaction(i, transaction._id)}
           onConfirmDeleteTransaction={this.props.confirmDeleteTransaction}
+          onCancelDeleteTransaction={this.props.cancelDeleteTransaction}
         />
       )
     }
@@ -112,9 +113,9 @@ const mapDispatchToProps = (dispatch) => {
     cancelEditTransaction: () => {
       dispatch(cancelEditTransaction())
     },
-    deleteTransaction: (index) => {
+    deleteTransaction: (index, id) => {
       return () => {
-        dispatch(deleteTransaction(index))
+        dispatch(deleteTransaction(index, id))
       }
     },
     confirmDeleteTransaction: () => {

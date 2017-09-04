@@ -52,7 +52,7 @@ function transactions(state = {
         items: (
           () => {
             let items = state.items.slice(0)
-            items.push(state.newTransaction)
+            items.push(action.newTransaction)
             items.sort()
             return items
           })(),
@@ -138,7 +138,7 @@ function transactions(state = {
       })
     case SUCCESSFUL_DELETED_TRANSACTION:
       return Object.assign({}, state, {
-        items: state.items.filter((elem, index) => state.deletingIndex),
+        items: state.items.filter((elem, index) => index !== state.deletingIndex),
         isDeleting: false,
         deletingIndex: -1,
         deletingId: undefined,
