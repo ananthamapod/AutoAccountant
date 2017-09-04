@@ -10,7 +10,7 @@ var TEMPLATE_DIR = path.resolve(__dirname, 'src/templates')
 var config = {
   entry: {
     main: APP_DIR + '/index.js',
-    login: APP_DIR + '/login.js',
+    login: APP_DIR + '/login.js'
   },
   output: {
     path: BUILD_DIR,
