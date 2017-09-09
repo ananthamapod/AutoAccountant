@@ -14,9 +14,9 @@ const plaidEndpoints = require('./plaid_endpoints.js')
 const Account = require('../models/Account')
 
 router.use('/plaid', plaidEndpoints)
-router.use('transactions', transactionController)
-router.use('goals', goalController)
-router.use('bills', billController)
+router.use('/transactions', transactionController)
+router.use('/goals', goalController)
+router.use('/bills', billController)
 
 /* GET route for getting account data from database for all accounts */
 router.get('/accounts', //passport.authenticate('jwt', { session: false }),

@@ -6,7 +6,7 @@ const router = express.Router()
 const Goal = require('../../models/Goal')
 
 /* GET route for getting goals from database */
-router.get('/goals', //passport.authenticate('jwt', { session: false }),
+router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   Goal.find({})
     .then((goals) => {
@@ -23,7 +23,7 @@ router.get('/goals', //passport.authenticate('jwt', { session: false }),
 })
 
 /* POST route for creating new goals */
-router.post('/goals', //passport.authenticate('jwt', { session: false }),
+router.post('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   debug(req.body)
   Goal.create(req.body.goal, (err, doc) => {
@@ -38,7 +38,7 @@ router.post('/goals', //passport.authenticate('jwt', { session: false }),
 })
 
 /* GET route for retrieving goals objects by id */
-router.get('/goals/:id', //passport.authenticate('jwt', { session: false }),
+router.get('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let goal_id = req.params.id
   debug(`Returning goal ${goal_id}`)
@@ -58,7 +58,7 @@ router.get('/goals/:id', //passport.authenticate('jwt', { session: false }),
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/goals/:id', //passport.authenticate('jwt', { session: false }),
+router.patch('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let goal_id = req.params.id
   debug(`Returning goal ${goal_id}`)
@@ -78,7 +78,7 @@ router.patch('/goals/:id', //passport.authenticate('jwt', { session: false }),
 })
 
 /* DELETE route for deleting goals by id */
-router.delete('/goals/:id', //passport.authenticate('jwt', { session: false }),
+router.delete('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let goal_id = req.params.id
   debug(`Deleting goal ${goal_id}`)

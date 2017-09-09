@@ -6,7 +6,7 @@ const router = express.Router()
 const Transaction = require('../../models/Transaction')
 
 /* GET route for getting transaction data from database for all transactions */
-router.get('/transactions', //passport.authenticate('jwt', { session: false }),
+router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   Transaction.find({})
     .then((transactions) => {
@@ -25,7 +25,7 @@ router.get('/transactions', //passport.authenticate('jwt', { session: false }),
 })
 
 /* POST route for creating new transactions */
-router.post('/transactions', //passport.authenticate('jwt', { session: false }),
+router.post('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   debug(req.body)
   Transaction.create(req.body.transaction, (err, doc) => {
@@ -40,7 +40,7 @@ router.post('/transactions', //passport.authenticate('jwt', { session: false }),
 })
 
 /* GET route for retrieving transactions objects by id */
-router.get('/transactions/:id', //passport.authenticate('jwt', { session: false }),
+router.get('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let transaction_id = req.params.id
   debug(`Returning transaction ${transaction_id}`)
@@ -60,7 +60,7 @@ router.get('/transactions/:id', //passport.authenticate('jwt', { session: false 
 })
 
 /* PATCH route for updating transactions objects by id */
-router.patch('/transactions/:id', //passport.authenticate('jwt', { session: false }),
+router.patch('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let transaction_id = req.params.id
   debug(`Returning transaction ${transaction_id}`)
@@ -80,7 +80,7 @@ router.patch('/transactions/:id', //passport.authenticate('jwt', { session: fals
 })
 
 /* DELETE route for deleting transactions by id */
-router.delete('/transactions/:id', //passport.authenticate('jwt', { session: false }),
+router.delete('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let transaction_id = req.params.id
   debug(`Deleting transaction ${transaction_id}`)

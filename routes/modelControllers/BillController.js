@@ -6,7 +6,7 @@ const router = express.Router()
 const Bill = require('../../models/Bill')
 
 /* GET route for getting bills from database */
-router.get('/bills', //passport.authenticate('jwt', { session: false }),
+router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   Bill.find({})
     .then((bills) => {
@@ -23,7 +23,7 @@ router.get('/bills', //passport.authenticate('jwt', { session: false }),
 })
 
 /* POST route for creating new bills */
-router.post('/bills', //passport.authenticate('jwt', { session: false }),
+router.post('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   debug(req.body)
   Bill.create(req.body.bill, (err, doc) => {
@@ -38,7 +38,7 @@ router.post('/bills', //passport.authenticate('jwt', { session: false }),
 })
 
 /* GET route for retrieving bills objects by id */
-router.get('/bills/:id', //passport.authenticate('jwt', { session: false }),
+router.get('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let bill_id = req.params.id
   debug(`Returning bill ${bill_id}`)
@@ -58,7 +58,7 @@ router.get('/bills/:id', //passport.authenticate('jwt', { session: false }),
 })
 
 /* PATCH route for updating goals objects by id */
-router.patch('/bills/:id', //passport.authenticate('jwt', { session: false }),
+router.patch('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let bill_id = req.params.id
   debug(`Returning bill ${bill_id}`)
@@ -78,7 +78,7 @@ router.patch('/bills/:id', //passport.authenticate('jwt', { session: false }),
 })
 
 /* DELETE route for deleting bills by id */
-router.delete('/bills/:id', //passport.authenticate('jwt', { session: false }),
+router.delete('/:id', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   let bill_id = req.params.id
   debug(`Deleting bill ${bill_id}`)
