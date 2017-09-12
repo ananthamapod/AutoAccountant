@@ -47,6 +47,7 @@
     "eslint-plugin-react": "^7.2.1",
     "express": "~4.14.0",
     "express-minify-html": "^0.11.4",
+    "express-webpack-assets": "^0.1.0",
     "html-webpack-plugin": "^2.30.1",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.2.1",

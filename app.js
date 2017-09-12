@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const minifyHTML = require('express-minify-html')
 const debug = require('debug')('autoaccountant:server')
-const webpackAssets = require('./express-webpack-asset')
+const webpackAssets = require('express-webpack-assets')
 
 /*** ROUTES IMPORTS ***/
 const index = require('./routes/index')
