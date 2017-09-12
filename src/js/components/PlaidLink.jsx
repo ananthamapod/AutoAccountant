@@ -30,16 +30,18 @@ class PlaidLink extends Component {
 
     this.handler = self.Plaid.create({
       apiVersion: 'v2',
-      clientName: 'Plaid Walkthrough Demo',
+      clientName: 'AutoAccountant',
       env: plaid_env,
       product: ['transactions'],
       key: plaid_public_key,
       onSuccess: (public_token) => {
         fetch('api/plaid/get_access_token', {
           method: 'POST',
-          body: {
-            public_token: public_token
-          }
+          body: JSON.stringify({ public_token: public_token }),
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          })
         }).then(() => {
           this.props.getAccounts()
           this.props.getTransactions()
