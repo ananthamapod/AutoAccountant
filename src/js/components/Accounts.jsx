@@ -1,7 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getAccounts, fetchAccountsIfNeeded } from '../actions/actionCreators'
+import {
+  getAccounts, fetchAccountsIfNeeded,
+  editAccount, updateAccount, cancelEditAccount, handleUpdateAccountIfNeeded
+ } from '../actions/actionCreators'
 import Account from './Account.jsx'
 
 class Accounts extends Component {
@@ -13,7 +16,17 @@ class Accounts extends Component {
     const accounts = []
     for (let i = 0; i < this.props.accounts.items.length; i++) {
       const account = this.props.accounts.items[i]
-      accounts.push(<Account key={i} account={account} />)
+      accounts.push(
+        <Account
+          key={i}
+          index={i}
+          editing={i == this.props.accounts.editingIndex}
+          account={account}
+          onEditAccount={this.props.editAccount(i)}
+          onSaveAccount={this.props.updateAccount}
+          onCancelEditAccount={this.props.cancelEditAccount}
+        />
+      )
     }
     return (
       <div>
@@ -35,6 +48,18 @@ const mapDispatchToProps = (dispatch) => {
     refreshAccounts: () => {
       dispatch(getAccounts())
       dispatch(fetchAccountsIfNeeded())
+    },
+    editAccount: (index) => {
+      return () => {
+        dispatch(editAccount(index))
+      }
+    },
+    updateAccount: (account) => {
+      dispatch(updateAccount(account))
+      dispatch(handleUpdateAccountIfNeeded())
+    },
+    cancelEditAccount: () => {
+      dispatch(cancelEditAccount())
     }
   }
 }

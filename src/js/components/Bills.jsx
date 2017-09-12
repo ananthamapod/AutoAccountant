@@ -46,6 +46,7 @@ class Bills extends Component {
       bills.push(
         <Bill
           key={i}
+          index={i}
           editing={i == this.props.bills.editingIndex}
           deleting={i == this.props.bills.deletingIndex}
           bill={bill}
