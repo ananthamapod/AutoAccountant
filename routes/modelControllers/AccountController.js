@@ -71,7 +71,7 @@ router.patch('/:id', //passport.authenticate('jwt', { session: false }),
   let account_id = req.params.id
   debug(`Updating account ${account_id}`)
   if (account_id != "") {
-    Account.update({account_id: account_id}, req.body.account)
+    Account.update({_id: account_id}, req.body.account)
     .then((account) => {
       res.json(account)
       debug(account)

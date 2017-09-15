@@ -1,7 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+import NavBar from './NavBar.jsx'
 import Dashboard from './Dashboard.jsx'
+import Goals from './Goals.jsx'
 
 class App extends Component {
   constructor(props) {
@@ -11,7 +13,13 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Route path='/' component={Dashboard} />
+        <NavBar />
+        <div>
+          <Switch>
+            <Route exact path='/' component={Dashboard} />
+            <Route path='/goals' component={Goals} />
+          </Switch>
+        </div>
       </div>
     )
   }
