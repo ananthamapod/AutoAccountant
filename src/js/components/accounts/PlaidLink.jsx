@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getAccounts, getTransactions } from '../actions/actionCreators'
+import { getAccounts, getTransactions } from '../../actions/actionCreators'
+import { Button } from 'reactstrap'
 
 class PlaidLink extends Component {
   constructor(props) {
@@ -12,12 +13,16 @@ class PlaidLink extends Component {
       this[elem] = this[elem].bind(this)
     })
 
-    this.instantiateLink()
+    setTimeout(() => this.instantiateLink(), 0)
   }
 
   onClick() {
     console.log(this)
-    this.handler.open()
+    if (this.handler) {
+      this.handler.open()
+    } else {
+      alert('Connection Error')
+    }
   }
 
   instantiateLink() {
@@ -43,8 +48,7 @@ class PlaidLink extends Component {
             Accept: 'application/json'
           })
         }).then(() => {
-          this.props.getAccounts()
-          this.props.getTransactions()
+          this.props.loadAccountData()
         })
       }
     })
@@ -52,19 +56,15 @@ class PlaidLink extends Component {
 
   render() {
     return (
-      <div>
-        <button id='link-btn' onClick={this.onClick}>Link Account</button>
-      </div>
+      <Button className="float-sm-right" color="info" outline id='link-btn' onClick={this.onClick}>Link New Account</Button>
     )
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAccounts: () => {
+    loadAccountData: () => {
       dispatch(getAccounts())
-    },
-    getTransactions: () => {
       dispatch(getTransactions())
     }
   }

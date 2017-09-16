@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
+import { Container, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 
 class NavBar extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class NavBar extends Component {
   render() {
     return (
       <Navbar color="faded" light toggleable>
-        <NavbarToggler onClick={this.toggle} />
+        <NavbarToggler right onClick={this.toggle} />
         <NavbarBrand href="/">autoaccountant</NavbarBrand>
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
@@ -28,7 +28,10 @@ class NavBar extends Component {
               <NavLink tag={Link} to="/goals">Goals</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={Link} to="/transactions">Transactions</NavLink>
+              <NavLink tag={Link} to="/accounts">Accounts</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/expenses">Expenses</NavLink>
             </NavItem>
           </Nav>
         </Collapse>

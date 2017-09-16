@@ -2,27 +2,22 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import NavBar from './NavBar.jsx'
-import Dashboard from './Dashboard.jsx'
-import Goals from './Goals.jsx'
+import Dashboard from './dashboard/Dashboard.jsx'
+import Goals from './goals/Goals.jsx'
+import Accounts from './accounts/Accounts.jsx'
+import Expenses from './expenses/Expenses.jsx'
 
-class App extends Component {
-  constructor(props) {
-    super(props)
-
-  }
-  render() {
-    return (
-      <div>
-        <NavBar />
-        <div>
-          <Switch>
-            <Route exact path='/' component={Dashboard} />
-            <Route path='/goals' component={Goals} />
-          </Switch>
-        </div>
-      </div>
-    )
-  }
-}
+const App = () =>
+  <div>
+    <NavBar />
+    <div>
+      <Switch>
+        <Route exact path='/' component={Dashboard} />
+        <Route path='/goals' component={Goals} />
+        <Route path='/accounts' component={Accounts} />
+        <Route path='/expenses' component={Expenses} />
+      </Switch>
+    </div>
+  </div>
 
 export default App

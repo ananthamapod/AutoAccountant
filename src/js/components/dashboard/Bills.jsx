@@ -17,7 +17,7 @@ import {
   confirmDeleteBill,
   cancelDeleteBill,
   handleDeleteBillIfNeeded
-} from '../actions/actionCreators'
+} from '../../actions/actionCreators'
 import Bill from './Bill.jsx'
 
 class Bills extends Component {

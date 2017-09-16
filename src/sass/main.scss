@@ -1,1 +1,21 @@
 // @import "~bootstrap/scss/bootstrap"
+html.dark {
+  &, body {
+    background: #072642;
+  }
+}
+.dash-account {
+  .row {
+    background: #3498db;
+    border-radius: 0.4em;
+    overflow: hidden;
+
+    .balance {
+      font-weight: bold;
+      background: #2ecc71;
+    }
+    .credit-balance {
+      background: #e74c3c;
+    }
+  }
+}

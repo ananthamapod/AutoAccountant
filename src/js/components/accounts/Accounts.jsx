@@ -4,8 +4,10 @@ import { connect } from 'react-redux'
 import {
   getAccounts, fetchAccountsIfNeeded,
   editAccount, updateAccount, cancelEditAccount, handleUpdateAccountIfNeeded
- } from '../actions/actionCreators'
+} from '../../actions/actionCreators'
+import PlaidLink from './PlaidLink.jsx'
 import Account from './Account.jsx'
+import { Button, Container, Row, Col } from 'reactstrap'
 
 class Accounts extends Component {
   constructor(props) {
@@ -29,10 +31,16 @@ class Accounts extends Component {
       )
     }
     return (
-      <div>
-        <button onClick={this.props.refreshAccounts}>Get Accounts</button>
+      <Container>
+        <div className="pt-5">
+          <h1>Accounts</h1>
+        </div>
+        <div className="py-3">
+          <Button outline color="primary" className="ml-auto" onClick={this.props.refreshAccounts}>Refresh Accounts</Button>
+          <PlaidLink />
+        </div>
         {accounts}
-      </div>
+      </Container>
     )
   }
 }

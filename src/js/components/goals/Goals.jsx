@@ -17,8 +17,9 @@ import {
   confirmDeleteGoal,
   cancelDeleteGoal,
   handleDeleteGoalIfNeeded
-} from '../actions/actionCreators'
+} from '../../actions/actionCreators'
 import Goal from './Goal.jsx'
+import { Button, Container, Row, Col } from 'reactstrap'
 
 class Goals extends Component {
   constructor(props) {
@@ -65,17 +66,25 @@ class Goals extends Component {
         <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
         <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
         <div>
-            <button id="addGoal" onClick={this.addGoal}>Add</button>
-            <button id="cancelAddGoal" onClick={this.props.cancelCreateGoal}>Cancel</button>
+            <Button id="addGoal" onClick={this.addGoal}>Add</Button>
+            <Button id="cancelAddGoal" onClick={this.props.cancelCreateGoal}>Cancel</Button>
         </div>
-      </div>:
-      <button id="add-goals-btn" onClick={this.props.createGoal}>+</button>
+      </div>: ''
     return (
-      <div>
-        <button id="get-goals-btn" onClick={this.props.refreshGoals}>Get Goals</button>
-        {addGoalElement}
-        <div>{goals}</div>
-      </div>
+      <Container>
+        <div className="pt-5">
+          <h1>Goals</h1>
+        </div>
+        <div className="py-3">
+          <Button id="get-goals-btn" outline color="primary" className="ml-auto" onClick={this.props.refreshGoals}>Refresh Goals</Button>
+          {this.props.goals.creating?
+            '':
+            <Button className="float-sm-right" color="info" outline id="add-goals-btn" onClick={this.props.createGoal}>Add New Goal</Button>
+          }
+        </div>
+        <div>{addGoalElement}</div>
+        {goals}
+      </Container>
     )
   }
 }

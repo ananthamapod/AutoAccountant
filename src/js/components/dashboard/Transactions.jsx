@@ -17,7 +17,7 @@ import {
   confirmDeleteTransaction,
   cancelDeleteTransaction,
   handleDeleteTransactionIfNeeded
-} from '../actions/actionCreators'
+} from '../../actions/actionCreators'
 import Transaction from './Transaction.jsx'
 
 class Transactions extends Component {
