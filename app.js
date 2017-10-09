@@ -69,9 +69,10 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(passport.initialize())
 
-app.use('/', index)
 app.use('/users', users)
 app.use('/api', api)
+// NOTE: MAIN ROUTE LINKED IN LAST BECAUSE IT'S A FALLTHROUGH, DO NOT MOVE UP
+app.use('/', index)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

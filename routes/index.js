@@ -9,7 +9,7 @@ const PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY')
 const PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox')
 
 /* GET home page. */
-router.get('/',// passport.authenticate('jwt', { session: false }),
+router.get('/*',// passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
   res.renderMin('index', { PLAID_ENV: PLAID_ENV, PLAID_PUBLIC_KEY: PLAID_PUBLIC_KEY })
 })
