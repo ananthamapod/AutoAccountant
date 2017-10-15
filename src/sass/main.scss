@@ -19,3 +19,26 @@ html.dark {
     }
   }
 }
+
+.transaction {
+
+  &.positive {
+    background: #ABEBC6;
+  }
+
+  &.negative {
+    background: #F5B7B1;
+  }
+
+  .row {
+    overflow: hidden;
+
+    .date {
+      font-weight: bold;
+      background: #2ecc71;
+    }
+    .credit-balance {
+      background: #e74c3c;
+    }
+  }
+}
