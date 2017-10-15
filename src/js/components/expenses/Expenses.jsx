@@ -3,8 +3,9 @@ import React, { Component } from 'react'
 // eslint-disable-next-line no-unused-vars
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { Container, Row } from 'reactstrap'
+import { Container, Row, Col } from 'reactstrap'
 import { ResponsiveContainer, LineChart, XAxis, YAxis, CartesianGrid, Line } from 'recharts'
+import Transactions from './Transactions.jsx'
 
 class Expenses extends Component {
   constructor(props) {
@@ -16,20 +17,25 @@ class Expenses extends Component {
 
   render() {
     return (
-      <Container>
+      <Container fluid={true}>
         <Row>
           <h1 className="py-3">Expenses</h1>
         </Row>
-        <Row style={{height: "800px"}}>
-          <ResponsiveContainer>
-            <LineChart data={this.props.transactions.items}>
-              <XAxis dataKey="name"/>
-              <YAxis/>
-              <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-              <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-              // <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
-            </LineChart>
-          </ResponsiveContainer>
+        <Row>
+          <Col md="8" style={{height: "800px"}}>
+            <ResponsiveContainer>
+              <LineChart data={this.props.transactions.items}>
+                <XAxis dataKey="name"/>
+                <YAxis/>
+                <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+                // <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
+              </LineChart>
+            </ResponsiveContainer>
+          </Col>
+          <Col md="4" style={{maxHeight: "100%", overflow: "auto"}}>
+            <Transactions />
+          </Col>
         </Row>
       </Container>
     )

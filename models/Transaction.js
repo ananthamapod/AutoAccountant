@@ -56,14 +56,12 @@ const transactionSchema = new Schema({
   transaction_type: {
     type: String,
     required: true
+  },
+  description: {
+    type: String,
+    required: true,
+    default: ""
   }
-})
-
-transactionSchema.pre('save', function(next) {
-  if (typeof this.date === 'string') {
-    this.deadline = moment(this.deadline)
-  }
-  next()
 })
 
 const Transaction = mongoose.model('Transaction', transactionSchema)
