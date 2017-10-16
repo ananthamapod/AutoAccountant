@@ -4,6 +4,11 @@ html.dark {
     background: #072642;
   }
 }
+
+.btn {
+  cursor: pointer;
+}
+
 .dash-account {
   .row {
     background: #3498db;
@@ -24,10 +29,20 @@ html.dark {
 
   &.positive {
     background: #ABEBC6;
+    border-bottom: 1px solid #2ECC71;
+
+    &:hover {
+      background: #2ECC71;
+    }
   }
 
   &.negative {
     background: #F5B7B1;
+    border-bottom: 1px solid #E74C3C;
+
+    &:hover {
+      background: #E74C3C;
+    }
   }
 
   .row {

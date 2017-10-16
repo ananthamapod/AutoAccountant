@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import { Container, Button, FormGroup, Input, Label } from 'reactstrap'
 import {
   createTransaction,
   addTransaction,
@@ -61,20 +62,29 @@ class Transactions extends Component {
     let addTransactionElement = this.props.transactions.creating?
       <div id="newTransaction">
         <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
+        <FormGroup>
+          <Label for="typeSelect">Type</Label>
+          <Input type="select" name="type" id="typeSelect">
+            <option>expense</option>
+            <option>deposit</option>
+          </Input>
+        </FormGroup>
         <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
         <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
         <div>
-            <button id="addTransaction" onClick={this.addTransaction}>Add</button>
-            <button id="cancelAddTransaction" onClick={this.props.cancelCreateTransaction}>Cancel</button>
+            <Button id="addTransaction" onClick={this.addTransaction}>Add</Button>
+            <Button id="cancelAddTransaction" onClick={this.props.cancelCreateTransaction}>Cancel</Button>
         </div>
       </div>:
-      <button id="add-transactions-btn" onClick={this.props.createTransaction}>+</button>
+      <Button className="float-right" outline color="info" id="add-transactions-btn" onClick={this.props.createTransaction}>Add Transaction</Button>
     return (
-      <div>
-        <button id="get-transactions-btn" onClick={this.props.refreshTransactions}>Get Transactions</button>
-          {addTransactionElement}
+      <Container fluid={true} overflow="auto">
+        <h2>Transactions</h2>
+        <Button outline color="primary" id="get-transactions-btn" onClick={this.props.refreshTransactions}>Get Transactions</Button>
+        {addTransactionElement}
+        <hr color="success" />
         <div>{transactions}</div>
-      </div>
+      </Container>
     )
   }
 }

@@ -22,7 +22,7 @@ class Expenses extends Component {
           <h1 className="py-3">Expenses</h1>
         </Row>
         <Row>
-          <Col md="8" style={{height: "800px"}}>
+          <Col xs="12" md="8" style={{height: "800px"}}>
             <ResponsiveContainer>
               <LineChart data={this.props.transactions.items}>
                 <XAxis dataKey="name"/>
@@ -33,7 +33,7 @@ class Expenses extends Component {
               </LineChart>
             </ResponsiveContainer>
           </Col>
-          <Col md="4" style={{maxHeight: "100%", overflow: "auto"}}>
+          <Col xs="12" md="4" style={{maxHeight: "100%", overflow: "auto"}}>
             <Transactions />
           </Col>
         </Row>
