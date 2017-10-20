@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { Container, Button, FormGroup, Input, Label } from 'reactstrap'
+import { Container, Row, Col, Button, FormGroup, Input, Label } from 'reactstrap'
 import {
   createTransaction,
   addTransaction,
@@ -80,9 +80,12 @@ class Transactions extends Component {
     return (
       <Container fluid={true} overflow="auto">
         <h2>Transactions</h2>
-        <Button outline color="primary" id="get-transactions-btn" onClick={this.props.refreshTransactions}>Get Transactions</Button>
-        {addTransactionElement}
-        <hr color="success" />
+        <Row>
+          <Col>
+            <Button outline color="primary" id="get-transactions-btn" onClick={this.props.refreshTransactions}>Refresh Transactions</Button>
+            {addTransactionElement}
+          </Col>
+        </Row>
         <div>{transactions}</div>
       </Container>
     )

@@ -27,7 +27,7 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span><strong><input name="amount" type="number" defaultValue={Math.abs(transaction.amount)} /></strong></span>
+              <span className="transaction-amount"><strong><input name="amount" type="number" defaultValue={Math.abs(transaction.amount)} /></strong></span>
               <FormGroup>
                 <Label for="typeSelect">Type</Label>
                 <Input type="select" name="type" id="typeSelect">
@@ -35,8 +35,12 @@ class Transaction extends Component {
                   <option value={-1}>deposit</option>
                 </Input>
               </FormGroup>
-              <small className="transaction-date">{moment(transaction.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
-              <span><strong><input name="name" type="text" defaultValue={transaction.name} /></strong></span>
+              <small className="transaction-date">{moment(transaction.date).format('MMMM Do YYYY, h:mm a')}</small>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="transaction-name"><strong><input name="name" type="text" defaultValue={transaction.name} /></strong></span>
             </Col>
           </Row>
           <Row>
@@ -57,9 +61,13 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span><strong>{Math.abs(transaction.amount)}</strong></span>
-              <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm:ss a')}</small>
-              <span><strong>{transaction.name}</strong></span>
+              <span className="transaction-amount"><strong>{Math.abs(transaction.amount)}</strong></span>
+              <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="transaction-name"><strong>{transaction.name}</strong></span>
             </Col>
           </Row>
           <Row>
@@ -69,8 +77,12 @@ class Transaction extends Component {
           </Row>
           <Row>
             <Col>
-              <span>Are you sure you want to delete this Transaction?</span>
-                <Button id={"confirmDeleteTransaction" + this.props.index} onClick={this.props.onConfirmDeleteTransaction}>Yes</Button>
+              <span className="text-danger">Are you sure you want to delete this Transaction?</span>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button id={"confirmDeleteTransaction" + this.props.index} onClick={this.props.onConfirmDeleteTransaction}>Yes</Button>
               <Button id={"cancelDeleteTransaction" + this.props.index} onClick={this.props.onCancelDeleteTransaction}>No</Button>
             </Col>
           </Row>
@@ -81,9 +93,13 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span><strong>{Math.abs(transaction.amount)}</strong></span>
-              <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm:ss a')}</small>
-              <span><strong>{transaction.name}</strong></span>
+              <span className="transaction-amount"><strong>{Math.abs(transaction.amount)}</strong></span>
+              <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="transaction-name"><strong>{transaction.name}</strong></span>
             </Col>
           </Row>
           <Row>

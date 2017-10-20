@@ -33,7 +33,7 @@ class Expenses extends Component {
               </LineChart>
             </ResponsiveContainer>
           </Col>
-          <Col xs="12" md="4" style={{maxHeight: "100%", overflow: "auto"}}>
+          <Col className="expense-transactions" xs="12" md="4" style={{maxHeight: "100%", overflow: "auto", borderLeft: "0.1em solid slategrey"}}>
             <Transactions />
           </Col>
         </Row>

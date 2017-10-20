@@ -25,35 +25,68 @@ html.dark {
   }
 }
 
-.transaction {
+.expense-transactions {
+  .btn {
+    margin: 1em;
+  }
 
-  &.positive {
-    background: #ABEBC6;
-    border-bottom: 1px solid #2ECC71;
+  .transaction {
 
-    &:hover {
-      background: #2ECC71;
+    transition: 1s;
+
+    &.positive {
+      border-top: 1px solid #2ECC71;
+      border-bottom: 1px solid #2ECC71;
+
+      &:hover {
+        background: #ABEBC6;
+      }
+
+      .transaction-amount {
+        color: #2ECC71;
+      }
+
+      .transaction-date {
+        border: 1px solid #2ECC71;
+      }
+    }
+
+    &.negative {
+      border-top: 1px solid #E74C3C;
+      border-bottom: 1px solid #E74C3C;
+
+      &:hover {
+        background: #F5B7B1;
+      }
+
+      .transaction-amount {
+        color: #E74C3C;
+      }
+
+      .transaction-date {
+        border: 1px solid #E74C3C;
+      }
+    }
+
+    .row {
+      overflow: hidden;
+
+      .transaction-date {
+        font-weight: bold;
+        padding: 0.4em 0.4em;
+        background: ghostwhite;
+        float: right;
+      }
+      .transaction-name {
+      }
+      .transaction-amount {
+        font-size: 2em;
+      }
+    }
+
+    .badge {
+      margin-right: 0.5em;
     }
   }
 
-  &.negative {
-    background: #F5B7B1;
-    border-bottom: 1px solid #E74C3C;
-
-    &:hover {
-      background: #E74C3C;
-    }
-  }
-
-  .row {
-    overflow: hidden;
-
-    .date {
-      font-weight: bold;
-      background: #2ecc71;
-    }
-    .credit-balance {
-      background: #e74c3c;
-    }
-  }
 }
