@@ -19,7 +19,9 @@ class Expenses extends Component {
     return (
       <Container fluid={true}>
         <Row>
-          <h1 className="py-3">Expenses</h1>
+          <Col>
+            <h1 className="py-3">Expenses</h1>
+          </Col>
         </Row>
         <Row>
           <Col xs="12" md="8" style={{height: "800px"}}>

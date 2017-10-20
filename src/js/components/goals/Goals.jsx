@@ -72,17 +72,21 @@ class Goals extends Component {
       </div>: ''
     return (
       <Container>
-        <div className="pt-5">
-          <h1>Goals</h1>
-        </div>
-        <div className="py-3">
-          <Button id="get-goals-btn" outline color="primary" className="ml-auto" onClick={this.props.refreshGoals}>Refresh Goals</Button>
-          {this.props.goals.creating?
-            '':
-            <Button className="float-sm-right" color="info" outline id="add-goals-btn" onClick={this.props.createGoal}>Add New Goal</Button>
-          }
-        </div>
-        <div>{addGoalElement}</div>
+        <Row>
+          <Col className="pt-5">
+            <h1>Goals</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="py-3">
+            <Button id="get-goals-btn" outline color="primary" className="ml-auto" onClick={this.props.refreshGoals}>Refresh Goals</Button>
+            {this.props.goals.creating?
+              '':
+              <Button className="float-sm-right" color="info" outline id="add-goals-btn" onClick={this.props.createGoal}>Add New Goal</Button>
+            }
+            <div>{addGoalElement}</div>
+          </Col>
+        </Row>
         {goals}
       </Container>
     )

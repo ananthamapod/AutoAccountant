@@ -32,13 +32,17 @@ class Accounts extends Component {
     }
     return (
       <Container>
-        <div className="pt-5">
-          <h1>Accounts</h1>
-        </div>
-        <div className="py-3">
-          <Button outline color="primary" className="ml-auto" onClick={this.props.refreshAccounts}>Refresh Accounts</Button>
-          <PlaidLink />
-        </div>
+        <Row>
+          <Col className="pt-5">
+            <h1>Accounts</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="py-3">
+            <Button outline color="primary" className="ml-auto" onClick={this.props.refreshAccounts}>Refresh Accounts</Button>
+            <PlaidLink />
+          </Col>
+        </Row>
         {accounts}
       </Container>
     )
