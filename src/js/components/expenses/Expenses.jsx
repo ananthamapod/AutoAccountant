@@ -17,7 +17,7 @@ class Expenses extends Component {
 
   render() {
     return (
-      <Container fluid={true}>
+      <Container className="expenses" fluid={true}>
         <Row>
           <Col>
             <h1 className="py-3">Expenses</h1>

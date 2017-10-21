@@ -31,7 +31,7 @@ class Accounts extends Component {
       )
     }
     return (
-      <Container>
+      <Container className="accounts">
         <Row>
           <Col className="pt-5">
             <h1>Accounts</h1>

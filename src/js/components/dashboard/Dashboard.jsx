@@ -14,7 +14,7 @@ class Dashboard extends Component {
   }
   render() {
     return (
-      <Container fluid={true}>
+      <Container className="dashboard" fluid={true}>
         <Row>
           <Col xs={{ size: 12 }} sm={{ size: 7 }} md={{ size: 8 }}>
             <Link to="/expenses">
