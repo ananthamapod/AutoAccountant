@@ -63,13 +63,14 @@ class Goals extends Component {
     let addGoalElement = this.props.goals.creating?
       <div id="newGoal">
         <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
-        <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
+        <small name="timestamp">{moment().format('MM/DD/YYYY, h:mm a')}</small>
         <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
         <div>
             <Button id="addGoal" onClick={this.addGoal}>Add</Button>
             <Button id="cancelAddGoal" onClick={this.props.cancelCreateGoal}>Cancel</Button>
         </div>
-      </div>: ''
+      </div>:
+      <Button className="float-sm-right" color="info" outline id="add-goals-btn" onClick={this.props.createGoal}>Add New Goal</Button>
     return (
       <Container>
         <Row>
@@ -80,11 +81,7 @@ class Goals extends Component {
         <Row>
           <Col className="py-3">
             <Button id="get-goals-btn" outline color="primary" className="ml-auto" onClick={this.props.refreshGoals}>Refresh Goals</Button>
-            {this.props.goals.creating?
-              '':
-              <Button className="float-sm-right" color="info" outline id="add-goals-btn" onClick={this.props.createGoal}>Add New Goal</Button>
-            }
-            <div>{addGoalElement}</div>
+            {addGoalElement}
           </Col>
         </Row>
         {goals}

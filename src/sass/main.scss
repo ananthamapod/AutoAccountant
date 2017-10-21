@@ -7,6 +7,7 @@ html.dark {
 
 .btn {
   cursor: pointer;
+  margin: 1em;
 }
 
 .dash-account {
@@ -26,10 +27,6 @@ html.dark {
 }
 
 .expense-transactions {
-  .btn {
-    margin: 1em;
-  }
-
   .transaction {
 
     transition: 1s;
@@ -43,7 +40,9 @@ html.dark {
       }
 
       .transaction-amount {
-        color: #2ECC71;
+        &, & input {
+          color: #2ECC71;
+        }
       }
 
       .transaction-date {
@@ -60,7 +59,9 @@ html.dark {
       }
 
       .transaction-amount {
-        color: #E74C3C;
+        &, & input {
+          color: #E74C3C;
+        }
       }
 
       .transaction-date {

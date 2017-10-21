@@ -27,7 +27,22 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span className="transaction-amount"><strong><input name="amount" type="number" defaultValue={Math.abs(transaction.amount)} /></strong></span>
+              <span className="transaction-amount"><strong><Input name="amount" type="number" defaultValue={Math.abs(transaction.amount)} /></strong></span>
+              <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="transaction-name"><strong><Input name="name" type="text" defaultValue={transaction.name} /></strong></span>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span><Input name="category" type="text" defaultValue={transaction.category && transaction.category.join(",")} /></span>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
               <FormGroup>
                 <Label for="typeSelect">Type</Label>
                 <Input type="select" name="type" id="typeSelect">
@@ -35,17 +50,6 @@ class Transaction extends Component {
                   <option value={-1}>deposit</option>
                 </Input>
               </FormGroup>
-              <small className="transaction-date">{moment(transaction.date).format('MMMM Do YYYY, h:mm a')}</small>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <span className="transaction-name"><strong><input name="name" type="text" defaultValue={transaction.name} /></strong></span>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <span><input name="category" defaultValue={transaction.category && transaction.category.join(",")} /></span>
             </Col>
           </Row>
           <Row>
