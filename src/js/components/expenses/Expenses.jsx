@@ -17,14 +17,14 @@ class Expenses extends Component {
 
   render() {
     return (
-      <Container className="expenses" fluid={true}>
+      <Container className="expenses" fluid={true} flexDirection="column">
         <Row>
           <Col>
             <h1 className="py-3">Expenses</h1>
           </Col>
         </Row>
-        <Row>
-          <Col xs="12" md="8" style={{height: "800px"}}>
+        <Row flexGrow="1" style={{alignItems: "stretch"}}>
+          <Col xs="12" md="8">
             <ResponsiveContainer>
               <LineChart data={this.props.transactions.items}>
                 <XAxis dataKey="name"/>
@@ -35,7 +35,7 @@ class Expenses extends Component {
               </LineChart>
             </ResponsiveContainer>
           </Col>
-          <Col className="expense-transactions" xs="12" md="4" style={{maxHeight: "100%", overflow: "auto", borderLeft: "0.1em solid slategrey"}}>
+          <Col className="expense-transactions" xs="12" md="4" style={{borderLeft: "0.1em solid slategrey"}}>
             <Transactions />
           </Col>
         </Row>

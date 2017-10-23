@@ -86,7 +86,7 @@ class Transactions extends Component {
             {addTransactionElement}
           </Col>
         </Row>
-        <div>{transactions}</div>
+        <div style={{maxHeight: "700px", overflow: "auto"}}>{transactions}</div>
       </Container>
     )
   }
