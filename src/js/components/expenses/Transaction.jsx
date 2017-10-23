@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { Container, Row, Col, Button, FormGroup, Input, Label, Badge } from 'reactstrap'
 import moment from 'moment'
 
+const currencyFormat = new Intl.NumberFormat({ style: 'currency', currency: 'USD' })
+
 class Transaction extends Component {
   constructor(props) {
     super(props)
@@ -27,8 +29,8 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span className="transaction-amount"><strong><Input name="amount" type="number" defaultValue={Math.abs(transaction.amount)} /></strong></span>
               <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
+              <span className="transaction-amount"><strong><Input name="amount" type="number" defaultValue={currencyFormat.format(Math.abs(transaction.amount))} /></strong></span>
             </Col>
           </Row>
           <Row>
@@ -65,7 +67,7 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span className="transaction-amount"><strong>{Math.abs(transaction.amount)}</strong></span>
+              <span className="transaction-amount"><strong>${currencyFormat.format(Math.abs(transaction.amount))}</strong></span>
               <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
             </Col>
           </Row>
@@ -97,7 +99,7 @@ class Transaction extends Component {
         <Container className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
           <Row>
             <Col>
-              <span className="transaction-amount"><strong>{Math.abs(transaction.amount)}</strong></span>
+              <span className="transaction-amount"><strong>${currencyFormat.format(Math.abs(transaction.amount))}</strong></span>
               <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
             </Col>
           </Row>

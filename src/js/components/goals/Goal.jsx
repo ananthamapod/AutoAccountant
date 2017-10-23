@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import { Badge, Button, Container, Row, Col } from 'reactstrap'
 
+const currencyFormat = new Intl.NumberFormat({ style: 'currency', currency: 'USD' })
+
 class Goal extends Component {
   constructor(props) {
     super(props)
@@ -20,7 +22,6 @@ class Goal extends Component {
   }
 
   render() {
-    const currencyFormat = new Intl.NumberFormat({ style: 'currency', currency: 'USD' })
     const goal = this.props.goal
     const buttonsElem = this.props.editing?
       (<div className="float-sm-right">
