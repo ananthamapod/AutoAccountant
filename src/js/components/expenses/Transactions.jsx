@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { Container, Row, Col, Button, FormGroup, Input, Label } from 'reactstrap'
+import { Container, Row, Col, Table, Button, FormGroup, Input, Label } from 'reactstrap'
 import {
   createTransaction,
   addTransaction,
@@ -86,7 +86,9 @@ class Transactions extends Component {
             {addTransactionElement}
           </Col>
         </Row>
-        <div style={{maxHeight: "700px", overflow: "auto"}}>{transactions}</div>
+        <div style={{maxHeight: "700px", overflowY: "auto"}}>
+          <Table striped className="transactions-wrapper"><tbody>{transactions}</tbody></Table>
+        </div>
       </Container>
     )
   }

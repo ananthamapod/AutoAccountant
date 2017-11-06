@@ -1,4 +1,7 @@
 // @import "~bootstrap/scss/bootstrap"
+html {
+  font-size: 16px;
+}
 html.dark {
   &, body {
     background: #072642;
@@ -27,13 +30,29 @@ html.dark {
 }
 
 .expense-transactions {
+  .transactions-wrapper {
+    border-top: 3px solid darkgrey;
+
+    &::-webkit-scrollbar {
+        width: 1em;
+    }
+
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: darkgrey;
+      outline: 1px solid slategrey;
+    }
+  }
+
   .transaction {
 
     transition: 1s;
 
     &.positive {
-      border-top: 1px solid #2ECC71;
-      border-bottom: 1px solid #2ECC71;
+      border-bottom: 2px solid #2ECC71;
 
       &:hover {
         background: #ABEBC6;
@@ -47,12 +66,12 @@ html.dark {
 
       .transaction-date {
         border: 1px solid #2ECC71;
+        border-top-width: 0;
       }
     }
 
     &.negative {
-      border-top: 1px solid #E74C3C;
-      border-bottom: 1px solid #E74C3C;
+      border-bottom: 2px solid #E74C3C;
 
       &:hover {
         background: #F5B7B1;
@@ -66,6 +85,7 @@ html.dark {
 
       .transaction-date {
         border: 1px solid #E74C3C;
+        border-top-width: 0;
       }
     }
 
