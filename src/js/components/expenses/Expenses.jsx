@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import { Container, Row, Col } from 'reactstrap'
-import { ResponsiveContainer, LineChart, Tooltip, XAxis, YAxis, CartesianGrid, Line } from 'recharts'
+import ExpenseChart from './ExpenseChart.jsx'
 import Transactions from './Transactions.jsx'
 
 class ExpenseTooltip extends Component {
@@ -46,16 +46,7 @@ class Expenses extends Component {
         </Row>
         <Row style={{alignItems: "stretch", flexGrow: "1" }}>
           <Col xs="12" md="8">
-            <ResponsiveContainer>
-              <LineChart data={this.props.transactions.items.map((elem) => { elem.parsedDate = moment(elem.date).valueOf(); return elem }).sort((a, b) => b.parsedDate - a.parsedDate)}>
-                <XAxis dataKey="parsedDate"/>
-                <YAxis/>
-                <Tooltip />
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-                // <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
-              </LineChart>
-            </ResponsiveContainer>
+            <ExpenseChart items={ this.props.transactions.items } />
           </Col>
           <Col className="expense-transactions" xs="12" md="4" style={{borderLeft: "0.1em solid slategrey"}}>
             <Transactions />
