@@ -26,7 +26,7 @@ class Transaction extends Component {
     let transaction = this.props.transaction
     if (this.props.editing) {
       return (
-        <tr className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
+        <tr className={"transaction " + (transaction.amount > 0? "positive" : "negative")}>
           <td>
             <Container fluid={true}>
               <Row>
@@ -68,7 +68,7 @@ class Transaction extends Component {
       )
     } else if (this.props.deleting) {
       return (
-        <tr className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
+        <tr className={"transaction " + (transaction.amount > 0? "positive" : "negative")}>
           <td>
             <Container fluid={true}>
               <Row>
@@ -104,7 +104,7 @@ class Transaction extends Component {
       )
     } else {
       return (
-        <tr className={"transaction " + (transaction.amount < 0? "positive" : "negative")}>
+        <tr className={"transaction " + (transaction.amount > 0? "positive" : "negative")}>
           <td>
             <Container fluid={true}>
               <Row>

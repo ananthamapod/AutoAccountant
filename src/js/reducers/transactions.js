@@ -52,7 +52,8 @@ function transactions(state = {
         items: (
           () => {
             let items = state.items.slice(0)
-            items.push(action.newTransaction)
+            items.push(Object.assign(action.newTransaction,
+              {amount: -action.newTransaction}))
             items.sort()
             return items
           })(),
@@ -77,7 +78,8 @@ function transactions(state = {
     case RECEIVE_TRANSACTIONS:
       return Object.assign({}, state, {
         isFetching: false,
-        items: action.transactions
+        items: action.transactions.map((elem) =>
+          Object.assign(elem, {amount: -elem.amount}))
       })
     case FAILED_RECEIVED_TRANSACTIONS:
       return Object.assign({}, state, {
@@ -107,7 +109,11 @@ function transactions(state = {
     case SUCCESSFUL_UPDATED_TRANSACTION:
       return Object.assign({}, state, {
         isUpdating: false,
-        items: state.items.map((elem, index) => state.editingIndex === index? state.updatingTransaction : elem),
+        items: state.items.map((elem, index) =>
+          state.editingIndex === index?
+            Object.assign(state.updatingTransaction,
+              {amount: -state.updatingTransaction.amount}):
+            elem),
         updatingTransaction: undefined,
         editingIndex: -1
       })
@@ -138,7 +144,8 @@ function transactions(state = {
       })
     case SUCCESSFUL_DELETED_TRANSACTION:
       return Object.assign({}, state, {
-        items: state.items.filter((elem, index) => index !== state.deletingIndex),
+        items: state.items.filter((elem, index) =>
+          index !== state.deletingIndex),
         isDeleting: false,
         deletingIndex: -1,
         deletingId: undefined,

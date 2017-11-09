@@ -15,7 +15,12 @@ class ExpenseChart extends Component {
   render() {
     return (
       <ResponsiveContainer>
-        <LineChart data={this.props.items.map((elem) => { elem.parsedDate = moment(elem.date).valueOf(); return elem }).sort((a, b) => b.parsedDate - a.parsedDate)}>
+        <LineChart data={this.props.items.map((elem) => {
+            elem.parsedDate = moment(elem.date).valueOf()
+            return elem
+          })
+          // .sort((a, b) => b.parsedDate - a.parsedDate)
+        }>
           <XAxis dataKey="parsedDate" tickFormatter={ (elem) => moment(elem.date).format("hH:mm:ss, MM/DD/YYYY") } />
           <YAxis/>
           <Tooltip />
