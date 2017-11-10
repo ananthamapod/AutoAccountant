@@ -1,6 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
+import { Badge, Button, Container, Row, Col } from 'reactstrap'
 import moment from 'moment'
+
+const currencyFormat = new Intl.NumberFormat({ style: 'currency', currency: 'USD' })
 
 class Transaction extends Component {
   constructor(props) {
@@ -20,52 +23,29 @@ class Transaction extends Component {
 
   render() {
     let transaction = this.props.transaction
-    if (this.props.editing) {
-      return (
-        <div>
-          <span><strong><input name="amount" type="number" defaultValue={transaction.amount} /></strong></span>
-          <small>{moment(transaction.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
-          <span><strong><input name="name" type="text" defaultValue={transaction.name} /></strong></span>
-          <span>{transaction.category}</span>
-          <div>
-            <span>{transaction.transaction_id}</span>
-            <button id="saveEditTransaction{this.props.index}" onClick={this.props.onSaveTransaction}>Save</button>
-            <button id="cancelEditTransaction{this.props.index}" onClick={this.props.onCancelEditTransaction}>Cancel</button>
-          </div>
-          <hr/>
-        </div>
-      )
-    } else if (this.props.deleting) {
-      return (
-        <div>
-          <span><strong>{transaction.amount}</strong></span>
-          <small>{moment(transaction.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
-          <span><strong>{transaction.name}</strong></span>
-          <span>{transaction.category}</span>
-          <div>
-            <span>Are you sure you want to delete this Transaction?</span>
-              <button id={"confirmDeleteTransaction" + this.props.index} onClick={this.props.onConfirmDeleteTransaction}>Yes</button>
-            <button id={"cancelDeleteTransaction" + this.props.index} onClick={this.props.onCancelDeleteTransaction}>No</button>
-          </div>
-          <hr/>
-        </div>
-      )
-    } else {
-      return (
-        <div>
-          <span><strong>{transaction.amount}</strong></span>
-          <small>{moment(transaction.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
-          <span><strong>{transaction.name}</strong></span>
-          <span>{transaction.category}</span>
-          <div>
-            <span>{transaction.transaction_id}</span>
-            <button id="editTransaction{this.props.index}" onClick={this.props.onEditTransaction}>Edit</button>
-            <button id="deleteTransaction{this.props.index}">Delete</button>
-          </div>
-          <hr/>
-        </div>
-      )
-    }
+    return (
+      <div className="transaction">
+        <Container fluid={true}>
+          <Row>
+            <Col>
+              <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
+              <span className="transaction-amount"><strong>${currencyFormat.format(Math.abs(transaction.amount))}</strong></span>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="transaction-name"><strong>{transaction.name}</strong></span>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {transaction.category && transaction.category.map((elem, ind) => (<Badge key={"badge" + ind} color="primary">{elem}</Badge>))}
+            </Col>
+          </Row>
+        </Container>
+        <hr/>
+      </div>
+    )
   }
 }
 

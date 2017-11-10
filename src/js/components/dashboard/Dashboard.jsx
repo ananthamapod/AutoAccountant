@@ -16,13 +16,13 @@ class Dashboard extends Component {
     return (
       <Container className="dashboard" fluid={true}>
         <Row>
-          <Col xs={{ size: 12 }} sm={{ size: 7 }} md={{ size: 8 }}>
+          <Col xs="12" sm="7" lg="8">
             <Link to="/expenses">
               <h1 className="py-3">Expenses</h1>
             </Link>
             <Transactions />
           </Col>
-          <Col xs={{ size: 12 }} sm={{ size: 5 }} md={{ size: 4 }}>
+          <Col xs="12" sm="5" lg="4">
             <Link to="/accounts">
               <h1 className="py-3">Accounts</h1>
             </Link>

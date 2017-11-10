@@ -14,7 +14,7 @@ html.dark {
 }
 
 .dash-account {
-  .row {
+  > .row {
     background: #3498db;
     border-radius: 0.4em;
     overflow: hidden;
@@ -26,6 +26,24 @@ html.dark {
     .credit-balance {
       background: #e74c3c;
     }
+  }
+}
+
+.dash-transactions {
+  .transaction {
+    .badge {
+      margin-right: 0.5em;
+    }
+  }
+}
+
+.dash-goals {
+  .goal {
+  }
+}
+
+.dash-bills {
+  .bill {
   }
 }
 

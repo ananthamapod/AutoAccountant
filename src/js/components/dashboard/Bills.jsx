@@ -59,21 +59,8 @@ class Bills extends Component {
         />
       )
     }
-    let addBillElement = this.props.bills.creating?
-      <div id="newBill">
-        <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
-        <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
-        <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
-        <div>
-            <button id="addBill" onClick={this.addbill}>Add</button>
-            <button id="cancelAddbill" onClick={this.props.cancelCreatebill}>Cancel</button>
-        </div>
-      </div>:
-      <button id="add-bills-btn" onClick={this.props.createbill}>+</button>
     return (
       <div>
-        <button id="get-bills-btn" onClick={this.props.refreshBills}>Get Bills</button>
-          {addBillElement}
         <div>{bills}</div>
       </div>
     )

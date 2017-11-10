@@ -14,20 +14,20 @@ class Account extends Component {
     return (
       <Container className="mb-3 dash-account" id={"account" + this.props.index}>
         <Row>
-          <Col className="balance d-flex align-items-center" xs="3" md="4" lg="4" xl="3">
-            <div className="d-flex flex-column">
-              <div className="text-white">
+          <Col className="balance d-flex align-items-center" xs="3" sm="5" md="4" lg="4" xl="3">
+            <Container>
+              <Row className="text-white">
                 ${currencyFormat.format(account.available_balance)}
-              </div>
+              </Row>
               {account.limit?
-                <div className="text-danger">
+                <Row className="text-danger">
                   ${currencyFormat.format(account.current_balance)}
-                </div>
+                </Row>
                 : ''
               }
-            </div>
+            </Container>
           </Col>
-          <Col className="name">
+          <Col className="name" xs="9" sm="7" md="8" lg="8" xl="9">
             <div><strong>{account.name}</strong></div>
             <Badge className="mb-1">{account.type + "-" + account.subtype}</Badge>
           </Col>

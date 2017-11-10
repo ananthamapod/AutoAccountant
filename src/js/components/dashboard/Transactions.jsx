@@ -58,21 +58,8 @@ class Transactions extends Component {
         />
       )
     }
-    let addTransactionElement = this.props.transactions.creating?
-      <div id="newTransaction">
-        <div><label>Amount: <input name="amount" type="number" defaultValue="0" /></label></div>
-        <small name="timestamp">{moment().format('MMMM Do YYYY, h:mm:ss a')}</small>
-        <div><label>Name: <input name="name" type="text" placeholder="Name" /></label></div>
-        <div>
-            <button id="addTransaction" onClick={this.addTransaction}>Add</button>
-            <button id="cancelAddTransaction" onClick={this.props.cancelCreateTransaction}>Cancel</button>
-        </div>
-      </div>:
-      <button id="add-transactions-btn" onClick={this.props.createTransaction}>+</button>
     return (
-      <div>
-        <button id="get-transactions-btn" onClick={this.props.refreshTransactions}>Get Transactions</button>
-          {addTransactionElement}
+      <div className="dash-transactions">
         <div>{transactions}</div>
       </div>
     )
