@@ -31,6 +31,15 @@ html.dark {
 
 .dash-transactions {
   .transaction {
+
+    &.positive .transaction-amount {
+      color: #2ECC71;
+    }
+
+    &.negative .transaction-amount {
+      color: #E74C3C;
+    }
+
     .badge {
       margin-right: 0.5em;
     }

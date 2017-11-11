@@ -21,7 +21,7 @@ class ExpenseChart extends Component {
           })
           // .sort((a, b) => b.parsedDate - a.parsedDate)
         }>
-          <XAxis dataKey="parsedDate" tickFormatter={ (elem) => moment(elem.date).format("hH:mm:ss, MM/DD/YYYY") } />
+          <XAxis dataKey="parsedDate" tickCount={5} tickFormatter={ (elem) => moment(elem.date).format("MM/DD/YYYY") } />
           <YAxis/>
           <Tooltip />
           <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>

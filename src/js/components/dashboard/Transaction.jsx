@@ -24,17 +24,21 @@ class Transaction extends Component {
   render() {
     let transaction = this.props.transaction
     return (
-      <div className="transaction">
+      <div className={"transaction " + (transaction.amount > 0? "positive" : "negative")}>
         <Container fluid={true}>
           <Row>
             <Col>
               <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
-              <span className="transaction-amount"><strong>${currencyFormat.format(Math.abs(transaction.amount))}</strong></span>
             </Col>
           </Row>
           <Row>
             <Col>
               <span className="transaction-name"><strong>{transaction.name}</strong></span>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="transaction-amount"><strong>${currencyFormat.format(Math.abs(transaction.amount))}</strong></span>
             </Col>
           </Row>
           <Row>
