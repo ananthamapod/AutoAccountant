@@ -1,7 +1,9 @@
 # autoaccountant
+
 >realtime accountant and budget manager system
 
 ## How it works
+
 1. The user defines categories to divide and tally up different types of spending
 
 2. The user defines goals to keep boundaries on how much spending *should* be occurring in each category
@@ -15,6 +17,14 @@
 6. It even has an additional manual entry system for entering cash expenses
 
 ## Dependencies
- * Plaid API account credentials
- * MongoDB
- * A crap ton of node modules (`npm install` all the things)
+
+* Plaid API account credentials
+* MongoDB
+* A crap ton of node modules (`npm install` all the things)
+
+## Authors
+
+* **Ananth Rao** (@ananthamapod)
+
+## LICENSE
+GPL-3.0, for more information, see [LICENSE](LICENSE)
