@@ -30,6 +30,9 @@ html.dark {
 }
 
 .dash-transactions {
+  max-height: 85vh;
+  overflow: auto;
+
   .transaction {
 
     &.positive .transaction-amount {

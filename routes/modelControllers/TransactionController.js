@@ -8,7 +8,7 @@ const Transaction = require('../../models/Transaction')
 /* GET route for getting transaction data from database for all transactions */
 router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  Transaction.find({})
+  Transaction.find({}).exec()
     .then((transactions) => {
       res.json({
         transactions: transactions.map((t) => {
@@ -18,7 +18,7 @@ router.get('/', //passport.authenticate('jwt', { session: false }),
       })
       debug('pulled ' + transactions.length + ' transactions')
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -45,12 +45,12 @@ router.get('/:id', //passport.authenticate('jwt', { session: false }),
   let transaction_id = req.params.id
   debug(`Returning transaction ${transaction_id}`)
   if (transaction_id != "") {
-    Transaction.find({_id: transaction_id})
+    Transaction.find({_id: transaction_id}).exec()
     .then((transaction) => {
       res.json(transaction)
       debug(transaction)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -65,12 +65,12 @@ router.patch('/:id', //passport.authenticate('jwt', { session: false }),
   let transaction_id = req.params.id
   debug(`Returning transaction ${transaction_id}`)
   if (transaction_id != "") {
-    Transaction.update({_id: transaction_id}, req.body.transaction)
+    Transaction.update({_id: transaction_id}, req.body.transaction).exec()
     .then((transaction) => {
       res.json(transaction)
       debug(transaction)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })

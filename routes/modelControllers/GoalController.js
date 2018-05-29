@@ -8,7 +8,7 @@ const Goal = require('../../models/Goal')
 /* GET route for getting goals from database */
 router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  Goal.find({})
+  Goal.find({}).exec()
     .then((goals) => {
       res.json({
         goals: goals
@@ -16,7 +16,7 @@ router.get('/', //passport.authenticate('jwt', { session: false }),
       debug(goals.length + ' goals retrieved')
       debug(goals)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -43,12 +43,12 @@ router.get('/:id', //passport.authenticate('jwt', { session: false }),
   let goal_id = req.params.id
   debug(`Returning goal ${goal_id}`)
   if (goal_id != "") {
-    Goal.find({_id: goal_id})
+    Goal.find({_id: goal_id}).exec()
     .then((goal) => {
       res.json(goal)
       debug(goal)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -63,12 +63,12 @@ router.patch('/:id', //passport.authenticate('jwt', { session: false }),
   let goal_id = req.params.id
   debug(`Returning goal ${goal_id}`)
   if (goal_id != "") {
-    Goal.update({_id: goal_id}, req.body.goal)
+    Goal.update({_id: goal_id}, req.body.goal).exec()
     .then((goal) => {
       res.json(goal)
       debug(goal)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })

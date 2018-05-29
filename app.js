@@ -25,7 +25,7 @@ const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
 
 const jwtOptions = {}
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader()
+jwtOptions.jwtFromRequest = ExtractJwt.fromHeader('Authorization')
 jwtOptions.secretOrKey = envvar.string('APPLICATION_SECRET')
 
 const strategy = new JwtStrategy(jwtOptions, function(jwtData, next) {

@@ -8,7 +8,7 @@ const Bill = require('../../models/Bill')
 /* GET route for getting bills from database */
 router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  Bill.find({})
+  Bill.find({}).exec()
     .then((bills) => {
       res.json({
         bills: bills
@@ -16,7 +16,7 @@ router.get('/', //passport.authenticate('jwt', { session: false }),
       debug(bills.length + ' bills retrieved')
       debug(bills)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -43,12 +43,12 @@ router.get('/:id', //passport.authenticate('jwt', { session: false }),
   let bill_id = req.params.id
   debug(`Returning bill ${bill_id}`)
   if (bill_id != "") {
-    Bill.find({_id: bill_id})
+    Bill.find({_id: bill_id}).exec()
     .then((bill) => {
       res.json(bill)
       debug(bill)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -63,12 +63,12 @@ router.patch('/:id', //passport.authenticate('jwt', { session: false }),
   let bill_id = req.params.id
   debug(`Returning bill ${bill_id}`)
   if (bill_id != "") {
-    Bill.update({_id: bill_id}, req.body.bill)
+    Bill.update({_id: bill_id}, req.body.bill).exec()
     .then((bill) => {
       res.json(bill)
       debug(bill)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })

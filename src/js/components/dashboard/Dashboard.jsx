@@ -23,21 +23,25 @@ class Dashboard extends Component {
             <Transactions />
           </Col>
           <Col xs="12" sm="5" lg="4">
-            <Link to="/accounts">
-              <h1 className="py-3">Accounts</h1>
-            </Link>
-            <Accounts />
+            <Row>
+              <Col>
+                <Link to="/accounts">
+                  <h1 className="py-3">Accounts</h1>
+                </Link>
+                <Accounts />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Link to="/goals">
+                <h1 className="py-3">Goals</h1>
+                </Link>
+                <Goals />
+              </Col>
+            </Row>
+            <Bills />
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <Link to="/goals">
-            <h1 className="py-3">Goals</h1>
-            </Link>
-            <Goals />
-          </Col>
-        </Row>
-        <Bills />
       </Container>
     )
   }

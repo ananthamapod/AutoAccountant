@@ -8,7 +8,7 @@ const Account = require('../../models/Account')
 /* GET route for getting accounts from database */
 router.get('/', //passport.authenticate('jwt', { session: false }),
 (req, res, next) => {
-  Account.find({})
+  Account.find({}).exec()
   .then((accounts) => {
     let newAccounts = accounts.map((a) => {
       a.balances = {
@@ -28,7 +28,7 @@ router.get('/', //passport.authenticate('jwt', { session: false }),
     })
     debug(accounts)
   })
-  .reject((err) => {
+  .catch((err) => {
     debug(err)
     res.status(500).json({message:"Server error"})
   })
@@ -40,7 +40,7 @@ router.get('/:id', //passport.authenticate('jwt', { session: false }),
   let account_id = req.params.id
   debug(`Returning account ${account_id}`)
   if (account_id != "") {
-    Account.find({_id: account_id})
+    Account.find({_id: account_id}).exec()
     .then((account) => {
       account.balances = {
         available: account.available_balance,
@@ -56,7 +56,7 @@ router.get('/:id', //passport.authenticate('jwt', { session: false }),
       res.json(account)
       debug(account)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })
@@ -71,12 +71,12 @@ router.patch('/:id', //passport.authenticate('jwt', { session: false }),
   let account_id = req.params.id
   debug(`Updating account ${account_id}`)
   if (account_id != "") {
-    Account.update({_id: account_id}, req.body.account)
+    Account.update({_id: account_id}, req.body.account).exec()
     .then((account) => {
       res.json(account)
       debug(account)
     })
-    .reject((err) => {
+    .catch((err) => {
       debug(err)
       res.status(500).json({message:"Server error"})
     })

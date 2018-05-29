@@ -47,7 +47,7 @@ const server = https.createServer(httpsOptions, app)
  * Listen on provided port, on all network interfaces.
  */
  // Connect mongoose to our database
- mongoose.connect(db, {useMongoClient: true}, function(error) {
+ mongoose.connect(db, function(error) {
    // Log any errors connecting with mongoose
    if (error) {
      debug(error)
