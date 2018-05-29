@@ -3,6 +3,9 @@ const debug = require('debug')('autoaccountant:server')
 const passport = require('passport')
 const router = express.Router()
 
+const Resumable = require('./../../utils/resumable-node')('./tmp')
+
+
 const Transaction = require('../../models/Transaction')
 
 /* GET route for getting transaction data from database for all transactions */
@@ -95,6 +98,36 @@ router.delete('/:id', //passport.authenticate('jwt', { session: false }),
   } else {
     res.status(400).json({message: "Transaction not specified"})
   }
+})
+
+/******************/
+/** IMAGE UPLOAD **/
+
+const writeReceiptToDB = (identifier) => {
+  // TODO: Find a way to stream image data to BinData Buffer in mongoose
+  // Resumable.write(identifier, req)
+  // Resumable.clean(identifier)
+}
+
+/* GET endpoint checking image upload status by chunk */
+router.get('/upload',
+(req, res, next) => {
+  debug('Checking upload')
+  Resumable.get(req, (status, filename, original_filename, identifier) => {
+      res.status((status == 'found' ? 200 : 404)).json({status: status})
+  })
+})
+
+/* POST endpoint uploading image by chunk */
+router.post('/upload',
+  (req, res, next) => {
+  debug('Uploading chunk')
+  Resumable.post(req, (status, filename, original_filename, identifier) => {
+    res.json({status: status})
+    if (status == 'done') {
+      writeReceiptToDB(identifier)
+    }
+  })
 })
 
 module.exports = router

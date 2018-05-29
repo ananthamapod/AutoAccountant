@@ -61,6 +61,10 @@ const transactionSchema = new Schema({
     type: String,
     required: true,
     default: ""
+  },
+  receipt: {
+    data: Buffer,
+    contentType: String
   }
 })
 
