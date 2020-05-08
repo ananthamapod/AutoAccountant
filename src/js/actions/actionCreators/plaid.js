@@ -6,22 +6,16 @@ import {
     CREATE_PLAID_LINK,
     REFRESH_PLAID_TOKEN,
     FINISH_REFRESH,
-    LINK_NEW_ACCOUNT
+    LINK_NEW_ACCOUNT,
+    FAIL_TO_LINK_ACCOUNT
 } from '../actionTypes'
-import { fetchAccountsIfNeeded, markAccountAccessible } from './accounts'
+import { fetchAccountsIfNeeded } from './accounts'
 
-function openRefreshHandler(data, dispatch) {
+function openRefreshHandler(data) {
     return {
         type: REFRESH_PLAID_TOKEN,
         refreshToken: data.token,
-        item_id: data.item_id,
-        success_cb: () => {
-            dispatch(markAccountAccessible(data.item_id))
-            dispatch(finishRefreshing())
-        },
-        error_cb: () => {
-            dispatch(finishRefreshing())
-        }
+        item_id: data.item_id
     }
 }
 
@@ -41,9 +35,48 @@ function initializeLink(dispatch, credentials) {
     }
 }
 
-function linkNewAccount() {
+function failToLinkNewAccount() {
     return {
-        type: LINK_NEW_ACCOUNT
+        type: FAIL_TO_LINK_ACCOUNT
+    }
+}
+
+function successfulLinkNewAccount(name) {
+    return {
+        type: LINK_NEW_ACCOUNT,
+        account_name: name
+    }
+}
+
+function linkNewAccount(public_token) {
+    return function (dispatch) {
+    
+        return fetch('api/plaid/get_access_token', {
+            method: 'POST',
+            body: JSON.stringify({ public_token: public_token }),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            })
+        }).then(
+            // Takes the raw response object and returns back the json
+            response => response.json(),
+            // Do not use catch, because that will also catch
+            // any errors in the dispatch and resulting render,
+            // causing an loop of 'Unexpected batch number' errors.
+            // https://github.com/facebook/react/issues/6895
+            error => {
+                console.log('An error occurred.', error)
+                dispatch(failToLinkNewAccount())
+            }
+        )
+        .then(json => {
+  
+            // Update to UI that account successfully linked
+            dispatch(successfulLinkNewAccount(json.item_name))
+            // Fetch all accounts included newly added one
+            dispatch(fetchAccountsIfNeeded())
+        })
     }
 }
 
@@ -108,5 +141,6 @@ function initializePlaid() {
   export {
       initializePlaid,
       linkNewAccount,
-      openRefreshHandler
+      openRefreshHandler,
+      finishRefreshing
   }

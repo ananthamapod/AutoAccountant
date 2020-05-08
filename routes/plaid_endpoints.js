@@ -204,12 +204,18 @@ router.post('/accounts/refresh', (req, res, next) => {
       error: err
     })
   }).then(
-    (item) => {
-      res.json({
-        error: false,
-        token: item.access_token
-      })
-      debug(item)
+    (item) => {// Create a public_token for use with Plaid Link's update mode
+      client.createPublicToken(item.access_token, (err, data) => {
+        // Handle err
+        // Use the generated public_token to initialize Plaid Link
+        // in update mode for a user's Item so that they can provide
+        // updated credentials or MFA information
+        res.json({
+          error: false,
+          token: data.public_token
+        })
+        debug(item)
+      });
     }
   )
   

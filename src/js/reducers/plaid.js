@@ -37,57 +37,21 @@ switch (action.type) {
             error: PLAID_CREDENTIAL_FETCH_ERROR
         })
     case CREATE_PLAID_LINK:
-        return Object.assign({}, state, {
-            client: self.Plaid.create({
-                apiVersion: 'v2',
-                clientName: 'AutoAccountant',
-                env: action.env.PLAID_ENV,
-                product: ['transactions'],
-                key: action.env.PLAID_PUBLIC_KEY,
-                onSuccess: (public_token) => {
-                  fetch('api/plaid/get_access_token', {
-                    method: 'POST',
-                    body: JSON.stringify({ public_token: public_token }),
-                    headers: new Headers({
-                      'Content-Type': 'application/json',
-                      Accept: 'application/json'
-                    })
-                  }).then(action.success_cb)
-                }
-            })
-    
-        })
+        return state
     case REFRESH_PLAID_TOKEN:
-        self.Plaid.create({
-            apiVersion: 'v2',
-            clientName: 'AutoAccountant',
-            env: state.env.PLAID_ENV,
-            product: ['transactions'],
-            key: state.env.PLAID_PUBLIC_KEY,
-            token: action.refreshToken,
-            onSuccess: (public_token) => {
-                fetch('api/plaid/get_access_token', {
-                method: 'POST',
-                body: JSON.stringify({ public_token: public_token }),
-                headers: new Headers({
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json'
-                })
-                }).then(action.success_cb)
-            },
-            onExit: action.error_cb()
-        }).open()
-
         return Object.assign({}, state, {
-            refreshing: true
+            refreshToken: action.refreshToken,
+            refreshId: action.item_id
         })
     case FINISH_REFRESH:
         return Object.assign({}, state, {
-            refreshing: false
+            refreshToken: null,
+            refresh_id: null
         })
     case LINK_NEW_ACCOUNT:
-        state.client.open()
-        return state
+        return Object.assign({}, state, {
+            message: `Successfully linked ${action.account_name} accounts`
+        })
 
     default:
         return state
