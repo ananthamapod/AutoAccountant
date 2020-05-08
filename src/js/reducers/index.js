@@ -3,7 +3,8 @@ import transactions from './transactions'
 import accounts from './accounts'
 import goals from './goals'
 import bills from './bills'
+import plaid from './plaid'
 
-const aaApp = combineReducers({transactions, accounts, goals, bills})
+const rootReducer = combineReducers({transactions, accounts, goals, bills, plaid})
 
-export default aaApp
+export default rootReducer

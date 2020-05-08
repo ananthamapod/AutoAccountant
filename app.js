@@ -2,9 +2,11 @@ const envvar = require('envvar')
 const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
+// HTTP server logger with great customizability
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+// Sets HTTP request headers for increased security
 const helmet = require('helmet')
 const minifyHTML = require('express-minify-html')
 const debug = require('debug')('autoaccountant:server')
@@ -29,7 +31,7 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromHeader('Authorization')
 jwtOptions.secretOrKey = envvar.string('APPLICATION_SECRET')
 
 const strategy = new JwtStrategy(jwtOptions, function(jwtData, next) {
-  console.log('payload received', jwtData)
+  debug('payload received', jwtData)
   var user = User.find({_id: jwtData.id})
   if (user) {
     next(null, user)
@@ -45,6 +47,7 @@ const app = express()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
+// means more processing server side, but less network
 app.use(minifyHTML({
   override:      false,
   exception_url: false,
@@ -61,9 +64,16 @@ app.use(webpackAssets('./config/webpack-assets.json', {
     devMode: true
 }))
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+/**
+ * displays http logs in a dev shorthand format:
+ * :method :url :status :response-time ms - :res[content-length]
+ * See https://github.com/expressjs/morgan
+ **/
 app.use(logger('dev'))
+/**
+ * Adds security HTTP headers, see https://helmetjs.github.io/docs/
+ */
 app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -84,8 +94,8 @@ app.use(function(req, res, next) {
 })
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+app.use(function(err, req, res) {
+  // set locals, only provide error in development
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
 

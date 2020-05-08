@@ -38,7 +38,7 @@ function successfulNewGoal(data) {
   }
 }
 
-function failedNewGoal(error) {
+function failedNewGoal() {
   return {
     type: FAILED_NEW_GOAL
   }
@@ -72,9 +72,9 @@ function handleNewGoal(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
-          dispatch(failedNewGoal(error))
+          dispatch(failedNewGoal())
         }
       )
       .then(json =>
@@ -133,7 +133,7 @@ function receiveGoals(data) {
   }
 }
 
-function failedReceivedGoals(data) {
+function failedReceivedGoals() {
   return {
     type: FAILED_RECEIVED_GOALS
   }
@@ -159,8 +159,8 @@ function fetchGoals() {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
           dispatch(failedReceivedGoals())
         }
       )
@@ -229,13 +229,13 @@ function saveUpdatedGoal() {
   }
 }
 
-function successfulUpdatedGoal(status) {
+function successfulUpdatedGoal() {
   return {
     type: SUCCESSFUL_UPDATED_GOAL
   }
 }
 
-function failedUpdatedGoal(error) {
+function failedUpdatedGoal() {
   return {
     type: FAILED_UPDATED_GOAL
   }
@@ -269,16 +269,17 @@ function handleUpdateGoal(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
-          dispatch(failedUpdatedGoal(error))
+          dispatch(failedUpdatedGoal())
         }
       )
-      .then(json =>
+        // eslint-disable-next-line no-unused-vars
+        .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(successfulUpdatedGoal(json))
+        dispatch(successfulUpdatedGoal())
       )
   }
 }
@@ -336,13 +337,13 @@ function requestDeleteGoal() {
   }
 }
 
-function successfulDeletedGoal(data) {
+function successfulDeletedGoal() {
   return {
     type: SUCCESSFUL_DELETED_GOAL
   }
 }
 
-function failedDeletedGoal(data) {
+function failedDeletedGoal() {
   return {
     type: FAILED_DELETED_GOAL
   }
@@ -369,16 +370,17 @@ function handleDeleteGoal(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
           dispatch(failedDeletedGoal())
         }
       )
-      .then(json =>
+        // eslint-disable-next-line no-unused-vars
+        .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(successfulDeletedGoal(json))
+        dispatch(successfulDeletedGoal())
       )
   }
 }

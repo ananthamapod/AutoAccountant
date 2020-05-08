@@ -11,7 +11,7 @@ class Transaction extends Component {
     this.onSave = this.onSave.bind(this)
   }
 
-  onSave(event) {
+  onSave() {
     let transaction = Object.assign({}, this.props.transaction)
     let parentElem = document.getElementById(`transaction${this.props.index}`)
     let amountElem = parentElem.querySelector('input[name="amount"]')

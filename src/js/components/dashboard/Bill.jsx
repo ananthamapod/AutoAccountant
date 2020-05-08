@@ -8,7 +8,7 @@ class Bill extends Component {
     this.onSave = this.onSave.bind(this)
   }
 
-  onSave(event) {
+  onSave() {
     let bill = Object.assign({}, this.props.bill)
     let parentElem = document.getElementById(`bill${this.props.index}`)
     let amountElem = parentElem.querySelector('input[name="amount"]')

@@ -7,6 +7,9 @@ import Goals from './goals/Goals.jsx'
 import Accounts from './accounts/Accounts.jsx'
 import Expenses from './expenses/Expenses.jsx'
 
+/**
+ * Main App template, uses react router to display different pages in same layout
+**/
 const App = () =>
   <div>
     <NavBar />

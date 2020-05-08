@@ -34,18 +34,17 @@ function sendNewTransaction() {
 function successfulNewTransaction(data) {
   return {
     type: SUCCESSFUL_NEW_TRANSACTION,
-    newGoal: data
+    newTransaction: data
   }
 }
 
-function failedNewTransaction(error) {
+function failedNewTransaction() {
   return {
     type: FAILED_NEW_TRANSACTION
   }
 }
 
 function handleNewTransaction(state) {
-  const transactions = state.transactions
   return function (dispatch) {
     // First dispatch: the app state is updated to inform
     // that the API call is starting.
@@ -72,9 +71,9 @@ function handleNewTransaction(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
-          dispatch(failedNewTransaction(error))
+          dispatch(failedNewTransaction())
         }
       )
       .then(json =>
@@ -133,7 +132,7 @@ function receiveTransactions(data) {
   }
 }
 
-function failedReceivedTransactions(data) {
+function failedReceivedTransactions() {
   return {
     type: FAILED_RECEIVED_TRANSACTIONS
   }
@@ -159,8 +158,8 @@ function fetchTransactions() {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
           dispatch(failedReceivedTransactions())
         }
       )
@@ -229,13 +228,13 @@ function saveUpdatedTransaction() {
   }
 }
 
-function successfulUpdatedTransaction(status) {
+function successfulUpdatedTransaction() {
   return {
     type: SUCCESSFUL_UPDATED_TRANSACTION
   }
 }
 
-function failedUpdatedTransaction(error) {
+function failedUpdatedTransaction() {
   return {
     type: FAILED_UPDATED_TRANSACTION
   }
@@ -269,16 +268,17 @@ function handleUpdateTransaction(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
-          dispatch(failedUpdatedTransaction(error))
+          dispatch(failedUpdatedTransaction())
         }
       )
+      // eslint-disable-next-line no-unused-vars
       .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(successfulUpdatedTransaction(json))
+        dispatch(successfulUpdatedTransaction())
       )
   }
 }
@@ -336,13 +336,13 @@ function requestDeleteTransaction() {
   }
 }
 
-function successfulDeletedTransaction(data) {
+function successfulDeletedTransaction() {
   return {
     type: SUCCESSFUL_DELETED_TRANSACTION
   }
 }
 
-function failedDeletedTransaction(data) {
+function failedDeletedTransaction() {
   return {
     type: FAILED_DELETED_TRANSACTION
   }
@@ -369,16 +369,17 @@ function handleDeleteTransaction(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
           dispatch(failedDeletedTransaction())
         }
       )
-      .then(json =>
+        // eslint-disable-next-line no-unused-vars
+        .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(successfulDeletedTransaction(json))
+        dispatch(successfulDeletedTransaction())
       )
   }
 }

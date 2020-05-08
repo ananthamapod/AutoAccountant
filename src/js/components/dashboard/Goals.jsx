@@ -26,16 +26,14 @@ class Goals extends Component {
     this.addGoal = this.addGoal.bind(this)
   }
 
-  addGoal(event) {
+  addGoal() {
     let goal = {}
     let parentElem = document.getElementById('newGoal')
     let amountElem = parentElem.querySelector('input[name="amount"]')
-    let deadlineElem = parentElem.querySelector('[name="timestamp"]')
     let nameElem = parentElem.querySelector('input[name="name"]')
     goal.amount = amountElem.value
     goal.name = nameElem.value
     goal.deadline = moment()
-    console.log(deadlineElem.innerHTML)
     this.props.addGoal(goal)
   }
 

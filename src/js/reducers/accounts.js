@@ -1,5 +1,5 @@
 import {
-  GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS,
+  SET_ACCOUNT_STATUSES, GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS,
   EDIT_ACCOUNT, UPDATE_ACCOUNT, CANCEL_EDIT_ACCOUNT, SEND_UPDATED_ACCOUNT, SUCCESSFUL_UPDATED_ACCOUNT, FAILED_UPDATED_ACCOUNT
 } from '../actions/actionTypes'
 import {
@@ -14,11 +14,16 @@ function accounts(state = {
     editing: false,
     updatingAccount: undefined,
     items: [],
-    editingIndex: -1
+    editingIndex: -1,
+    inaccessibleAccounts: []
   },
   action
 ) {
   switch (action.type) {
+    case SET_ACCOUNT_STATUSES:
+      return Object.assign({}, state, {
+        inaccessibleAccounts: action.inaccessibleAccounts
+      })
     case GET_ACCOUNTS:
       return Object.assign({}, state, {
         fetchRequested: true

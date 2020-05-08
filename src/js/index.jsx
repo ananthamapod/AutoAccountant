@@ -8,11 +8,11 @@ import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 
 import App from './components/App.jsx'
-import aaApp from './reducers'
+import rootReducer from './reducers'
 import { loadInitialData } from './actions/actionCreators'
 
 const store = createStore(
-  aaApp,
+  rootReducer,
   applyMiddleware(
     thunk,
     createLogger()
@@ -21,6 +21,7 @@ const store = createStore(
 
 store
   .dispatch(loadInitialData())
+  // eslint-disable-next-line no-console
   .then(() => console.log(store.getState()))
 
 function start() {

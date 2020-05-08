@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
-import { Badge, Button, Container, Row, Col } from 'reactstrap'
+import { Badge, Container, Row, Col } from 'reactstrap'
 
 class Account extends Component {
   constructor(props) {

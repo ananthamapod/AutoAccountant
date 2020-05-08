@@ -27,7 +27,7 @@ class Transactions extends Component {
     this.addTransaction = this.addTransaction.bind(this)
   }
 
-  addTransaction(event) {
+  addTransaction() {
     let transaction = {}
     let parentElem = document.getElementById('newTransaction')
     let amountElem = parentElem.querySelector('input[name="amount"]')

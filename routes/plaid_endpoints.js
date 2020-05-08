@@ -38,7 +38,7 @@ const client = Promise.promisifyAll(new plaid.Client(
 function applyForEach(iterable, func) {
   try {
     for (let i = 0; i < iterable.length; i++) {
-      func(iterable[i], (err, res) => {
+      func(iterable[i], (err) => {
         if (err) {
           debug(err)
         }
@@ -82,22 +82,26 @@ function addTransaction(transaction, cb) {
 }
 
 /* GET PLAID public credentials */
-router.get('/plaid/', passport.authenticate('jwt', { session: false }),
-(req, res, next) => {
+router.get('/plaid/', //passport.authenticate('jwt', { session: false }),
+(req, res) => {
   res.json({ PLAID_ENV: PLAID_ENV, PLAID_PUBLIC_KEY: PLAID_PUBLIC_KEY })
 })
 
 /* POST route for getting access token and storing new items */
-router.post('/get_access_token', (req, res, next) => {
+router.post('/get_access_token', (req, res) => {
   PUBLIC_TOKEN = req.body.public_token
   client.exchangePublicToken(PUBLIC_TOKEN).then(function(tokenResponse) {
     ACCESS_TOKEN = tokenResponse.access_token
     ITEM_ID = tokenResponse.item_id
     debug('Access Token: ' + ACCESS_TOKEN)
     debug('Item ID: ' + ITEM_ID)
+
+    // Send back success message to requesting client
     res.json({
       'error': false
     })
+
+    // Save off item info locally
     saveItemInfo(ACCESS_TOKEN, ITEM_ID)
   }).catch((error) => {
     var msg = 'Could not exchange public_token!'
@@ -114,21 +118,23 @@ router.post('/accounts', (req, res, next) => {
   // for each account associated with the Item.
   Item.find({})
   .then((items) => {
-    Promise.reduce(items, (accountList, item) => {
-      return client.getAuth(item.access_token).then((authResponse) => {
+    Promise.reduce(items, async (accountList, item) => {
+      try {
+        const authResponse = await client.getAuth(item.access_token)
         let accounts = accountList.accounts
         let numbers = accountList.numbers
-        accounts.push.apply(accounts, authResponse.accounts)
-        numbers.push.apply(numbers, authResponse.numbers)
+        Array.push.apply(accounts, authResponse.accounts)
+        Array.push.apply(numbers, authResponse.numbers)
         debug(accountList)
         return accountList
-      }).catch((error) => {
+      }
+      catch (error) {
         let msg = 'Unable to pull accounts from the Plaid API.'
         debug(msg + '\n' + JSON.stringify(error))
         return res.json({
           error: msg
         })
-      })
+      }
     }, {accounts: [], numbers: []}).then((items) => {
       res.json({
         error: false,
@@ -147,7 +153,7 @@ router.post('/accounts', (req, res, next) => {
 })
 
 /* GET route for getting Plaid item info */
-router.get('/item', (req, res, next) => {
+router.get('/accounts/status', (req, res, next) => {
   // Pull the Item - this includes information about available products,
   // billed products, webhook information, and more.
   // TODO: SLOPPY SLOPPY SLOPPY!
@@ -156,29 +162,29 @@ router.get('/item', (req, res, next) => {
   // TODO: END SLOPPY
   Item.find({})
   .then((items) => {
-    Promise.reduce(items, (itemList, item) => {
+    Promise.reduce(items, async (itemList, item) => {
       debug(`promise ${++counter} start`)
-      return client.getItem(item.access_token)
-      .then((itemResponse) => {
+      try {
+        const itemResponse = await client.getItem(item.access_token)
         debug(`promise ${counter} then 1`)
         // Also pull information about the institution
         temp = itemResponse.item
-        return client.getInstitutionById(itemResponse.item.institution_id)
-      }).then((instRes) => {
+        const instRes = await client.getInstitutionById(itemResponse.item.institution_id)
         debug(`promise ${counter} then 2`)
         itemList.push({
           item: temp,
           institution: instRes.institution,
         })
         return itemList
-      }).catch((error) => {
+      }
+      catch (error) {
         debug(`promise ${counter} error`)
         var msg = 'Unable to pull institution information from the Plaid API.'
         debug(msg + '\n' + JSON.stringify(error))
         return res.json({
           error: msg
         })
-      })
+      }
     }, []).then((items) => {
       res.json({
         error: false,
@@ -188,41 +194,76 @@ router.get('/item', (req, res, next) => {
       debug(items)
     })
   })
-  .reject((err) => {
-    debug(err)
-    res.status(500).json({message:"Server error"})
-  })
+})
+
+/* POST route for getting Plaid item refresh token */
+router.post('/accounts/refresh', (req, res, next) => {
+  let item_id = req.body.item_id
+  Item.findOne({'item_id': item_id}).orFail().catch(err => {
+    res.json({
+      error: err
+    })
+  }).then(
+    (item) => {
+      res.json({
+        error: false,
+        token: item.access_token
+      })
+      debug(item)
+    }
+  )
+  
 })
 
 /* POST route for getting transactions and storing in local db */
-router.post('/transactions', (req, res, next) => {
-  // Pull transactions for the Item for the last 30 days
+router.post('/transactions', (req, res) => {
+  // Pull transactions for the Item for the last 2 years
   let startDate = moment().subtract(2, 'years').format('YYYY-MM-DD')
   let endDate = moment().format('YYYY-MM-DD')
   let counter = 0
+
+  // Log start date for transaction pull
   debug(startDate)
+
+  // Get all transaction items from local model
   Item.find({})
   .then((items) => {
-    Promise.reduce(items, (transactionList, item) => {
+
+    // A perhaps needlessly complex way of upserting the new items into the current list
+    Promise.reduce(items, async (transactionList, item) => {
+
       debug(`promise ${++counter} start`)
-      return client.getTransactions(item.access_token, startDate, endDate, {
-        offset: 0,
-      }).then((transactionsResponse) => {
+
+      // Pulls transactions from Plaid client
+      try {
+        const transactionsResponse = await client.getTransactions(item.access_token, startDate, endDate, {
+          // TODO: Figure out why this is needed. Seems like offset is unnecessary if we already have start/end dates 
+          offset: 0
+        })
         debug(`promise ${counter} then`)
-        transactionList.push.apply(transactionList, transactionsResponse.transactions)
-        debug(transactionList)
+
+        // Add all new transactions pulled to transactions array
+        Array.push.apply(transactionList, transactionsResponse.transactions)
+        debug(`new transaction c${transactionsResponse.transactions}`)
+
         return transactionList
-      }).catch((error) => {
+      }
+      catch (error) {
         let msg = 'Unable to pull transactions from the Plaid API.'
         debug(msg + '\n' + JSON.stringify(error))
         return res.json({
           error: msg
         })
-      })
+      }
     }, []).then((transactions) => {
+
       debug('pulled ' + transactions.length + ' transactions')
+
+      // Send back list of transactions first to not block UI
       res.json({ transactions: transactions })
 
+      // Add new transactions to local store
+      // TODO: this needs to be refactored to only add new values, it's less efficient to upsert the entire list every time
       applyForEach(transactions, addTransaction)
     })
   })
@@ -233,7 +274,7 @@ router.post('/transactions', (req, res, next) => {
 })
 
 /* GET route for registering transactions and historical transactions webhook */
-router.get('/transactions/webhook', (req, res, next) => {
+router.get('/transactions/webhook', (req, res) => {
   debug(req.body)
   switch (req.body.webhook_type) {
     case "TRANSACTIONS":
@@ -267,7 +308,7 @@ router.get('/transactions/webhook', (req, res, next) => {
   res.send("ACK")
 })
 
-router.get('/categories', (req, res, next) => {
+router.get('/categories', (req, res) => {
   client.getCategories().then((response) => {
     res.json(response.categories)
   }).catch((error) => {
