@@ -1,5 +1,5 @@
 import {
-  SET_ACCOUNT_STATUSES, GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS,
+  SET_ACCOUNT_STATUSES, MARK_ACCOUNT_ACCESSIBLE, GET_ACCOUNTS, REQUEST_ACCOUNTS, RECEIVE_ACCOUNTS, FAILED_RECEIVED_ACCOUNTS,
   EDIT_ACCOUNT, UPDATE_ACCOUNT, CANCEL_EDIT_ACCOUNT, SEND_UPDATED_ACCOUNT, SUCCESSFUL_UPDATED_ACCOUNT, FAILED_UPDATED_ACCOUNT
 } from '../actions/actionTypes'
 import {
@@ -23,6 +23,10 @@ function accounts(state = {
     case SET_ACCOUNT_STATUSES:
       return Object.assign({}, state, {
         inaccessibleAccounts: action.inaccessibleAccounts
+      })
+    case MARK_ACCOUNT_ACCESSIBLE:
+      return Object.assign({}, state, {
+        inaccessibleAccounts: state.inaccessibleAccounts.filter(value => value.itemId != action.accountId)
       })
     case GET_ACCOUNTS:
       return Object.assign({}, state, {

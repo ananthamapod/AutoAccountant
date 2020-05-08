@@ -5,10 +5,10 @@ import {
 } from '../actionTypes'
 import { openRefreshHandler } from './plaid'
 
-function markAccountAccessible(data) {
+function markAccountAccessible(item_id) {
   return {
     type: MARK_ACCOUNT_ACCESSIBLE,
-    refreshToken: data.item_id
+    accountId: item_id
   }
 }
 
@@ -18,9 +18,10 @@ function requestAccountRefresh(account) {
     return fetch('/api/plaid/accounts/refresh',
     {
       method: "post",
-      headers: {
-        'Content-Type':'application/json'
-      },
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }),
       body: JSON.stringify({
         item_id: account.itemId
       })
