@@ -1,9 +1,21 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink
+} from 'reactstrap'
 
+/**
+ * Shared navigation bar component, uses
+**/
 class NavBar extends Component {
+
   constructor(props) {
     super(props)
 
@@ -12,11 +24,16 @@ class NavBar extends Component {
       isOpen: false
     }
   }
+
+  /**
+   * Toggles the open state of the NavBar
+  **/
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
     })
   }
+
   render() {
     return (
       <Navbar color="faded" light toggleable>

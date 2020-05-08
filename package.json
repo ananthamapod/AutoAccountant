@@ -48,23 +48,23 @@
     "express": "^4.16.3",
     "express-minify-html": "^0.11.4",
     "express-webpack-assets": "^0.1.0",
-    "helmet": "^3.8.2",
+    "helmet": "^3.22.0",
     "html-webpack-plugin": "^3.2.0",
     "isomorphic-fetch": "^2.2.1",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.1",
     "jsonwebtoken": "^8.2.1",
     "jstransformer-uglify-js": "^1.2.0",
     "moment": "^2.22.1",
     "mongodb": "^2.2.30",
-    "mongoose": "^5.1.2",
-    "morgan": "^1.9.0",
-    "node-sass": "^4.9.0",
+    "mongoose": "^5.9.12",
+    "morgan": "^1.10.0",
+    "node-sass": "^4.14.1",
     "passport": "^0.3.2",
     "passport-jwt": "^4.0.0",
     "plaid": "^2.6.1",
     "popper.js": "^1.12.2",
     "postcss-loader": "^2.0.6",
-    "pug": "~2.0.0-beta6",
+    "pug": "^2.0.4",
     "pug-loader": "^2.3.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -80,13 +80,13 @@
     "sass-loader": "^6.0.6",
     "serve-favicon": "^2.5.0",
     "style-loader": "^0.18.2",
-    "webpack": "^4.9.1"
+    "webpack": "^4.43.0"
   },
   "homepage": "https://github.com/ananthamapod/AutoAccountant#readme",
   "devDependencies": {
     "chai": "^4.1.0",
     "chai-http": "^4.0.0",
     "mocha": "^5.2.0",
-    "webpack-cli": "^2.1.4"
+    "webpack-cli": "^3.1.1"
   }
 }

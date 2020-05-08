@@ -26,16 +26,14 @@ class Bills extends Component {
     this.addBill = this.addBill.bind(this)
   }
 
-  addBill(event) {
+  addBill() {
     let bill = {}
     let parentElem = document.getElementById('newBill')
     let amountElem = parentElem.querySelector('input[name="amount"]')
-    let deadlineElem = parentElem.querySelector('[name="timestamp"]')
     let nameElem = parentElem.querySelector('input[name="name"]')
     bill.amount = amountElem.value
     bill.name = nameElem.value
     bill.deadline = moment()
-    console.log(deadlineElem.innerHTML)
     this.props.addBill(bill)
   }
 

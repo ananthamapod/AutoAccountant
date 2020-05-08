@@ -8,7 +8,7 @@ class Goal extends Component {
     this.onSave = this.onSave.bind(this)
   }
 
-  onSave(event) {
+  onSave() {
     let goal = Object.assign({}, this.props.goal)
     let parentElem = document.getElementById(`goal${this.props.index}`)
     let amountElem = parentElem.querySelector('input[name="amount"]')

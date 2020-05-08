@@ -34,11 +34,11 @@ function sendNewBill() {
 function successfulNewBill(data) {
   return {
     type: SUCCESSFUL_NEW_BILL,
-    newGoal: data
+    newBill: data
   }
 }
 
-function failedNewBill(error) {
+function failedNewBill() {
   return {
     type: FAILED_NEW_BILL
   }
@@ -72,9 +72,9 @@ function handleNewBill(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
-          dispatch(failedNewBill(error))
+          dispatch(failedNewBill())
         }
       )
       .then(json =>
@@ -133,7 +133,7 @@ function receiveBills(data) {
   }
 }
 
-function failedReceivedBills(data) {
+function failedReceivedBills() {
   return {
     type: FAILED_RECEIVED_BILLS
   }
@@ -159,8 +159,8 @@ function fetchBills() {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
           dispatch(failedReceivedBills())
         }
       )
@@ -229,13 +229,13 @@ function saveUpdatedBill() {
   }
 }
 
-function successfulUpdatedBill(status) {
+function successfulUpdatedBill() {
   return {
     type: SUCCESSFUL_UPDATED_BILL
   }
 }
 
-function failedUpdatedBill(error) {
+function failedUpdatedBill() {
   return {
     type: FAILED_UPDATED_BILL
   }
@@ -269,16 +269,17 @@ function handleUpdateBill(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
-          dispatch(failedUpdatedBill(error))
+          dispatch(failedUpdatedBill())
         }
       )
-      .then(json =>
+        // eslint-disable-next-line no-unused-vars
+        .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(successfulUpdatedBill(json))
+        dispatch(successfulUpdatedBill())
       )
   }
 }
@@ -336,13 +337,13 @@ function requestDeleteBill() {
   }
 }
 
-function successfulDeletedBill(data) {
+function successfulDeletedBill() {
   return {
     type: SUCCESSFUL_DELETED_BILL
   }
 }
 
-function failedDeletedBill(data) {
+function failedDeletedBill() {
   return {
     type: FAILED_DELETED_BILL
   }
@@ -369,16 +370,17 @@ function handleDeleteBill(state) {
         // any errors in the dispatch and resulting render,
         // causing an loop of 'Unexpected batch number' errors.
         // https://github.com/facebook/react/issues/6895
+        // eslint-disable-next-line no-unused-vars
         error => {
-          console.log('An error occurred.', error)
           dispatch(failedDeletedBill())
         }
       )
-      .then(json =>
+        // eslint-disable-next-line no-unused-vars
+        .then(json =>
         // We can dispatch many times!
         // Here, we update the app state with the results of the API call.
 
-        dispatch(successfulDeletedBill(json))
+        dispatch(successfulDeletedBill())
       )
   }
 }

@@ -11,7 +11,7 @@ class Goal extends Component {
     this.onSave = this.onSave.bind(this)
   }
 
-  onSave(event) {
+  onSave() {
     let goal = Object.assign({}, this.props.goal)
     let parentElem = document.getElementById(`goal${this.props.index}`)
     let amountElem = parentElem.querySelector('input[name="amount"]')
@@ -62,7 +62,7 @@ class Goal extends Component {
             </Badge>
             <div>
               <blockquote className="text-success blockquote">
-                ${currencyFormat.format(goal.amount)}
+                {amountElem}
               </blockquote>
             </div>
           </Col>

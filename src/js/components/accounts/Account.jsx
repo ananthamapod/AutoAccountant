@@ -8,7 +8,7 @@ class Account extends Component {
     this.onSave = this.onSave.bind(this)
   }
 
-  onSave(event) {
+  onSave() {
     let account = Object.assign({}, this.props.account)
     let parentElem = document.getElementById(`account${this.props.index}`)
     let nameElem = parentElem.querySelector('input[name="name"]')

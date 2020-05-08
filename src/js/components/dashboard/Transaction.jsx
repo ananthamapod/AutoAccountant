@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
-import { Badge, Button, Container, Row, Col } from 'reactstrap'
+import { Badge, Container, Row, Col } from 'reactstrap'
 import moment from 'moment'
 
 const currencyFormat = new Intl.NumberFormat({ style: 'currency', currency: 'USD' })
@@ -11,7 +11,7 @@ class Transaction extends Component {
     this.onSave = this.onSave.bind(this)
   }
 
-  onSave(event) {
+  onSave() {
     let transaction = Object.assign({}, this.props.transaction)
     let parentElem = document.getElementById(`transaction${this.props.index}`)
     let amountElem = parentElem.querySelector('input[name="amount"]')

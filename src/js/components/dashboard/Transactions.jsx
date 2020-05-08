@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
-import moment from 'moment'
 import { connect } from 'react-redux'
 import {
   createTransaction,
@@ -26,7 +25,7 @@ class Transactions extends Component {
     this.addTransaction = this.addTransaction.bind(this)
   }
 
-  addTransaction(event) {
+  addTransaction() {
     let transaction = {}
     let parentElem = document.getElementById('newTransaction')
     let amountElem = parentElem.querySelector('input[name="amount"]')

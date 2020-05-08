@@ -1,32 +1,30 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
-// eslint-disable-next-line no-unused-vars
-import moment from 'moment'
 import { connect } from 'react-redux'
 import { Container, Row, Col } from 'reactstrap'
 import ExpenseChart from './ExpenseChart.jsx'
 import Transactions from './Transactions.jsx'
 
-class ExpenseTooltip extends Component {
-  constructor(props) {
-    super(props)
-  }
+// class ExpenseTooltip extends Component {
+//   constructor(props) {
+//     super(props)
+//   }
 
-  render() {
-    const { active } = this.props
+//   render() {
+//     const { active } = this.props
 
-    if (active) {
-      const { payload } = this.props
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`Amount : ${payload[0].value}`}</p>
-        </div>
-      );
-    }
+//     if (active) {
+//       const { payload } = this.props
+//       return (
+//         <div className="custom-tooltip">
+//           <p className="label">{`Amount : ${payload[0].value}`}</p>
+//         </div>
+//       );
+//     }
 
-    return null;
-  }
-}
+//     return null;
+//   }
+// }
 
 class Expenses extends Component {
   constructor(props) {

@@ -2,12 +2,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  getAccounts, fetchAccountsIfNeeded,
+  requestAccountRefresh, getAccounts, fetchAccountsIfNeeded,
   editAccount, updateAccount, cancelEditAccount, handleUpdateAccountIfNeeded
 } from '../../actions/actionCreators'
 import PlaidLink from './PlaidLink.jsx'
 import Account from './Account.jsx'
-import { Button, Container, Row, Col } from 'reactstrap'
+import { Button, Container, Row, Col, Alert } from 'reactstrap'
 
 class Accounts extends Component {
   constructor(props) {
@@ -30,11 +30,31 @@ class Accounts extends Component {
         />
       )
     }
+
+    const alerts = []
+    for(let i = 0; i < this.props.accounts.inaccessibleAccounts.length; i++) {
+    alerts.push(<Alert color='danger' className="clearfix" key={i}>
+        The account {this.props.accounts.inaccessibleAccounts[i].name} needs to be reauthenticated. 
+        <Button outline
+          type="button" 
+          color="danger"
+          className="float-sm-right ml-auto alert-btn" 
+          onClick={this.props.refreshAccountToken(this.props.accounts.inaccessibleAccounts[i].itemId)}>
+          Click here to update
+        </Button>
+      </Alert>)
+    }
+
     return (
       <Container className="accounts">
         <Row>
           <Col className="pt-5">
             <h1>Accounts</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="pt-12">
+            {alerts}
           </Col>
         </Row>
         <Row>
@@ -72,6 +92,11 @@ const mapDispatchToProps = (dispatch) => {
     },
     cancelEditAccount: () => {
       dispatch(cancelEditAccount())
+    },
+    refreshAccountToken: (item_id) => {
+      return () => {
+        dispatch(requestAccountRefresh({ itemId: item_id }))
+      }
     }
   }
 }
