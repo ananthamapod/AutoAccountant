@@ -64,3 +64,7 @@ webpack-assets.json
 # SSL/TLS certificates and keys
 *.crt
 *.key
+
+# file uploads
+/tmp/
+/receipts/
