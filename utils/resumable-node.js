@@ -2,15 +2,19 @@ const fs = require('fs'), path = require('path'), util = require('util')
 const Stream = require('stream').Stream
 const debug = require('debug')('autoaccountant:server')
 
-module.exports = resumable = function(temporaryFolder){
+let resumable = module.exports = function(temporaryFolder){
   var $ = this
   $.temporaryFolder = temporaryFolder
   $.maxFileSize = null
   $.fileParameterName = 'file'
 
   try {
-    fs.mkdirSync($.temporaryFolder)
-  } catch(e) { }
+    if (!fs.existsSync()) {
+      fs.mkdirSync($.temporaryFolder)
+    }
+  } catch(e) { 
+    debug(e)
+  }
 
   var cleanIdentifier = function(identifier){
     return identifier.replace(/^0-9A-Za-z_-/img, '')
@@ -88,7 +92,8 @@ module.exports = resumable = function(temporaryFolder){
   //'non_resumable_request', null, null, null
   $.post = function(req, callback){
 
-    var fields = req.body
+    var fields = req.query
+    debug(fields)
     var files = req.files
 
     var chunkNumber = fields['resumableChunkNumber']
