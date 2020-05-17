@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react'
-import { Container, Row, Col, Button, FormGroup, Input, Label, Badge } from 'reactstrap'
+import { Container, Row, Col, Button, FormGroup, Input, Label, Badge, CardImg } from 'reactstrap'
 import ReactResumableJs from 'react-resumable-js'
 import moment from 'moment'
 
@@ -25,11 +25,10 @@ class Transaction extends Component {
     let parentElem = document.getElementById(`transaction${this.props.index}`)
     let amountElem = parentElem.querySelector('input[name="amount"]')
     let nameElem = parentElem.querySelector('input[name="name"]')
-    let typeElem = parentElem.querySelector('input[name="type"]')
+    let typeElem = parentElem.querySelector('select[name="type"]')
     transaction.amount = amountElem.value * typeElem.value
     transaction.name = nameElem.value
     transaction.receiptFile = this.receipt
-    console.log("RECEIPT TRANSACTION:" + transaction)
     this.props.onSaveTransaction(transaction)
     this.receipt = null
   }
@@ -41,7 +40,7 @@ class Transaction extends Component {
       receipt = (
         <Row>
           <Col>
-            {transaction.category && transaction.category.map((elem, ind) => (<Badge key={"badge" + ind} color="primary">{elem}</Badge>))}
+            <CardImg top width="100%" src={`api/transactions/receipts/${transaction.receiptFile}`} alt="Card image cap" />
           </Col>
         </Row>
       )
@@ -51,7 +50,7 @@ class Transaction extends Component {
       return (
         <tr className={"transaction " + (transaction.amount > 0? "positive" : "negative")}>
           <td>
-            <Container fluid={true}>
+            <Container fluid={true} id={`transaction${this.props.index}`}>
               <Row>
                 <Col>
                   <small className="transaction-date">{moment(transaction.date).format('MM/DD/YYYY, h:mm a')}</small>
@@ -79,6 +78,7 @@ class Transaction extends Component {
                   </FormGroup>
                 </Col>
               </Row>
+              {receipt}
               <Row>
                 <Col>
                   <ReactResumableJs
@@ -117,7 +117,7 @@ class Transaction extends Component {
               </Row>
               <Row>
                 <Col>
-                  <Button id={"saveEditTransaction" + this.props.index} onClick={this.props.onSaveTransaction}>Save</Button>
+                  <Button id={"saveEditTransaction" + this.props.index} onClick={this.onSave}>Save</Button>
                   <Button id={"cancelEditTransaction" + this.props.index} onClick={this.props.onCancelEditTransaction}>Cancel</Button>
                 </Col>
               </Row>

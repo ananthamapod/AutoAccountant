@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const express = require('express')
 const debug = require('debug')('autoaccountant:server')
 const passport = require('passport')
@@ -111,7 +112,7 @@ const writeReceiptToDB = (identifier, filename) => {
   // TODO: Find a way to stream image data to BinData Buffer in mongoose
   debug(filename)
   let filePath = `./receipts/${filename}`
-  if (!fs.existsSync()) {
+  if (!fs.existsSync(filePath)) {
     fs.closeSync(fs.openSync(filePath, 'w'))
   }
   Resumable.write(identifier, fs.createWriteStream(filePath))
@@ -136,6 +137,20 @@ router.post('/upload',
       writeReceiptToDB(identifier, filename)
     }
   })
+})
+
+/* GET endpoint to serve up receipt images */
+router.get('/receipts/:filename',
+(req, res) => {
+  let filename = req.params.filename
+  let filePath = path.resolve(__dirname, '../../receipts', filename)
+
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath)
+  } else {
+    res.status(404).send('Not found');
+  }
+
 })
 
 module.exports = router
