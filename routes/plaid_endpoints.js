@@ -163,14 +163,11 @@ router.get('/accounts/status', (req, res, next) => {
   Item.find({})
   .then((items) => {
     Promise.reduce(items, async (itemList, item) => {
-      debug(`promise ${++counter} start`)
       try {
         const itemResponse = await client.getItem(item.access_token)
-        debug(`promise ${counter} then 1`)
         // Also pull information about the institution
         temp = itemResponse.item
         const instRes = await client.getInstitutionById(itemResponse.item.institution_id)
-        debug(`promise ${counter} then 2`)
         itemList.push({
           item: temp,
           institution: instRes.institution,
@@ -178,7 +175,6 @@ router.get('/accounts/status', (req, res, next) => {
         return itemList
       }
       catch (error) {
-        debug(`promise ${counter} error`)
         var msg = 'Unable to pull institution information from the Plaid API.'
         debug(msg + '\n' + JSON.stringify(error))
         return res.json({
@@ -238,7 +234,6 @@ router.post('/transactions', (req, res) => {
     // A perhaps needlessly complex way of upserting the new items into the current list
     Promise.reduce(items, async (transactionList, item) => {
 
-      debug(`promise ${++counter} start`)
 
       // Pulls transactions from Plaid client
       try {

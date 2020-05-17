@@ -1,12 +1,17 @@
+const fs = require('fs')
+const path = require('path')
 const express = require('express')
 const debug = require('debug')('autoaccountant:server')
 const passport = require('passport')
+const multipart = require('connect-multiparty')
 const router = express.Router()
 
 const Resumable = require('./../../utils/resumable-node')('./tmp')
 
 
 const Transaction = require('../../models/Transaction')
+
+router.use(multipart())
 
 /* GET route for getting transaction data from database for all transactions */
 router.get('/', //passport.authenticate('jwt', { session: false }),
@@ -103,10 +108,14 @@ router.delete('/:id', //passport.authenticate('jwt', { session: false }),
 /******************/
 /** IMAGE UPLOAD **/
 
-const writeReceiptToDB = (identifier) => {
+const writeReceiptToDB = (identifier, filename) => {
   // TODO: Find a way to stream image data to BinData Buffer in mongoose
-  // Resumable.write(identifier, req)
-  // Resumable.clean(identifier)
+  debug(filename)
+  let filePath = `./receipts/${filename}`
+  if (!fs.existsSync(filePath)) {
+    fs.closeSync(fs.openSync(filePath, 'w'))
+  }
+  Resumable.write(identifier, fs.createWriteStream(filePath))
 }
 
 /* GET endpoint checking image upload status by chunk */
@@ -125,9 +134,23 @@ router.post('/upload',
   Resumable.post(req, (status, filename, original_filename, identifier) => {
     res.json({status: status})
     if (status == 'done') {
-      writeReceiptToDB(identifier)
+      writeReceiptToDB(identifier, filename)
     }
   })
+})
+
+/* GET endpoint to serve up receipt images */
+router.get('/receipts/:filename',
+(req, res) => {
+  let filename = req.params.filename
+  let filePath = path.resolve(__dirname, '../../receipts', filename)
+
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath)
+  } else {
+    res.status(404).send('Not found');
+  }
+
 })
 
 module.exports = router
