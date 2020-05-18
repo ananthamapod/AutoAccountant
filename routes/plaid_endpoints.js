@@ -60,6 +60,12 @@ function saveItemInfo(access_token, item_id, cb) {
 
 /* Save an account after altering to fit schema */
 function addAccount(account, cb) {
+
+  if (account == null) {
+    cb("WARNING: trying to add null account")
+    return;
+  }
+
   account.available_balance = account.balances.available
   account.current_balance = account.balances.current
   account.limit = account.balances.limit
@@ -116,39 +122,31 @@ router.post('/get_access_token', (req, res) => {
 router.post('/accounts', (req, res, next) => {
   // Retrieve high-level account information and account and routing numbers
   // for each account associated with the Item.
+  let errors = []
   Item.find({})
   .then((items) => {
-    Promise.reduce(items, async (accountList, item) => {
+    Promise.reduce(items, async (accounts, item) => {
       try {
-        const authResponse = await client.getAuth(item.access_token)
-        let accounts = accountList.accounts
-        let numbers = accountList.numbers
-        Array.push.apply(accounts, authResponse.accounts)
-        Array.push.apply(numbers, authResponse.numbers)
-        debug(accountList)
-        return accountList
+        let accountResponse = await client.getBalance(item.access_token)
+        accounts.push.apply(accounts, accountResponse.accounts)
+        debug(accountResponse)
+        return accounts
       }
       catch (error) {
-        let msg = 'Unable to pull accounts from the Plaid API.'
-        debug(msg + '\n' + JSON.stringify(error))
-        return res.json({
-          error: msg
-        })
+        errors.push(error)
+        let msg = 'Unable to pull account: '
+        debug(msg + JSON.stringify(error))
+        return accounts
       }
-    }, {accounts: [], numbers: []}).then((items) => {
+    }, []).then((accounts) => {
       res.json({
-        error: false,
-        accounts: items.accounts,
-        numbers: items.numbers,
+        accounts: accounts,
+        errors: errors
       })
-      applyForEach(items.accounts, addAccount)
-      debug(items.accounts.length + ' items retrieved')
-      debug(items)
+      applyForEach(accounts, addAccount)
+      debug(accounts.length + ' items retrieved')
+      debug(accounts)
     })
-  })
-  .reject((err) => {
-    debug(err)
-    res.status(500).json({message:"Server error"})
   })
 })
 
@@ -222,55 +220,50 @@ router.post('/transactions', (req, res) => {
   // Pull transactions for the Item for the last 2 years
   let startDate = moment().subtract(2, 'years').format('YYYY-MM-DD')
   let endDate = moment().format('YYYY-MM-DD')
-  let counter = 0
 
   // Log start date for transaction pull
   debug(startDate)
+
+  let errors = []
 
   // Get all transaction items from local model
   Item.find({})
   .then((items) => {
 
     // A perhaps needlessly complex way of upserting the new items into the current list
-    Promise.reduce(items, async (transactionList, item) => {
+    Promise.reduce(items, async (transactions, item) => {
 
 
       // Pulls transactions from Plaid client
       try {
-        const transactionsResponse = await client.getTransactions(item.access_token, startDate, endDate, {
+        const transactionsResponse = await client.getAllTransactions(item.access_token, startDate, endDate, {
           // TODO: Figure out why this is needed. Seems like offset is unnecessary if we already have start/end dates 
           offset: 0
         })
-        debug(`promise ${counter} then`)
+        debug(`${JSON.stringify(transactionsResponse)}`)
 
         // Add all new transactions pulled to transactions array
-        Array.push.apply(transactionList, transactionsResponse.transactions)
-        debug(`new transaction c${transactionsResponse.transactions}`)
+        transactions.push.apply(transactions, transactionsResponse)
+        debug(`new transactions ${transactionsResponse}`)
 
-        return transactionList
+        return transactions
       }
       catch (error) {
-        let msg = 'Unable to pull transactions from the Plaid API.'
-        debug(msg + '\n' + JSON.stringify(error))
-        return res.json({
-          error: msg
-        })
+        errors.push(error)
+        debug('Unable to pull transactions from the Plaid API: ' + error)
+        return transactions
       }
     }, []).then((transactions) => {
 
       debug('pulled ' + transactions.length + ' transactions')
 
       // Send back list of transactions first to not block UI
-      res.json({ transactions: transactions })
+      res.json({ transactions: transactions, errors: errors })
 
       // Add new transactions to local store
       // TODO: this needs to be refactored to only add new values, it's less efficient to upsert the entire list every time
       applyForEach(transactions, addTransaction)
     })
-  })
-  .reject((err) => {
-    debug(err)
-    res.status(500).json({message:"Server error"})
   })
 })
 
