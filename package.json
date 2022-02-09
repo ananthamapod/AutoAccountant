@@ -59,7 +59,7 @@
     "mongodb": "^2.2.30",
     "mongoose": "^5.9.12",
     "morgan": "^1.10.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "passport": "^0.3.2",
     "passport-jwt": "^4.0.0",
     "plaid": "^2.6.1",
