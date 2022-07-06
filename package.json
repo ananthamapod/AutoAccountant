@@ -55,7 +55,7 @@
     "jquery": "^3.5.1",
     "jsonwebtoken": "^8.2.1",
     "jstransformer-uglify-js": "^1.2.0",
-    "moment": "^2.22.1",
+    "moment": "^2.29.4",
     "mongodb": "^2.2.30",
     "mongoose": "^5.9.12",
     "morgan": "^1.10.0",
